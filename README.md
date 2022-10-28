@@ -59,4 +59,5 @@ Components:
 - LoadingScreen
 - OptionsDialogue
 - Layout
+- GridPost
 - SEO
