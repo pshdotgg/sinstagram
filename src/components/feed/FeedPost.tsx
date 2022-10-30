@@ -10,7 +10,6 @@ import {
 import { BsHeart, BsHeartFill } from 'react-icons/bs'
 import { Link } from 'react-router-dom'
 import UserCard from '../shared/UserCard'
-import { useTableContext } from 'flowbite-react/lib/esm/components/Table/TableContext'
 
 const FeedPost = ({ post }) => {
   const { id, media, likes, user, caption, comments } = post
@@ -77,8 +76,8 @@ const FeedPost = ({ post }) => {
         })}
         <p className='text-xs text-gray-500'>4 DAYS AGO</p>
       </div>
-      <div className='p-4 pt-0'>
-        <div className='divider' />
+      <div className='py-0 px-4'>
+        <div className='divider mt-2 mb-0' />
         <Comment />
       </div>
     </article>
@@ -138,7 +137,26 @@ const SaveButton = () => {
 }
 
 const Comment = () => {
-  return <p>Comment</p>
+  const [content, setContent] = useState('')
+
+  return (
+    <div className='flex gap-5 '>
+      <textarea
+        className='textarea textarea-ghost w-full focus:outline-none border-none resize-none p-0 m-0 overflow-hidden'
+        value={content}
+        rows={1}
+        placeholder='Add a comment...'
+        onChange={(event) => setContent(event.target.value)}
+      />
+      <button
+        disabled={!content.trim()}
+        type='button'
+        className='text-primary disabled:opacity-60 self-start'
+      >
+        Post
+      </button>
+    </div>
+  )
 }
 
 export default FeedPost

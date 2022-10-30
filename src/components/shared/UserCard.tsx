@@ -1,7 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { defaultUser } from '../../data'
 
-const UserCard = ({ user }) => {
+const UserCard = ({ user = defaultUser }) => {
   const { profile_image, username, name } = user
   return (
     <div className='flex gap-3'>
