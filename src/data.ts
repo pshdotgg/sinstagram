@@ -21,7 +21,7 @@ export function getDefaultUser() {
 export const defaultPost = {
   id: uuid(),
   likes: 10,
-  caption: `<span class="">What do you think? 🔥🤔<br>•<br>•<br>Comment below👇</span>`,
+  caption: 'What do you think? 🔥🤔 Comment below👇',
   user: defaultUser,
   media:
     'https://firebasestorage.googleapis.com/v0/b/sinstagram-pr.appspot.com/o/post.jpg?alt=media&token=fdcbdf7e-a28d-4ce6-a65b-ffd1e33b4d80',
@@ -33,7 +33,7 @@ export function getDefaultPost() {
   return {
     id: uuid(),
     likes: 10,
-    caption: `<span class="">What do you think? 🔥🤔<br>•<br>•<br>Comment below👇</span>`,
+    caption: 'What do you think? 🔥🤔 Comment below👇',
     user: defaultUser,
     media:
       'https://firebasestorage.googleapis.com/v0/b/sinstagram-pr.appspot.com/o/post.jpg?alt=media&token=fdcbdf7e-a28d-4ce6-a65b-ffd1e33b4d80',

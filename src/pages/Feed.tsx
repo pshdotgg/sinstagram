@@ -8,7 +8,7 @@ import { getDefaultPost } from '../data'
 const Feed = () => {
   return (
     <Layout>
-      <section className='grid grid-cols-4 max-w-5xl mx-auto'>
+      <section className='grid grid-cols-4 max-w-5xl mx-auto gap-5'>
         <div className='col-span-3'>
           {Array.from({ length: 5 }, () => getDefaultPost()).map((post) => (
             <FeedPost key={post.id} post={post} />

@@ -7,7 +7,7 @@ const Layout = ({ children, title }) => {
     <section>
       <SEO title={title} />
       <Navbar />
-      <main className='p-5'>
+      <main className='p-5 bg-base-200'>
         <section>
           <div>{children}</div>
         </section>
