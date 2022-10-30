@@ -1,6 +1,6 @@
 import React from 'react'
 
-const FeedPost = () => {
+const FeedPost = ({ post }) => {
   return <div>FeedPost</div>
 }
 
