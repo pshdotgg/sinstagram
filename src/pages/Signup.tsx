@@ -20,7 +20,7 @@ const Signup = () => {
 
           <button
             type='button'
-            className='gap-2 bg-[#0095f6] py-1 w-64 mx-auto rounded'
+            className='gap-2 bg-primary py-1 w-64 mx-auto rounded'
           >
             <div className='flex justify-center w-full items-center gap-2 '>
               <AiFillFacebook color='white' size={22} />{' '}
@@ -65,7 +65,7 @@ const Signup = () => {
             </span>
             <button
               type='submit'
-              className='text-white font-bold rounded py-1 mt-2 w-64 mx-auto bg-[#0095f6] border-transparent hover:bg-[#0095f6] hover:border-transparent disabled:bg-[#0095f6] disabled:opacity-50 disabled:text-white'
+              className='text-white font-bold rounded py-1 mt-2 w-64 mx-auto bg-primary border-transparent hover:bg-primary hover:border-transparent disabled:bg-primary disabled:opacity-50 disabled:text-white'
             >
               Sign up
             </button>
@@ -74,7 +74,7 @@ const Signup = () => {
 
         <div className='border py-6 min-w-[24rem] text-center shadow-sm bg-white gap-5 rounded'>
           Have an account?{' '}
-          <Link to='/accounts/login' className='text-[#0095f6] font-bold'>
+          <Link to='/accounts/login' className='text-primary font-bold'>
             Log in
           </Link>
         </div>

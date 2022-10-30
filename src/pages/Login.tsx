@@ -28,7 +28,7 @@ const Login = () => {
             <button
               disabled
               type='submit'
-              className='text-white font-bold rounded py-1  mt-2 bg-[#0095f6] border-transparent hover:bg-[#0095f6] hover:border-transparent disabled:bg-[#0095f6] disabled:opacity-50 disabled:text-white'
+              className='text-white font-bold rounded py-1  mt-2 bg-primary border-transparent hover:bg-primary hover:border-transparent disabled:bg-primary disabled:opacity-50 disabled:text-white'
             >
               Log in
             </button>
@@ -50,7 +50,7 @@ const Login = () => {
 
         <div className='border py-6 px-14 shadow-sm bg-white gap-5 rounded'>
           Don't have an account?{' '}
-          <Link to='/accounts/emailsignup' className='text-[#0095f6] font-bold'>
+          <Link to='/accounts/emailsignup' className='text-primary font-bold'>
             Sign up
           </Link>
         </div>

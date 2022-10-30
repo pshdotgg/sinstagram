@@ -10,6 +10,7 @@ import {
 import { BsHeart, BsHeartFill } from 'react-icons/bs'
 import { Link } from 'react-router-dom'
 import UserCard from '../shared/UserCard'
+import { useTableContext } from 'flowbite-react/lib/esm/components/Table/TableContext'
 
 const FeedPost = ({ post }) => {
   const { id, media, likes, user, caption, comments } = post
@@ -35,9 +36,9 @@ const FeedPost = ({ post }) => {
             </Link>
             <FaShare size={20} />
           </div>
-
           <SaveButton />
         </div>
+
         <span className='font-semibold'>
           {likes === 1 ? '1 like' : `${likes} likes`}
         </span>
@@ -85,17 +86,53 @@ const FeedPost = ({ post }) => {
 }
 
 const LikeButton = () => {
+  const [liked, setLiked] = useState(false)
+  const Icon = liked ? (
+    <BsHeartFill size={20} className='fill-red-500 animate-ping-once' />
+  ) : (
+    <BsHeart size={20} className='animate-ping-once' />
+  )
+
+  const handleLike = () => {
+    setLiked(true)
+  }
+
+  const handleUnlike = () => {
+    setLiked(false)
+  }
+
   return (
-    <div className='flex items-center justify-center'>
-      <BsHeart size={20} />
+    <div
+      className='flex items-center justify-center '
+      onClick={liked ? handleUnlike : handleLike}
+    >
+      {Icon}
     </div>
   )
 }
 
 const SaveButton = () => {
+  const [saved, setSaved] = useState(false)
+  const Icon = saved ? (
+    <FaBookmark size={20} className='animate-ping-once' />
+  ) : (
+    <FaRegBookmark size={20} className='animate-ping-once' />
+  )
+
+  const handleSave = () => {
+    setSaved(true)
+  }
+
+  const handleRemove = () => {
+    setSaved(false)
+  }
+
   return (
-    <div className='flex items-center justify-center'>
-      <FaRegBookmark size={20} />
+    <div
+      className='flex items-center justify-center '
+      onClick={saved ? handleRemove : handleSave}
+    >
+      {Icon}
     </div>
   )
 }

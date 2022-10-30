@@ -12,7 +12,7 @@ const NotFound = () => {
         <p>
           The link you followed may be broken, or the page may have been
           removed.{' '}
-          <Link to='/' className='text-[#0095F6]'>
+          <Link to='/' className='text-primary'>
             Go back to Sinstagram.
           </Link>
         </p>

@@ -13,14 +13,14 @@ const Navbar = () => {
           <input
             type='text'
             placeholder='Search'
-            className='input input-sm max-w-xs bg-base-200 text-base w-54 h-9 focus:outline-transparent focus:border-transparent ml-10 hidden   sm:block'
+            className='input input-sm max-w-xs bg-base-200 text-base w-54 h-9 focus:outline-transparent focus:border-transparent ml-10 hidden md:block'
           />
         </div>
         <div className='flex gap-2'>
           <Link to='/accounts/login'>
             <button
               type='button'
-              className='btn bg-[#0095F6] hover:bg-[#0095F6] hover:border-transparent border-transparent text-white btn-sm normal-case rounded'
+              className='btn bg-primary hover:bg-primary hover:border-transparent border-transparent text-white btn-sm normal-case rounded'
             >
               Log In
             </button>
@@ -29,7 +29,7 @@ const Navbar = () => {
           <Link to='/accounts/emailsignup'>
             <button
               type='button'
-              className='btn btn-link btn-sm text-[#0095F6] no-underline  normal-case'
+              className='btn btn-link btn-sm text-primary no-underline  normal-case'
             >
               Sign Up
             </button>
