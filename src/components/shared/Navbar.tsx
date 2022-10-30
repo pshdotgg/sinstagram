@@ -4,16 +4,16 @@ import logo from '../../images/logo.png'
 
 const Navbar = () => {
   return (
-    <div className='border-b'>
-      <nav className='bg-white flex items-center max-w-screen-lg justify-between mx-auto gap-5 py-3'>
-        <div>
+    <div className='border-b-2'>
+      <nav className='bg-white flex items-center max-w-5xl justify-between mx-auto gap-5 py-3'>
+        <Link to='/'>
           <img src={logo} alt='logo' />
-        </div>
+        </Link>
         <div>
           <input
             type='text'
             placeholder='Search'
-            className='input input-sm input-bordered max-w-xs bg-base-200 text-base w-54 h-9 focus:outline-transparent focus:border-transparent'
+            className='input input-sm max-w-xs bg-base-200 text-base w-54 h-9 focus:outline-transparent focus:border-transparent ml-10'
           />
         </div>
         <div className='flex gap-2'>
