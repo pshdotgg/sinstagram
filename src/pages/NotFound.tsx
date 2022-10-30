@@ -1,7 +1,8 @@
 import React from 'react'
+import Layout from '../components/shared/Layout'
 
 const NotFound = () => {
-  return <div>NotFound</div>
+  return <Layout title='Page Not Found'>NotFound</Layout>
 }
 
 export default NotFound
