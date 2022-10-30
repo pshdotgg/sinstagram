@@ -6,7 +6,7 @@ import { AiFillFacebook } from 'react-icons/ai'
 const Login = () => {
   return (
     <div className='flex flex-col gap-5 items-center h-screen bg-base-200'>
-      <div className='border flex flex-col pt-16 pb-6 px-10 mt-20 shadow-sm bg-white gap-5'>
+      <div className='border flex flex-col pt-16 pb-6 px-10 mt-20 shadow-sm bg-white gap-5 rounded'>
         <div className='w-full flex justify-center h-8 mb-10'>
           <img src={logo} alt='logo' />
         </div>
@@ -25,7 +25,7 @@ const Login = () => {
           <button
             disabled
             type='submit'
-            className='btn mt-2 bg-[#0095f6] border-transparent hover:bg-[#0095f6] hover:border-transparent disabled:bg-[#0095f6] disabled:opacity-50 disabled:text-white'
+            className='text-white font-bold rounded py-1  mt-2 bg-[#0095f6] border-transparent hover:bg-[#0095f6] hover:border-transparent disabled:bg-[#0095f6] disabled:opacity-50 disabled:text-white'
           >
             Log in
           </button>
@@ -47,7 +47,7 @@ const Login = () => {
         </Link>
       </div>
 
-      <div className='border py-6 px-14 shadow-sm bg-white gap-5'>
+      <div className='border py-6 px-14 shadow-sm bg-white gap-5 rounded'>
         Don't have an account?{' '}
         <Link to='/accounts/emailsignup' className='text-[#0095f6] font-bold'>
           Sign up
