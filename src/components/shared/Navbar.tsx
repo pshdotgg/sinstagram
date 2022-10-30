@@ -17,18 +17,23 @@ const Navbar = () => {
           />
         </div>
         <div className='flex gap-2'>
-          <button
-            type='button'
-            className='btn bg-[#0095F6] hover:bg-[#0095F6] hover:border-transparent border-transparent text-white btn-sm normal-case rounded'
-          >
-            Log In
-          </button>
-          <button
-            type='button'
-            className='btn btn-link btn-sm text-[#0095F6] no-underline  normal-case'
-          >
-            Sign Up
-          </button>
+          <Link to='/accounts/login'>
+            <button
+              type='button'
+              className='btn bg-[#0095F6] hover:bg-[#0095F6] hover:border-transparent border-transparent text-white btn-sm normal-case rounded'
+            >
+              Log In
+            </button>
+          </Link>
+
+          <Link to='/accounts/emailsignup'>
+            <button
+              type='button'
+              className='btn btn-link btn-sm text-[#0095F6] no-underline  normal-case'
+            >
+              Sign Up
+            </button>
+          </Link>
         </div>
       </nav>
     </div>
