@@ -33,9 +33,7 @@ const Login = () => {
               Log in
             </button>
           </form>
-          <span className='text-gray-400 text-sm font-bold'>
-            ──────────── OR ───────────
-          </span>
+          <div className='divider text-gray-400 text-sm font-bold'>OR</div>
           <button type='button' className='flex items-center gap-2 m-auto'>
             <AiFillFacebook color='#4267B2' size={22} />{' '}
             <Link

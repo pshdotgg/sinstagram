@@ -16,7 +16,7 @@ const Feed = () => {
         </div>
         <div className='hidden md:block'>
           <div>
-            <UserCard />
+            {/* <UserCard /> */}
             <FeedSideSuggestions />
           </div>
         </div>

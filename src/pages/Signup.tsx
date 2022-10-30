@@ -33,11 +33,7 @@ const Signup = () => {
             </div>
           </button>
 
-          <div className='text-center'>
-            <span className='text-gray-400 text-sm font-bold'>
-              ─────────── OR ───────────
-            </span>
-          </div>
+          <div className='divider text-gray-400 text-sm font-bold p-5'>OR</div>
 
           <form className='flex flex-col gap-2'>
             <input

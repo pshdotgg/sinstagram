@@ -10,7 +10,6 @@ import {
 import { BsHeart, BsHeartFill } from 'react-icons/bs'
 import { Link } from 'react-router-dom'
 import UserCard from '../shared/UserCard'
-import HTMLEllipsis from 'react-lines-ellipsis/lib/html'
 
 const FeedPost = ({ post }) => {
   const { id, media, likes, user, caption, comments } = post
@@ -18,8 +17,8 @@ const FeedPost = ({ post }) => {
 
   return (
     <article className='border-2 bg-white mb-5 rounded'>
-      <div className='flex justify-between items-center p-4'>
-        <UserCard />
+      <div className='flex justify-between items-center px-4 py-2'>
+        <UserCard user={user} />
         <MdMoreHoriz size={20} className='cursor-pointer' />
       </div>
 
@@ -78,7 +77,7 @@ const FeedPost = ({ post }) => {
         <p className='text-xs text-gray-500'>4 DAYS AGO</p>
       </div>
       <div className='p-4 pt-0'>
-        <div className='border-b-2' />
+        <div className='divider' />
         <Comment />
       </div>
     </article>
