@@ -76,7 +76,7 @@ const FeedPost = ({ post }) => {
         })}
         <p className='text-xs text-gray-500'>4 DAYS AGO</p>
       </div>
-      <div className='py-0 px-4'>
+      <div className='py-0'>
         <div className='divider mt-2 mb-0' />
         <Comment />
       </div>
@@ -140,7 +140,7 @@ const Comment = () => {
   const [content, setContent] = useState('')
 
   return (
-    <div className='flex gap-5 '>
+    <div className='flex gap-5 px-4'>
       <textarea
         className='textarea textarea-ghost w-full focus:outline-none border-none resize-none p-0 m-0 overflow-hidden'
         value={content}
