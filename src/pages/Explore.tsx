@@ -1,7 +1,8 @@
 import React from 'react'
+import Layout from '../components/shared/Layout'
 
 const Explore = () => {
-  return <div>Explore</div>
+  return <Layout>Explore</Layout>
 }
 
 export default Explore

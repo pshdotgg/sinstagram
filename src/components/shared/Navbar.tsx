@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { FaSearch } from 'react-icons/fa'
 import {
@@ -9,17 +9,19 @@ import {
   AiOutlineHeart,
   AiFillHeart,
 } from 'react-icons/ai'
+import { RiArrowUpSFill } from 'react-icons/ri'
 import logo from '../../images/logo.png'
 import LoadingSpinner from './LoadingSpinner'
 import { MdCancel } from 'react-icons/md'
-import { defaultCurrentUser } from '../../data'
+import { defaultCurrentUser, getDefaultUser } from '../../data'
+import UserCard from './UserCard'
 
 const Navbar = () => {
   const location = useLocation()
   const path = location.pathname
 
   return (
-    <div className='border-b-2 px-5'>
+    <div className='border-b-2 px-5 '>
       <nav className='bg-white flex items-center max-w-5xl justify-between mx-auto gap-5 py-3'>
         <Link to='/'>
           <img src={logo} alt='logo' />
@@ -52,8 +54,19 @@ const Navbar = () => {
 
 const Search = () => {
   const [query, setQuery] = useState('')
+  const [loading, setLoading] = useState(false)
   const [hasFocus, setHasFocus] = useState(false)
-  let loading = false
+  const [results, setResults] = useState([])
+
+  const hasResults = query && results.length > 0
+
+  useEffect(() => {
+    if (!query.trim()) return
+
+    setLoading(true)
+    setResults(Array.from({ length: 5 }, () => getDefaultUser()))
+    setLoading(false)
+  }, [query])
 
   const handleClearInput = () => {
     setQuery('')
@@ -86,6 +99,31 @@ const Search = () => {
           </span>
         )
       )}
+      {hasResults && <SearchCard results={results} />}
+    </div>
+  )
+}
+
+const SearchCard = ({ results }) => {
+  return (
+    <div className='absolute top-8 w-full flex flex-col gap-0 justify-center items-center m-0'>
+      <RiArrowUpSFill size={50} className='fill-white p-0' />
+      <div className='card w-full bg-base-100 shadow-xl rounded -mt-5'>
+        <div className='card-body p-0 m-0'>
+          {results.map((result) => {
+            return (
+              <div key={result.id}>
+                <Link to={`/${result.username}`}>
+                  <div className='cursor-pointer hover:bg-base-300 p-4 pb-0 -mt-2'>
+                    <UserCard user={result} />
+                  </div>
+                </Link>
+                <div className='divider -m-2'></div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
     </div>
   )
 }
@@ -97,42 +135,39 @@ const NavLinks = ({ path }) => {
     setShowNotifications((prevShowNotifications) => !prevShowNotifications)
   }
   return (
-    <div>
-      <div className='flex gap-5 items-center'>
-        <Link to='/'>
-          {path === '/' ? (
-            <AiFillHome size={25} />
-          ) : (
-            <AiOutlineHome size={25} />
-          )}
-        </Link>
-        <Link to='/explore'>
-          {path === '/explore' ? (
-            <AiFillCompass size={25} />
-          ) : (
-            <AiOutlineCompass size={25} />
-          )}
-        </Link>
-        <div className='cursor-pointer' onClick={handleToggleNotifications}>
-          {showNotifications ? (
-            <AiFillHeart size={25} />
-          ) : (
-            <AiOutlineHeart size={25} />
-          )}{' '}
-        </div>
-        <Link to={`/${defaultCurrentUser.username}`}>
-          <div className='avatar flex justify-center items-center'>
-            <div
-              className={`w-7 rounded-full ${
-                path === `/${defaultCurrentUser.username}` &&
-                'border-2 border-gray-700 ring-offset-2 ring-offset-base-100'
-              }`}
-            >
-              <img src={defaultCurrentUser.profile_image} />
-            </div>
-          </div>
-        </Link>
+    <div className='flex gap-5 items-center'>
+      <Link to='/'>
+        {path === '/' ? <AiFillHome size={28} /> : <AiOutlineHome size={28} />}
+      </Link>
+      <Link to='/explore'>
+        {path === '/explore' ? (
+          <AiFillCompass size={28} />
+        ) : (
+          <AiOutlineCompass size={28} />
+        )}
+      </Link>
+      <div className='cursor-pointer' onClick={handleToggleNotifications}>
+        {showNotifications ? (
+          <AiFillHeart size={28} />
+        ) : (
+          <AiOutlineHeart size={28} />
+        )}{' '}
       </div>
+      <Link to={`/${defaultCurrentUser.username}`}>
+        <div className='avatar flex justify-center items-center'>
+          <div
+            className={`w-10 rounded-full border-2 border-transparent ${
+              path === `/${defaultCurrentUser.username}` &&
+              'border-gray-700 ring-offset-base-100 ring-offset-1'
+            }`}
+          >
+            <img
+              src={defaultCurrentUser.profile_image}
+              className='rounded-full'
+            />
+          </div>
+        </div>
+      </Link>
     </div>
   )
 }

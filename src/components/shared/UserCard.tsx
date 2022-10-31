@@ -15,7 +15,7 @@ const UserCard = ({ user = defaultUser }) => {
       </Link>
 
       <div className='flex flex-col '>
-        <Link to={`/${username}`}>
+        <Link to={`/${username}`} className='text-left'>
           <span className='text-sm font-semibold'>{username}</span>
         </Link>
         <span className='text-gray-500 text-sm'>{name}</span>

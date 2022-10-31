@@ -5,7 +5,7 @@ import Layout from '../components/shared/Layout'
 const NotFound = () => {
   return (
     <Layout title='Page Not Found'>
-      <section className='max-w-5xl mx-auto min-h-screen text-center text-gray-800 pt-10  '>
+      <section className='max-w-5xl mx-auto text-center text-gray-800 pt-10  '>
         <h2 className='text-2xl font-bold mb-8'>
           Sorry, this page isn't available.
         </h2>

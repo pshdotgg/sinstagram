@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const FollowButton = ({ side }) => {
+const FollowButton = ({ side = true }) => {
   const [isFollowing, setIsFollowing] = useState(false)
   const followButton = (
     <button
