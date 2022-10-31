@@ -2,10 +2,16 @@ import React from 'react'
 import FeedPost from '../components/feed/FeedPost'
 import FeedSideSuggestions from '../components/feed/FeedSideSuggestions'
 import Layout from '../components/shared/Layout'
+import LoadingScreen from '../components/shared/LoadingScreen'
+import LoadingSpinner from '../components/shared/LoadingSpinner'
 import UserCard from '../components/shared/UserCard'
 import { getDefaultPost } from '../data'
 
-const Feed = () => {
+const Feed = ({ loading = false }) => {
+  const [isEndOfFeed, setIsEndOfFeed] = React.useState(false)
+
+  if (loading) return <LoadingScreen />
+
   return (
     <Layout>
       <section className='grid grid-cols-6 max-w-5xl mx-auto gap-5'>
@@ -13,6 +19,7 @@ const Feed = () => {
           {Array.from({ length: 5 }, () => getDefaultPost()).map((post) => (
             <FeedPost key={post.id} post={post} />
           ))}
+          {isEndOfFeed && <LoadingSpinner size={28} />}
         </div>
         <div className='hidden md:col-span-2 md:block'>
           <div className='w-full'>
