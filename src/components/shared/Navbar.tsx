@@ -1,11 +1,23 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { FaSearch } from 'react-icons/fa'
+import {
+  AiOutlineHome,
+  AiFillHome,
+  AiOutlineCompass,
+  AiFillCompass,
+  AiOutlineHeart,
+  AiFillHeart,
+} from 'react-icons/ai'
 import logo from '../../images/logo.png'
 import LoadingSpinner from './LoadingSpinner'
 import { MdCancel } from 'react-icons/md'
+import { defaultCurrentUser } from '../../data'
 
 const Navbar = () => {
+  const location = useLocation()
+  const path = location.pathname
+
   return (
     <div className='border-b-2 px-5'>
       <nav className='bg-white flex items-center max-w-5xl justify-between mx-auto gap-5 py-3'>
@@ -13,7 +25,8 @@ const Navbar = () => {
           <img src={logo} alt='logo' />
         </Link>
         <Search />
-        <div className='flex gap-2'>
+        <NavLinks path={path} />
+        {/* <div className='flex gap-2'>
           <Link to='/accounts/login'>
             <button
               type='button'
@@ -31,7 +44,7 @@ const Navbar = () => {
               Sign Up
             </button>
           </Link>
-        </div>
+        </div> */}
       </nav>
     </div>
   )
@@ -73,6 +86,53 @@ const Search = () => {
           </span>
         )
       )}
+    </div>
+  )
+}
+
+const NavLinks = ({ path }) => {
+  const [showNotifications, setShowNotifications] = useState(false)
+
+  const handleToggleNotifications = () => {
+    setShowNotifications((prevShowNotifications) => !prevShowNotifications)
+  }
+  return (
+    <div>
+      <div className='flex gap-5 items-center'>
+        <Link to='/'>
+          {path === '/' ? (
+            <AiFillHome size={25} />
+          ) : (
+            <AiOutlineHome size={25} />
+          )}
+        </Link>
+        <Link to='/explore'>
+          {path === '/explore' ? (
+            <AiFillCompass size={25} />
+          ) : (
+            <AiOutlineCompass size={25} />
+          )}
+        </Link>
+        <div className='cursor-pointer' onClick={handleToggleNotifications}>
+          {showNotifications ? (
+            <AiFillHeart size={25} />
+          ) : (
+            <AiOutlineHeart size={25} />
+          )}{' '}
+        </div>
+        <Link to={`/${defaultCurrentUser.username}`}>
+          <div className='avatar flex justify-center items-center'>
+            <div
+              className={`w-7 rounded-full ${
+                path === `/${defaultCurrentUser.username}` &&
+                'border-2 border-gray-700 ring-offset-2 ring-offset-base-100'
+              }`}
+            >
+              <img src={defaultCurrentUser.profile_image} />
+            </div>
+          </div>
+        </Link>
+      </div>
     </div>
   )
 }
