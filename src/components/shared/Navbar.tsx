@@ -16,6 +16,7 @@ import { MdCancel } from 'react-icons/md'
 import { defaultCurrentUser, getDefaultUser } from '../../data'
 import UserCard from './UserCard'
 import NotificationTooltip from '../notifications/NotificationTooltip'
+import NotificationList from '../notifications/NotificationList'
 
 const Navbar = () => {
   const location = useLocation()
@@ -142,7 +143,7 @@ const NavLinks = ({ path }) => {
   }
 
   useEffect(() => {
-    const timeout = setTimeout(handleHideNotificationsTooltip, 3000)
+    const timeout = setTimeout(handleHideNotificationsTooltip, 2500)
 
     return () => clearTimeout(timeout)
   }, [])
@@ -159,21 +160,23 @@ const NavLinks = ({ path }) => {
           <AiOutlineCompass size={28} />
         )}
       </Link>
-      <div
-        className='cursor-pointer relative'
-        onClick={() => {
-          handleToggleNotifications
-          handleHideNotificationsTooltip
-        }}
-      >
-        {showNotifications ? (
-          <AiFillHeart size={28} />
-        ) : (
-          <AiOutlineHeart size={28} />
-        )}{' '}
+      <div className='cursor-pointer relative'>
+        <div
+          onClick={() => {
+            handleToggleNotifications()
+            handleHideNotificationsTooltip()
+          }}
+        >
+          {showNotifications ? (
+            <AiFillHeart size={28} />
+          ) : (
+            <AiOutlineHeart size={28} />
+          )}{' '}
+        </div>
         {showNotificationsTooltip && (
           <NotificationTooltip className='absolute -left-9 animate-ping-once' />
         )}
+        {showNotifications && <NotificationList className='-right-3 top-8' />}
       </div>
 
       <Link to={`/${defaultCurrentUser.username}`}>
