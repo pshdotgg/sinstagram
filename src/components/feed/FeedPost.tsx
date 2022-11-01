@@ -89,7 +89,7 @@ const LikeButton = () => {
   const Icon = liked ? (
     <BsHeartFill size={20} className='fill-red-500 animate-ping-once' />
   ) : (
-    <BsHeart size={20} className='animate-ping-once' />
+    <BsHeart size={20} />
   )
 
   const handleLike = () => {
@@ -112,11 +112,7 @@ const LikeButton = () => {
 
 const SaveButton = () => {
   const [saved, setSaved] = useState(false)
-  const Icon = saved ? (
-    <FaBookmark size={20} className='animate-ping-once' />
-  ) : (
-    <FaRegBookmark size={20} className='animate-ping-once' />
-  )
+  const Icon = saved ? <FaBookmark size={20} /> : <FaRegBookmark size={20} />
 
   const handleSave = () => {
     setSaved(true)
