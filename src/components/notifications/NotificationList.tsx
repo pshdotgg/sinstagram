@@ -1,8 +1,7 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { defaultNotifications } from '../../data'
 import { RiArrowUpSFill } from 'react-icons/ri'
 import { Link } from 'react-router-dom'
-import UserCard from '../shared/UserCard'
 import FollowButton from '../shared/FollowButton'
 
 const NotificationList = ({ className = '' }) => {

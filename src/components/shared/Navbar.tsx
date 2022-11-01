@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { FaSearch } from 'react-icons/fa'
 import {
@@ -17,20 +17,29 @@ import { defaultCurrentUser, getDefaultUser } from '../../data'
 import UserCard from './UserCard'
 import NotificationTooltip from '../notifications/NotificationTooltip'
 import NotificationList from '../notifications/NotificationList'
+import useOutsideClick from '@rooks/use-outside-click'
+import { useNProgress } from '@tanem/react-nprogress'
 
 const Navbar = () => {
   const location = useLocation()
   const path = location.pathname
+  const [isLoadingPage, setIsLoadingPage] = useState(true)
+
+  useEffect(() => {
+    setIsLoadingPage(false)
+  }, [path])
 
   return (
-    <div className='border-b-2 px-5 '>
-      <nav className='bg-white flex items-center max-w-5xl justify-between mx-auto gap-5 py-3'>
-        <Link to='/'>
-          <img src={logo} alt='logo' />
-        </Link>
-        <Search />
-        <NavLinks path={path} />
-        {/* <div className='flex gap-2'>
+    <>
+      <PrograssBar isAnimating={isLoadingPage} />
+      <div className='border-b-2 px-5 '>
+        <nav className='bg-white flex items-center max-w-5xl justify-between mx-auto gap-5 py-3'>
+          <Link to='/'>
+            <img src={logo} alt='logo' />
+          </Link>
+          <Search />
+          <NavLinks path={path} />
+          {/* <div className='flex gap-2'>
           <Link to='/accounts/login'>
             <button
               type='button'
@@ -49,8 +58,9 @@ const Navbar = () => {
             </button>
           </Link>
         </div> */}
-      </nav>
-    </div>
+        </nav>
+      </div>
+    </>
   )
 }
 
@@ -133,6 +143,9 @@ const SearchCard = ({ results }) => {
 const NavLinks = ({ path }) => {
   const [showNotificationsTooltip, setShowNotificationsTooltip] = useState(true)
   const [showNotifications, setShowNotifications] = useState(false)
+  const notificationListRef = useRef(null)
+
+  console.log('show', showNotifications)
 
   const handleToggleNotifications = () => {
     setShowNotifications((prevShowNotifications) => !prevShowNotifications)
@@ -141,6 +154,12 @@ const NavLinks = ({ path }) => {
   const handleHideNotificationsTooltip = () => {
     setShowNotificationsTooltip(false)
   }
+
+  const handleHideNotificationsList = () => {
+    setShowNotifications(false)
+  }
+
+  useOutsideClick(notificationListRef, handleHideNotificationsList)
 
   useEffect(() => {
     const timeout = setTimeout(handleHideNotificationsTooltip, 2500)
@@ -160,11 +179,11 @@ const NavLinks = ({ path }) => {
           <AiOutlineCompass size={28} />
         )}
       </Link>
-      <div className='cursor-pointer relative'>
+      <div className='cursor-pointer relative' ref={notificationListRef}>
         <div
           onClick={() => {
-            handleToggleNotifications()
             handleHideNotificationsTooltip()
+            handleToggleNotifications()
           }}
         >
           {showNotifications ? (
@@ -194,6 +213,31 @@ const NavLinks = ({ path }) => {
           </div>
         </div>
       </Link>
+    </div>
+  )
+}
+
+const PrograssBar = ({ isAnimating }) => {
+  const { animationDuration, progress, isFinished } = useNProgress({
+    isAnimating,
+  })
+
+  return (
+    <div
+      className={`${
+        isFinished ? 'opacity-0' : 'opacity-100'
+      } absolute z-20 w-full`}
+    >
+      <div
+        style={{
+          marginLeft: `${(-1 + progress) * 100}%`,
+          transition: `margin-left ${animationDuration}ms linear`,
+          background:
+            '#27c4f5 linear-gradient(to right,#24c4e5,#a307bb,#fd8e32,#70b060,#24c4e5)',
+          backgroundSize: '500%',
+        }}
+        className={`h-1 w-full`}
+      ></div>
     </div>
   )
 }

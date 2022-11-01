@@ -9,6 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@rooks/use-outside-click": "^4.11.2",
+    "@tanem/react-nprogress": "^5.0.16",
     "daisyui": "^2.33.0",
     "flowbite": "^1.5.3",
     "flowbite-react": "^0.3.2",
