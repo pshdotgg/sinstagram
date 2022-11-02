@@ -1,5 +1,6 @@
-import React from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import React, { useEffect, useRef } from 'react'
+import { Routes, Route, useLocation } from 'react-router-dom'
+import PostModal from './components/post/PostModal'
 import {
   EditProfile,
   Explore,
@@ -12,9 +13,19 @@ import {
 } from './pages'
 
 const App = () => {
+  const location = useLocation()
+  const prevLocation = useRef(location)
+  const modal = location.state?.modal
+
+  useEffect(() => {
+    if (!modal) prevLocation.current = location
+  }, [location, modal])
+
+  const isModalOpen = modal && prevLocation.current !== location
+
   return (
-    <Router>
-      <Routes>
+    <>
+      <Routes location={isModalOpen ? prevLocation.current : location}>
         <Route path='/' element={<Feed />} />
         <Route path='/explore' element={<Explore />} />
         <Route path='/:username' element={<Profile />} />
@@ -24,7 +35,10 @@ const App = () => {
         <Route path='/accounts/emailsignup' element={<Signup />} />
         <Route path='*' element={<NotFound />} />
       </Routes>
-    </Router>
+      <Routes>
+        {isModalOpen && <Route path='/p/:postId' element={<PostModal />} />}
+      </Routes>
+    </>
   )
 }
 
