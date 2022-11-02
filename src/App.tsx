@@ -7,7 +7,7 @@ import {
   Feed,
   Login,
   NotFound,
-  Post,
+  PostPage,
   Profile,
   Signup,
 } from './pages'
@@ -29,7 +29,7 @@ const App = () => {
         <Route path='/' element={<Feed />} />
         <Route path='/explore' element={<Explore />} />
         <Route path='/:username' element={<Profile />} />
-        <Route path='/p/:postId' element={<Post />} />
+        <Route path='/p/:postId' element={<PostPage />} />
         <Route path='/accounts/edit' element={<EditProfile />} />
         <Route path='/accounts/login' element={<Login />} />
         <Route path='/accounts/emailsignup' element={<Signup />} />
