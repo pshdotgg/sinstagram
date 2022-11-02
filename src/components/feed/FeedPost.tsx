@@ -10,77 +10,82 @@ import {
 import { BsHeart, BsHeartFill } from 'react-icons/bs'
 import { Link } from 'react-router-dom'
 import UserCard from '../shared/UserCard'
+import FollowSuggestions from '../shared/FollowSuggestions'
 
-const FeedPost = ({ post }) => {
+const FeedPost = ({ post, index }) => {
   const { id, media, likes, user, caption, comments } = post
   const [showCaption, setShowCaption] = useState(false)
+  const showFollowSuggestions = index === 1
 
   return (
-    <article className='border-2 bg-white mb-5 rounded'>
-      <div className='flex justify-between items-center px-4 py-2'>
-        <UserCard user={user} />
-        <MdMoreHoriz size={20} className='cursor-pointer' />
-      </div>
-
-      <div>
-        <img src={media} alt='media' />
-      </div>
-
-      <div className='p-4 pb-2'>
-        <div className='flex pb-2 gap-5 justify-between items-center'>
-          <div className='flex gap-5 items-center'>
-            <LikeButton />
-            <Link to={`/p/${id}`}>
-              <FaRegComment size={20} />
-            </Link>
-            <FaShare size={20} />
-          </div>
-          <SaveButton />
+    <>
+      <article className='border-2 bg-white mb-5 rounded'>
+        <div className='flex justify-between items-center px-4 py-2'>
+          <UserCard user={user} />
+          <MdMoreHoriz size={20} className='cursor-pointer' />
         </div>
 
-        <span className='font-semibold'>
-          {likes === 1 ? '1 like' : `${likes} likes`}
-        </span>
         <div>
-          <Link to={`/${user.username}`} className='font-bold '>
-            {`${user.username} `}
-          </Link>
-          {showCaption ? (
-            <span>{caption}</span>
-          ) : (
-            <div className='inline-block'>
-              <span>{`${caption.slice(0, 45)}...   `}</span>
-              <button
-                type='button'
-                className='pl-2 text-gray-500'
-                onClick={() => setShowCaption(true)}
-              >
-                {' '}
-                more
-              </button>
-            </div>
-          )}
+          <img src={media} alt='media' />
         </div>
-        <Link to={`/p/${id}`} className='text-gray-500 text-sm'>
-          View all {comments.length} comments
-        </Link>
-        {comments.map((comment) => {
-          return (
-            <div key={comment.id}>
-              <Link to={`/${comment.user.username}`}>
-                <span>{comment.user.username}</span>
+
+        <div className='p-4 pb-2'>
+          <div className='flex pb-2 gap-5 justify-between items-center'>
+            <div className='flex gap-5 items-center'>
+              <LikeButton />
+              <Link to={`/p/${id}`}>
+                <FaRegComment size={20} />
               </Link>
-              <span>{comment.content}</span>
+              <FaShare size={20} />
             </div>
-          )
-        })}
-        <p className='text-xs text-gray-500'>4 DAYS AGO</p>
-      </div>
-      <div className='py-0'>
-        <div className='divider mt-2 mb-0' />
-        <Comment />
-      </div>
-    </article>
+            <SaveButton />
+          </div>
+
+          <span className='font-semibold'>
+            {likes === 1 ? '1 like' : `${likes} likes`}
+          </span>
+          <div>
+            <Link to={`/${user.username}`} className='font-bold '>
+              {`${user.username} `}
+            </Link>
+            {showCaption ? (
+              <span>{caption}</span>
+            ) : (
+              <div className='inline-block'>
+                <span>{`${caption.slice(0, 45)}...   `}</span>
+                <button
+                  type='button'
+                  className='pl-2 text-gray-500'
+                  onClick={() => setShowCaption(true)}
+                >
+                  {' '}
+                  more
+                </button>
+              </div>
+            )}
+          </div>
+          <Link to={`/p/${id}`} className='text-gray-500 text-sm'>
+            View all {comments.length} comments
+          </Link>
+          {comments.map((comment) => {
+            return (
+              <div key={comment.id}>
+                <Link to={`/${comment.user.username}`}>
+                  <span>{comment.user.username}</span>
+                </Link>
+                <span>{comment.content}</span>
+              </div>
+            )
+          })}
+          <p className='text-xs text-gray-500'>4 DAYS AGO</p>
+        </div>
+        <div className='py-0'>
+          <div className='divider mt-2 mb-0' />
+          <Comment />
+        </div>
+      </article>
+      {showFollowSuggestions && <FollowSuggestions />}
+    </>
   )
 }
 

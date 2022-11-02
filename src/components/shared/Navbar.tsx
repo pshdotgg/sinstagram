@@ -32,8 +32,8 @@ const Navbar = () => {
   return (
     <>
       <PrograssBar isAnimating={isLoadingPage} />
-      <div className='border-b-2 px-5 '>
-        <nav className='bg-white flex items-center max-w-5xl justify-between mx-auto gap-5 py-3'>
+      <div className='border-b-2 px-5'>
+        <nav className='bg-white flex items-center max-w-5xl justify-between mx-auto gap-5 py-3 '>
           <Link to='/'>
             <img src={logo} alt='logo' />
           </Link>
@@ -159,7 +159,7 @@ const NavLinks = ({ path }) => {
     setShowNotifications(false)
   }
 
-  useOutsideClick(notificationListRef, handleHideNotificationsList)
+  // useOutsideClick(notificationListRef, handleHideNotificationsList)
 
   useEffect(() => {
     const timeout = setTimeout(handleHideNotificationsTooltip, 2500)
