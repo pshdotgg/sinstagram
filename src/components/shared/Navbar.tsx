@@ -30,9 +30,9 @@ const Navbar = () => {
   }, [path])
 
   return (
-    <>
+    <div>
       <PrograssBar isAnimating={isLoadingPage} />
-      <div className='border-b-2 px-5'>
+      <div className='border-b-2 px-5 fixed bg-white w-full z-20'>
         <nav className='bg-white flex items-center max-w-5xl justify-between mx-auto gap-5 py-3 '>
           <Link to='/'>
             <img src={logo} alt='logo' />
@@ -60,7 +60,7 @@ const Navbar = () => {
         </div> */}
         </nav>
       </div>
-    </>
+    </div>
   )
 }
 

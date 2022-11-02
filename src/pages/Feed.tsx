@@ -24,7 +24,7 @@ const Feed = ({ loading = false }) => {
           {isEndOfFeed && <LoadingSpinner size={28} />}
         </div>
         <div className='hidden md:col-span-2 md:block'>
-          <div className='w-full flex flex-col gap-5 sticky top-5'>
+          <div className='w-full flex flex-col gap-5 sticky top-20'>
             <UserCard />
             <FeedSideSuggestions />
           </div>
