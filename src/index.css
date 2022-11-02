@@ -11,3 +11,9 @@
 .slick-next:before {
   margin-left: -8px;
 }
+
+@media (max-width: 768px) {
+  .slick-slider {
+    overflow: hidden;
+  }
+}

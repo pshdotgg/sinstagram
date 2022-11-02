@@ -5,12 +5,12 @@ import {
   FaShare,
   FaRegBookmark,
   FaBookmark,
-  FaCommentSlash,
 } from 'react-icons/fa'
 import { BsHeart, BsHeartFill } from 'react-icons/bs'
 import { Link } from 'react-router-dom'
 import UserCard from '../shared/UserCard'
 import FollowSuggestions from '../shared/FollowSuggestions'
+import OptionsDialog from '../shared/OptionsDialog'
 
 const FeedPost = ({ post, index }) => {
   const { id, media, likes, user, caption, comments } = post
@@ -22,7 +22,7 @@ const FeedPost = ({ post, index }) => {
       <article className='border-2 bg-white mb-5 rounded'>
         <div className='flex justify-between items-center px-4 py-2'>
           <UserCard user={user} />
-          <MdMoreHoriz size={20} className='cursor-pointer' />
+          <OptionsDialog />
         </div>
 
         <div>

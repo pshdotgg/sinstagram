@@ -11,7 +11,7 @@ const FollowSuggestions = () => {
   let loading = false
   return (
     <div>
-      <h3 className='text-gray-500'>Suggestions For You</h3>
+      <h3 className='text-gray-500 m-2 md:ml-0'>Suggestions For You</h3>
       {loading ? <LoadingSpinner /> : <FollowSlider />}
     </div>
   )
@@ -32,7 +32,7 @@ const FollowSlider = () => {
 
   return (
     <Slider
-      className='grid pt-2.5 pb-5 px-0 mb-5 bg-white rounded border border-[#e6e6e6] border-t-0 '
+      className='grid pt-2.5 pb-5 px-0 mb-5 mr-0 bg-white rounded border border-[#e6e6e6] border-t-0 '
       {...settings}
     >
       {Array.from({ length: 10 }, () => getDefaultUser()).map((user) => (

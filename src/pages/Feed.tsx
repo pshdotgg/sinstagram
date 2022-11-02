@@ -13,7 +13,7 @@ const Feed = ({ loading = false }) => {
   if (loading) return <LoadingScreen />
 
   return (
-    <Layout>
+    <Layout title='Feed'>
       <section className='grid grid-cols-6 max-w-5xl mx-auto gap-5'>
         <div className='col-span-6 md:col-span-4'>
           {Array.from({ length: 5 }, () => getDefaultPost()).map(
