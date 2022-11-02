@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { MdMoreHoriz } from 'react-icons/md'
 import {
   FaRegComment,
   FaShare,

@@ -7,11 +7,13 @@ import { getDefaultUser } from '../../data'
 import FollowButton from './FollowButton'
 import { Link } from 'react-router-dom'
 
-const FollowSuggestions = () => {
+const FollowSuggestions = ({ hideHeader }) => {
   let loading = false
   return (
     <div>
-      <h3 className='text-gray-500 m-2 md:ml-0'>Suggestions For You</h3>
+      {!hideHeader && (
+        <h3 className='text-gray-500 m-2 md:ml-0'>Suggestions For You</h3>
+      )}
       {loading ? <LoadingSpinner /> : <FollowSlider />}
     </div>
   )
