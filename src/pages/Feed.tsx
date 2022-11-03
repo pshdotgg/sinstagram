@@ -1,11 +1,12 @@
-import React from 'react'
-import FeedPost from '../components/feed/FeedPost'
+import React, { Suspense } from 'react'
+import FeedPostSkeleton from '../components/feed/FeedPostSkeleton'
 import FeedSideSuggestions from '../components/feed/FeedSideSuggestions'
 import Layout from '../components/shared/Layout'
 import LoadingScreen from '../components/shared/LoadingScreen'
 import LoadingSpinner from '../components/shared/LoadingSpinner'
 import UserCard from '../components/shared/UserCard'
 import { getDefaultPost } from '../data'
+const FeedPost = React.lazy(() => import('../components/feed/FeedPost'))
 
 const Feed = ({ loading = false }) => {
   const [isEndOfFeed, setIsEndOfFeed] = React.useState(false)
@@ -18,7 +19,9 @@ const Feed = ({ loading = false }) => {
         <div className='col-span-6 md:col-span-4'>
           {Array.from({ length: 5 }, () => getDefaultPost()).map(
             (post, index) => (
-              <FeedPost key={post.id} index={index} post={post} />
+              <Suspense key={post.id} fallback={<FeedPostSkeleton />}>
+                <FeedPost key={post.id} index={index} post={post} />
+              </Suspense>
             )
           )}
           {isEndOfFeed && <LoadingSpinner size={28} />}
