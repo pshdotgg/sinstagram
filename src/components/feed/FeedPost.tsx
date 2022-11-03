@@ -10,6 +10,7 @@ import { Link } from 'react-router-dom'
 import UserCard from '../shared/UserCard'
 import FollowSuggestions from '../shared/FollowSuggestions'
 import OptionsDialog from '../shared/OptionsDialog'
+import FeedPostSkeleton from './FeedPostSkeleton'
 
 const FeedPost = ({ post, index }) => {
   const { id, media, likes, user, caption, comments } = post
