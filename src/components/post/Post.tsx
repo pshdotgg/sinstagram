@@ -10,9 +10,17 @@ import { Link } from 'react-router-dom'
 import UserCard from '../shared/UserCard'
 import OptionsDialog from '../shared/OptionsDialog'
 import { defaultPost } from '../../data'
+import PostSkeleton from './PostSkeleton'
 
 const Post = () => {
   const { id, media, likes, user, caption, comments } = defaultPost
+  const [loading, setLoading] = useState(true)
+
+  setTimeout(() => {
+    setLoading(false)
+  }, 1000)
+
+  if (loading) return <PostSkeleton />
 
   return (
     <div className='bg-white w-full '>
