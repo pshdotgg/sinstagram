@@ -6,7 +6,7 @@ import ProfilePicture from '../components/shared/ProfilePicture'
 import { defaultCurrentUser } from '../data'
 
 const Profile = () => {
-  const isOwner = false
+  const isOwner = true
   // const [showOptionsMenu, setOptionsMenu] = useState(false)
 
   // const handleOptionsMenuClick = () => {
@@ -19,7 +19,7 @@ const Profile = () => {
     >
       <section className='hidden md:flex gap-28'>
         <ProfilePicture isOwner={isOwner} />
-        <div className='flex flex-col gap-8 w-80'>
+        <div className='flex flex-col gap-8 w-96'>
           <ProfileNameSection
             user={defaultCurrentUser}
             isOwner={isOwner}
@@ -52,7 +52,7 @@ const ProfileNameSection = ({ user, isOwner }) => {
   const [showUnfollowDialog, setShowUnfollowDialog] = useState(true)
 
   let followButton
-  const isFollowing = true
+  const isFollowing = false
   const isFollower = false
 
   if (isFollowing) {
@@ -90,7 +90,7 @@ const ProfileNameSection = ({ user, isOwner }) => {
 
   return (
     <>
-      <section className='hidden md:flex items-center justify-between w-full gap-16'>
+      <section className='hidden md:flex items-center justify-between w-10/12 gap-16'>
         <h2 className='text-base-900 text-3xl'>{user.username}</h2>
 
         {isOwner ? (
@@ -182,8 +182,21 @@ const PostCountSection = ({ user }) => {
     </>
   )
 }
-const NameBioSection = () => {
-  return <div>NameBio</div>
+const NameBioSection = ({ user }) => {
+  return (
+    <section className='flex flex-col gap-1'>
+      <h3 className='font-semibold'>{user.name}</h3>
+      <span>{user.bio}</span>
+      <a
+        href={user.website}
+        className='block text-[#00376b] font-semibold'
+        target='_blank'
+        rel='noopener noreferrer'
+      >
+        {user.website}
+      </a>
+    </section>
+  )
 }
 
 const OptionsMenu = () => {
