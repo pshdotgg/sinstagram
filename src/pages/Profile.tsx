@@ -3,10 +3,11 @@ import { BsGear } from 'react-icons/bs'
 import { Link } from 'react-router-dom'
 import Layout from '../components/shared/Layout'
 import ProfilePicture from '../components/shared/ProfilePicture'
+import UserCard from '../components/shared/UserCard'
 import { defaultCurrentUser } from '../data'
 
 const Profile = () => {
-  const isOwner = true
+  const isOwner = false
   // const [showOptionsMenu, setOptionsMenu] = useState(false)
 
   // const handleOptionsMenuClick = () => {
@@ -49,18 +50,24 @@ const Profile = () => {
 }
 
 const ProfileNameSection = ({ user, isOwner }) => {
+  const [showUnfollowDialog, setShowUnfollowDialog] = useState(true)
+
   let followButton
-  const isFollower = true
   const isFollowing = true
+  const isFollower = false
 
   if (isFollowing) {
     followButton = (
-      <button
-        type='button'
-        className='btn btn-outline btn-sm text-gray-900 font-semibold px-3 rounded normal-case bg-base-200 border-gray-300 hover:border-gray-300 hover:bg-base-200 hover:text-gray-900'
-      >
-        Following
-      </button>
+      <>
+        <label
+          htmlFor='unfollow-dialog'
+          className='btn btn-outline btn-sm text-gray-900 font-semibold px-3
+          rounded normal-case bg-base-200 border-gray-300 hover:border-gray-300
+          hover:bg-base-200 hover:text-gray-900'
+        >
+          Following
+        </label>
+      </>
     )
   } else if (isFollower) {
     followButton = (
@@ -120,6 +127,39 @@ const ProfileNameSection = ({ user, isOwner }) => {
           </button>
         </Link>
       </section>
+      {showUnfollowDialog && <UnfollowDialog user={user} />}
+    </>
+  )
+}
+
+const UnfollowDialog = ({ user }) => {
+  return (
+    <>
+      <input type='checkbox' id='unfollow-dialog' className='modal-toggle' />
+      <label htmlFor='unfollow-dialog' className='modal'>
+        <label
+          className='modal-box relative px-0 rounded-xl text-center w-96'
+          htmlFor=''
+        >
+          <div className='avatar'>
+            <div className='w-32 rounded-full'>
+              <img src={user.profile_image} alt='user avatar' />
+            </div>
+          </div>
+
+          <span className='block mt-4'>
+            Unfollow <span className='font-semibold'>@{user.username}</span>?
+          </span>
+          <div className='divider my-2' />
+          <button className='text-red-600 font-semibold' type='button'>
+            Unfollow
+          </button>
+          <div className='divider  my-2' />
+          <label htmlFor='unfollow-dialog'>
+            <span className='cursor-pointer'>Cancel</span>
+          </label>
+        </label>
+      </label>
     </>
   )
 }
@@ -138,11 +178,11 @@ const OptionsMenu = () => {
   }
   return (
     <>
-      <label htmlFor='options-dialog'>
+      <label htmlFor='options-menu'>
         <BsGear size={24} className='cursor-pointer' />
       </label>
-      <input type='checkbox' id='options-dialog' className='modal-toggle' />
-      <label htmlFor='options-dialog' className='modal'>
+      <input type='checkbox' id='options-menu' className='modal-toggle' />
+      <label htmlFor='options-menu' className='modal'>
         <label
           className='modal-box relative px-0 rounded-xl text-center'
           htmlFor=''
@@ -163,21 +203,12 @@ const OptionsMenu = () => {
             </button>
             <div className='divider' />
 
-            <label htmlFor='options-dialog'>
+            <label htmlFor='options-menu'>
               <span className='cursor-pointer'>Cancel</span>
             </label>
           </>
         </label>
       </label>
-    </>
-  )
-}
-
-const OptionsItem = (text, onClick = '') => {
-  return (
-    <>
-      <button type='button'>{text}</button>
-      <div className='divider' />
     </>
   )
 }
