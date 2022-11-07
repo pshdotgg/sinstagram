@@ -7,11 +7,11 @@ import { defaultCurrentUser } from '../data'
 
 const Profile = () => {
   const isOwner = true
-  const [showOptionsMenu, setOptionsMenu] = useState(false)
+  // const [showOptionsMenu, setOptionsMenu] = useState(false)
 
-  const handleOptionsMenuClick = () => {
-    setOptionsMenu(true)
-  }
+  // const handleOptionsMenuClick = () => {
+  //   setOptionsMenu(true)
+  // }
 
   return (
     <Layout
@@ -23,7 +23,7 @@ const Profile = () => {
           <ProfileNameSection
             user={defaultCurrentUser}
             isOwner={isOwner}
-            handleOptionsMenuClick={handleOptionsMenuClick}
+            // handleOptionsMenuClick={handleOptionsMenuClick}
           />
           <PostCountSection />
           <NameBioSection />
@@ -37,7 +37,7 @@ const Profile = () => {
             <ProfileNameSection
               user={defaultCurrentUser}
               isOwner={isOwner}
-              handleOptionsMenuClick={handleOptionsMenuClick}
+              // handleOptionsMenuClick={handleOptionsMenuClick}
             />
           </div>
           <NameBioSection />
@@ -48,7 +48,7 @@ const Profile = () => {
   )
 }
 
-const ProfileNameSection = ({ user, isOwner, handleOptionsMenuClick }) => {
+const ProfileNameSection = ({ user, isOwner }) => {
   let followButton
   const isFollower = true
   const isFollowing = true
@@ -98,9 +98,7 @@ const ProfileNameSection = ({ user, isOwner, handleOptionsMenuClick }) => {
                 Edit Profile
               </button>
             </Link>
-            <div onClick={handleOptionsMenuClick} className=''>
-              <BsGear size={24} />
-            </div>
+            <OptionsMenu />
           </>
         ) : (
           <>{followButton}</>
@@ -111,13 +109,7 @@ const ProfileNameSection = ({ user, isOwner, handleOptionsMenuClick }) => {
         <div className='flex gap-10 items-center '>
           <h2 className='text-base-900 text-3xl '>{user.username}</h2>
 
-          {isOwner ? (
-            <div onClick={handleOptionsMenuClick}>
-              <BsGear size={24} />
-            </div>
-          ) : (
-            <>{followButton}</>
-          )}
+          {isOwner ? <OptionsMenu /> : <>{followButton}</>}
         </div>
         <Link to='/accounts/edit'>
           <button
@@ -136,6 +128,58 @@ const PostCountSection = () => {
 }
 const NameBioSection = () => {
   return <div>NameBio</div>
+}
+
+const OptionsMenu = () => {
+  const [showLogoutMessage, setShowLogoutMessage] = useState(false)
+
+  const handleLogoutClick = () => {
+    setShowLogoutMessage(true)
+  }
+  return (
+    <>
+      <label htmlFor='options-dialog'>
+        <BsGear size={24} className='cursor-pointer' />
+      </label>
+      <input type='checkbox' id='options-dialog' className='modal-toggle' />
+      <label htmlFor='options-dialog' className='modal'>
+        <label
+          className='modal-box relative px-0 rounded-xl text-center'
+          htmlFor=''
+        >
+          <>
+            <button type='button'>Change Password</button>
+            <div className='divider' />
+            <button type='button'>Nametag</button>
+            <div className='divider' />
+            <button type='button'>Apps and Websites</button>
+            <div className='divider' />
+            <button type='button'>Notifications</button>
+            <div className='divider' />
+            <button type='button'>Privacy and Security</button>
+            <div className='divider' />
+            <button type='button' onClick={handleLogoutClick}>
+              Log out
+            </button>
+            <div className='divider' />
+
+            <label htmlFor='options-dialog'>
+              <span className='cursor-pointer'>Cancel</span>
+            </label>
+          </>
+        </label>
+      </label>
+    </>
+  )
+}
+
+const OptionsItem = (text, onClick = '') => {
+  return (
+    <>
+      <button type='button'>{text}</button>
+      <div className='divider' />
+    </>
+  )
 }
 
 export default Profile
