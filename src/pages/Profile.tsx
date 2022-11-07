@@ -3,7 +3,6 @@ import { BsGear } from 'react-icons/bs'
 import { Link } from 'react-router-dom'
 import Layout from '../components/shared/Layout'
 import ProfilePicture from '../components/shared/ProfilePicture'
-import UserCard from '../components/shared/UserCard'
 import { defaultCurrentUser } from '../data'
 
 const Profile = () => {
@@ -20,14 +19,14 @@ const Profile = () => {
     >
       <section className='hidden md:flex gap-28'>
         <ProfilePicture isOwner={isOwner} />
-        <div>
+        <div className='flex flex-col gap-8 w-80'>
           <ProfileNameSection
             user={defaultCurrentUser}
             isOwner={isOwner}
             // handleOptionsMenuClick={handleOptionsMenuClick}
           />
-          <PostCountSection />
-          <NameBioSection />
+          <PostCountSection user={defaultCurrentUser} />
+          <NameBioSection user={defaultCurrentUser} />
         </div>
       </section>
 
@@ -41,9 +40,9 @@ const Profile = () => {
               // handleOptionsMenuClick={handleOptionsMenuClick}
             />
           </div>
-          <NameBioSection />
+          <NameBioSection user={defaultCurrentUser} />
         </div>
-        <PostCountSection />
+        <PostCountSection user={defaultCurrentUser} />
       </section>
     </Layout>
   )
@@ -163,8 +162,25 @@ const UnfollowDialog = ({ user }) => {
     </>
   )
 }
-const PostCountSection = () => {
-  return <div>PostCount</div>
+const PostCountSection = ({ user }) => {
+  const options = ['posts', 'followers', 'following']
+  return (
+    <>
+      <div className='md:hidden divider my-1' />
+      <section className='flex gap-5 justify-between'>
+        {options.map((option) => {
+          return (
+            <div key={option} className='flex flex-col items-center'>
+              <span className='font-semibold'>{user[option].length} </span>
+              <span className='hidden md:inline-block'>{option}</span>
+              <span className='md:hidden text-gray-500'>{option}</span>
+            </div>
+          )
+        })}
+      </section>
+      <div className='md:hidden divider my-1' />
+    </>
+  )
 }
 const NameBioSection = () => {
   return <div>NameBio</div>
