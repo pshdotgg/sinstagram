@@ -7,7 +7,7 @@ const ProfilePicture = ({
   isOwner,
 }) => {
   return (
-    <div className='w-36 md:w-44 md:mt-16'>
+    <div className='w-40 md:w-44 md:mt-16'>
       {image ? (
         <img
           src={image}

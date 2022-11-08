@@ -64,7 +64,7 @@ export const defaultCurrentUser = {
   name: 'Tony Stark',
   profile_image:
     'https://firebasestorage.googleapis.com/v0/b/sinstagram-pr.appspot.com/o/avatar.webp?alt=media&token=ce9d20a8-401e-47c8-a835-66c847c6c959',
-  website: 'https://reactbootcamp.com',
+  website: 'https://tonystark.com',
   email: 'stark@gmail.com',
   bio: `Loyalty is a two-way street. If I'm asking for it from you, then you're getting it from me.`,
   phone_number: '555-555-5555',

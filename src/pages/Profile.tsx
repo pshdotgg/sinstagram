@@ -3,6 +3,7 @@ import { BsGear } from 'react-icons/bs'
 import { Link } from 'react-router-dom'
 import Layout from '../components/shared/Layout'
 import ProfilePicture from '../components/shared/ProfilePicture'
+import ProfileTabs from '../components/profile/ProfileTabs'
 import { defaultCurrentUser } from '../data'
 
 const Profile = () => {
@@ -19,7 +20,7 @@ const Profile = () => {
     >
       <section className='hidden md:flex gap-28'>
         <ProfilePicture isOwner={isOwner} />
-        <div className='flex flex-col gap-8 w-96'>
+        <div className='flex flex-col gap-8'>
           <ProfileNameSection
             user={defaultCurrentUser}
             isOwner={isOwner}
@@ -44,6 +45,7 @@ const Profile = () => {
         </div>
         <PostCountSection user={defaultCurrentUser} />
       </section>
+      {<ProfileTabs user={defaultCurrentUser} isOwner={isOwner} />}
     </Layout>
   )
 }
@@ -90,7 +92,7 @@ const ProfileNameSection = ({ user, isOwner }) => {
 
   return (
     <>
-      <section className='hidden md:flex items-center justify-between w-10/12 gap-16'>
+      <section className='hidden md:flex items-center justify-between w-80   gap-16'>
         <h2 className='text-base-900 text-3xl'>{user.username}</h2>
 
         {isOwner ? (
@@ -167,7 +169,7 @@ const PostCountSection = ({ user }) => {
   return (
     <>
       <div className='md:hidden divider my-1' />
-      <section className='flex gap-5 justify-between'>
+      <section className='flex gap-5 justify-between sm:w-96'>
         {options.map((option) => {
           return (
             <div key={option} className='flex flex-col items-center'>
