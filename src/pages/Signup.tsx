@@ -1,8 +1,13 @@
 import React, { useState } from 'react'
 import logo from '../images/logo.png'
 import { Link } from 'react-router-dom'
-import { AiFillFacebook } from 'react-icons/ai'
+import { AiFillGoogleSquare } from 'react-icons/ai'
 import Seo from '../components/shared/Seo'
+import {
+  signInWithGooglePopup,
+  createUserDocument,
+  signUpWithEmailAndPassword,
+} from '../firebase'
 
 const defaultFormFields = {
   email: '',
@@ -15,6 +20,11 @@ const Signup = () => {
   const [formFields, setFormFields] = useState(defaultFormFields)
   const { email, name, username, password } = formFields
 
+  const logGoogleUser = async () => {
+    const { user } = await signInWithGooglePopup()
+    const userDocRef = await createUserDocument(user)
+  }
+
   const handleChange = (event) => {
     const { name, value } = event.target
 
@@ -23,7 +33,10 @@ const Signup = () => {
     })
   }
 
-  const handleSubmit = (event) => {}
+  const handleSubmit = async (event) => {
+    event.preventDefault()
+    await signUpWithEmailAndPassword(formFields)
+  }
 
   return (
     <>
@@ -40,15 +53,18 @@ const Signup = () => {
 
           <button
             type='button'
-            className='gap-2 bg-primary py-1 w-64 mx-auto rounded'
+            className='gap-2 bg-[#DB4437] py-1 w-64 mx-auto rounded'
           >
-            <div className='flex justify-center w-full items-center gap-2 '>
-              <AiFillFacebook color='white' size={22} />{' '}
+            <div
+              className='flex justify-center w-full items-center gap-2 '
+              onClick={logGoogleUser}
+            >
+              <AiFillGoogleSquare color='white' size={22} />{' '}
               <Link
                 to='/'
                 className='font-bold text-sm tracking-wide text-white'
               >
-                Log in with Facebook
+                Log in with Google
               </Link>
             </div>
           </button>

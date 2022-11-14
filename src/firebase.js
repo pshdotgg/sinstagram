@@ -4,6 +4,7 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
   createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
 } from 'firebase/auth'
 
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore'
@@ -29,27 +30,18 @@ export const auth = getAuth()
 
 export const signInWithGooglePopup = () => signInWithPopup(auth, provider)
 
-const signUpWithEmailAndPassword = async (formData) => {
-  const data = await createUserWithEmailAndPassword(
-    auth,
-    formData.email,
-    formData.password
-  )
-}
-
 export const db = getFirestore()
 
 export const createUserDocument = async (userAuth) => {
-  const userDocRef = doc(db, 'users', userAuth.email)
+  const userDocRef = doc(db, 'users', userAuth.uid)
 
   const userSnapshot = await getDoc(userDocRef)
 
   if (!userSnapshot.exists()) {
-    const { uid, email, displayName } = userAuth
-    console.log(userAuth)
+    const { email, displayName } = userAuth
 
     const userData = {
-      id: uid,
+      username: email,
       email: email,
       name: displayName,
       lastChecked: 'null',
@@ -66,4 +58,40 @@ export const createUserDocument = async (userAuth) => {
       console.log('error creating the user', error.message)
     }
   }
+}
+
+export const signUpWithEmailAndPassword = async (formData) => {
+  const { name, email, password, username } = formData
+
+  try {
+    const response = await createUserWithEmailAndPassword(auth, email, password)
+    const userDocRef = doc(db, 'users', response.user.uid)
+
+    const userSnapshot = await getDoc(userDocRef)
+
+    if (!userSnapshot.exists()) {
+      const userData = {
+        username: username,
+        email: email,
+        name: name,
+        lastChecked: 'null',
+        bio: '',
+        phoneNumber: '',
+        website: '',
+        profileImage:
+          'https://firebasestorage.googleapis.com/v0/b/sinstagram-pr.appspot.com/o/default-user-image.jpg?alt=media&token=b60c36ec-f909-4789-bf23-2390f04b406f',
+      }
+      await setDoc(userDocRef, userData)
+    }
+  } catch (error) {
+    if (error.code === 'auth/email-already-in-use') {
+      alert('Email already in use')
+    } else console.log('error creating the user', error.message)
+  }
+}
+
+export const logInWithEmailAndPassword = async (email, password) => {
+  if (!email || !password) return
+
+  return await signInWithEmailAndPassword(auth, email, password)
 }

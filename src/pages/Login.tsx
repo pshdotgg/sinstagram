@@ -1,14 +1,45 @@
-import React from 'react'
+import React, { useState } from 'react'
 import logo from '../images/logo.png'
 import { Link } from 'react-router-dom'
 import { AiFillGoogleSquare } from 'react-icons/ai'
 import Seo from '../components/shared/Seo'
-import { signInWithGooglePopup, createUserDocument } from '../firebase'
+import {
+  signInWithGooglePopup,
+  createUserDocument,
+  logInWithEmailAndPassword,
+} from '../firebase'
+
+const defaultFormFields = {
+  email: '',
+  password: '',
+}
 
 const Login = () => {
+  const [formFields, setFormFields] = useState(defaultFormFields)
+  const { email, password } = formFields
+
   const logGoogleUser = async () => {
     const { user } = await signInWithGooglePopup()
-    const userDocRef = await createUserDocument(user)
+    await createUserDocument(user)
+  }
+
+  const handleChange = (event) => {
+    const { name, value } = event.target
+
+    setFormFields((prev) => {
+      return { ...formFields, [name]: value }
+    })
+  }
+
+  const handleSubmit = async (event) => {
+    event.preventDefault()
+
+    try {
+      const response = await logInWithEmailAndPassword(email, password)
+      console.log(response)
+    } catch (error) {
+      console.log(error)
+    }
   }
   return (
     <>
@@ -19,19 +50,25 @@ const Login = () => {
             <img src={logo} alt='logo' />
           </div>
 
-          <form className='flex flex-col gap-2'>
+          <form className='flex flex-col gap-2' onSubmit={handleSubmit}>
             <input
               type='email'
-              placeholder='Phone number, username, or email'
+              placeholder='Email'
+              name='email'
+              value={email}
+              onChange={handleChange}
               className='w-64 h-9 pl-2 m-auto bg-base-200 border-transparent text-sm'
             />
             <input
               type='password'
               placeholder='Password'
+              name='password'
+              value={password}
+              onChange={handleChange}
               className='w-64 h-9 pl-2 m-auto bg-base-200 border-transparent text-sm'
             />
             <button
-              disabled
+              disabled={!email || !password}
               type='submit'
               className='text-white font-bold rounded py-1  mt-2 bg-primary border-transparent hover:bg-primary hover:border-transparent disabled:bg-primary disabled:opacity-50 disabled:text-white'
             >
