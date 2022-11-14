@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import { Routes, Route, useLocation } from 'react-router-dom'
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom'
 import PostModal from './components/post/PostModal'
 import { useUserContext } from './contexts/userContext'
 import {
@@ -17,12 +17,23 @@ const App = () => {
   const location = useLocation()
   const prevLocation = useRef(location)
   const modal = location.state?.modal
+  const { currentUser } = useUserContext()
 
   useEffect(() => {
     if (!modal) prevLocation.current = location
   }, [location, modal])
 
   const isModalOpen = modal && prevLocation.current !== location
+
+  if (!currentUser) {
+    return (
+      <Routes>
+        <Route path='/accounts/login' element={<Login />} />
+        <Route path='/accounts/emailsignup' element={<Signup />} />
+        <Route path='*' element={<Navigate to='/accounts/login' />} />
+      </Routes>
+    )
+  }
   return (
     <>
       <Routes location={isModalOpen ? prevLocation.current : location}>
@@ -31,8 +42,7 @@ const App = () => {
         <Route path='/:username' element={<Profile />} />
         <Route path='/p/:postId' element={<PostPage />} />
         <Route path='/accounts/edit' element={<EditProfile />} />
-        <Route path='/accounts/login' element={<Login />} />
-        <Route path='/accounts/emailsignup' element={<Signup />} />
+
         <Route path='*' element={<NotFound />} />
       </Routes>
       <Routes>
