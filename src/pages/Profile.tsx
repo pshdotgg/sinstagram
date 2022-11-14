@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 import { BsGear } from 'react-icons/bs'
-import { Link } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import Layout from '../components/shared/Layout'
 import ProfilePicture from '../components/shared/ProfilePicture'
 import ProfileTabs from '../components/profile/ProfileTabs'
 import { defaultCurrentUser } from '../data'
 import { signOutUser } from '../firebase'
+import { useUserContext } from '../contexts/userContext'
 
 const Profile = () => {
   const isOwner = true
@@ -204,10 +205,14 @@ const NameBioSection = ({ user }) => {
 
 const OptionsMenu = () => {
   const [showLogoutMessage, setShowLogoutMessage] = useState(false)
+  const { setCurrentUser } = useUserContext()
+  const navigate = useNavigate()
 
   const handleLogoutClick = () => {
     setShowLogoutMessage(true)
     signOutUser()
+    setCurrentUser(null)
+    navigate('/accounts/login')
   }
   return (
     <>
