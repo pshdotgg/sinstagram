@@ -8,7 +8,6 @@ import {
   createUserDocument,
   signUpWithEmailAndPassword,
 } from '../firebase'
-import { useUserContext } from '../contexts/userContext'
 
 const defaultFormFields = {
   email: '',
@@ -20,12 +19,9 @@ const defaultFormFields = {
 const Signup = () => {
   const [formFields, setFormFields] = useState(defaultFormFields)
   const { email, name, username, password } = formFields
-  const { setCurrentUser } = useUserContext()
 
   const logGoogleUser = async () => {
-    const { user } = await signInWithGooglePopup()
-    await createUserDocument(user)
-    setCurrentUser(user)
+    await signInWithGooglePopup()
   }
 
   const handleChange = (event) => {

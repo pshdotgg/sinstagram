@@ -8,7 +8,6 @@ import {
   createUserDocument,
   logInWithEmailAndPassword,
 } from '../firebase'
-import { useUserContext } from '../contexts/userContext'
 
 const defaultFormFields = {
   email: '',
@@ -18,7 +17,6 @@ const defaultFormFields = {
 const Login = () => {
   const [formFields, setFormFields] = useState(defaultFormFields)
   const { email, password } = formFields
-  const { setCurrentUser } = useUserContext()
   const navigate = useNavigate()
 
   const logGoogleUser = async () => {
@@ -30,7 +28,7 @@ const Login = () => {
     const { name, value } = event.target
 
     setFormFields((prev) => {
-      return { ...formFields, [name]: value }
+      return { ...prev, [name]: value }
     })
   }
 
@@ -39,7 +37,6 @@ const Login = () => {
 
     try {
       const { user } = await logInWithEmailAndPassword(email, password)
-      setCurrentUser(user)
       navigate('/')
     } catch (error) {
       console.log(error)
