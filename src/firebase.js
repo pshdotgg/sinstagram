@@ -5,9 +5,11 @@ import {
   GoogleAuthProvider,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signOut,
 } from 'firebase/auth'
 
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore'
+import { useUserContext } from '../src/contexts/userContext'
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBvlLhOh5ZnK3_k7SsIxyU-WHsrpOurl9o',
@@ -64,8 +66,8 @@ export const signUpWithEmailAndPassword = async (formData) => {
   const { name, email, password, username } = formData
 
   try {
-    const response = await createUserWithEmailAndPassword(auth, email, password)
-    const userDocRef = doc(db, 'users', response.user.uid)
+    const { user } = await createUserWithEmailAndPassword(auth, email, password)
+    const userDocRef = doc(db, 'users', user.uid)
 
     const userSnapshot = await getDoc(userDocRef)
 
@@ -82,6 +84,7 @@ export const signUpWithEmailAndPassword = async (formData) => {
           'https://firebasestorage.googleapis.com/v0/b/sinstagram-pr.appspot.com/o/default-user-image.jpg?alt=media&token=b60c36ec-f909-4789-bf23-2390f04b406f',
       }
       await setDoc(userDocRef, userData)
+      setCurrentUser(user)
     }
   } catch (error) {
     if (error.code === 'auth/email-already-in-use') {
@@ -94,4 +97,9 @@ export const logInWithEmailAndPassword = async (email, password) => {
   if (!email || !password) return
 
   return await signInWithEmailAndPassword(auth, email, password)
+}
+
+export const signOutUser = () => {
+  console.log(auth)
+  signOut(auth)
 }

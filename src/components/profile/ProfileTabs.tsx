@@ -82,7 +82,7 @@ const ProfilePosts = ({ user, isOwner }) => {
     </section>
   )
 }
-const SavedPosts = ({ user }) => {
+const SavedPosts = () => {
   return (
     <section className='pt-16'>
       <div className='flex flex-col gap-3 justify-center items-center'>

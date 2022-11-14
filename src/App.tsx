@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import PostModal from './components/post/PostModal'
+import { useUserContext } from './contexts/userContext'
 import {
   EditProfile,
   Explore,
@@ -22,7 +23,6 @@ const App = () => {
   }, [location, modal])
 
   const isModalOpen = modal && prevLocation.current !== location
-
   return (
     <>
       <Routes location={isModalOpen ? prevLocation.current : location}>

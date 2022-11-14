@@ -19,11 +19,14 @@ import NotificationTooltip from '../notifications/NotificationTooltip'
 import NotificationList from '../notifications/NotificationList'
 import useOutsideClick from '@rooks/use-outside-click'
 import { useNProgress } from '@tanem/react-nprogress'
+import { useUserContext } from '../../contexts/userContext'
 
 const Navbar = () => {
   const location = useLocation()
   const path = location.pathname
   const [isLoadingPage, setIsLoadingPage] = useState(true)
+  const { currentUser } = useUserContext()
+  console.log(currentUser)
 
   useEffect(() => {
     setIsLoadingPage(false)
@@ -38,26 +41,30 @@ const Navbar = () => {
             <img src={logo} alt='logo' />
           </Link>
           <Search />
-          <NavLinks path={path} />
-          {/* <div className='flex gap-2'>
-          <Link to='/accounts/login'>
-            <button
-              type='button'
-              className='btn bg-primary hover:bg-primary hover:border-transparent border-transparent text-white btn-sm normal-case rounded'
-            >
-              Log In
-            </button>
-          </Link>
 
-          <Link to='/accounts/emailsignup'>
-            <button
-              type='button'
-              className='btn btn-link btn-sm text-primary no-underline  normal-case'
-            >
-              Sign Up
-            </button>
-          </Link>
-        </div> */}
+          {!currentUser ? (
+            <div className='flex gap-2'>
+              <Link to='/accounts/login'>
+                <button
+                  type='button'
+                  className='btn bg-primary hover:bg-primary hover:border-transparent border-transparent text-white btn-sm normal-case rounded'
+                >
+                  Log In
+                </button>
+              </Link>
+
+              <Link to='/accounts/emailsignup'>
+                <button
+                  type='button'
+                  className='btn btn-link btn-sm text-primary no-underline  normal-case'
+                >
+                  Sign Up
+                </button>
+              </Link>
+            </div>
+          ) : (
+            <NavLinks path={path} />
+          )}
         </nav>
       </div>
     </div>

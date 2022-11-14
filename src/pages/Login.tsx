@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import logo from '../images/logo.png'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { AiFillGoogleSquare } from 'react-icons/ai'
 import Seo from '../components/shared/Seo'
 import {
@@ -8,6 +8,7 @@ import {
   createUserDocument,
   logInWithEmailAndPassword,
 } from '../firebase'
+import { useUserContext } from '../contexts/userContext'
 
 const defaultFormFields = {
   email: '',
@@ -17,6 +18,8 @@ const defaultFormFields = {
 const Login = () => {
   const [formFields, setFormFields] = useState(defaultFormFields)
   const { email, password } = formFields
+  const { setCurrentUser } = useUserContext()
+  const navigate = useNavigate()
 
   const logGoogleUser = async () => {
     const { user } = await signInWithGooglePopup()
@@ -35,8 +38,9 @@ const Login = () => {
     event.preventDefault()
 
     try {
-      const response = await logInWithEmailAndPassword(email, password)
-      console.log(response)
+      const { user } = await logInWithEmailAndPassword(email, password)
+      setCurrentUser(user)
+      navigate('/')
     } catch (error) {
       console.log(error)
     }

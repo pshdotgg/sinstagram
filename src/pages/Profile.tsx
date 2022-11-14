@@ -5,6 +5,7 @@ import Layout from '../components/shared/Layout'
 import ProfilePicture from '../components/shared/ProfilePicture'
 import ProfileTabs from '../components/profile/ProfileTabs'
 import { defaultCurrentUser } from '../data'
+import { signOutUser } from '../firebase'
 
 const Profile = () => {
   const isOwner = true
@@ -206,6 +207,7 @@ const OptionsMenu = () => {
 
   const handleLogoutClick = () => {
     setShowLogoutMessage(true)
+    signOutUser()
   }
   return (
     <>
