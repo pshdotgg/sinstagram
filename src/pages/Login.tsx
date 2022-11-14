@@ -8,40 +8,40 @@ import {
   createUserDocument,
   logInWithEmailAndPassword,
 } from '../firebase'
-
-const defaultFormFields = {
-  email: '',
-  password: '',
-}
+import { useForm } from 'react-hook-form'
 
 const Login = () => {
-  const [formFields, setFormFields] = useState(defaultFormFields)
-  const { email, password } = formFields
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { isValid, isSubmitting },
+  } = useForm()
+  const [showPassword, setShowPassword] = useState(false)
   const navigate = useNavigate()
+
+  const hasPassword = Boolean(watch('password'))
+
+  const toggleShowPassword = () => {
+    setShowPassword((prev) => !prev)
+  }
 
   const logGoogleUser = async () => {
     const { user } = await signInWithGooglePopup()
     await createUserDocument(user)
   }
 
-  const handleChange = (event) => {
-    const { name, value } = event.target
-
-    setFormFields((prev) => {
-      return { ...prev, [name]: value }
-    })
-  }
-
-  const handleSubmit = async (event) => {
-    event.preventDefault()
-
+  const onSubmit = async (data) => {
+    const { input, password } = data
     try {
-      const { user } = await logInWithEmailAndPassword(email, password)
+      const { user } = await logInWithEmailAndPassword(input, password)
       navigate('/')
+      return user
     } catch (error) {
       console.log(error)
     }
   }
+
   return (
     <>
       <Seo title='Log in' />
@@ -51,25 +51,34 @@ const Login = () => {
             <img src={logo} alt='logo' />
           </div>
 
-          <form className='flex flex-col gap-2' onSubmit={handleSubmit}>
+          <form
+            className='flex flex-col gap-2'
+            onSubmit={handleSubmit(onSubmit)}
+          >
             <input
-              type='email'
-              placeholder='Email'
-              name='email'
-              value={email}
-              onChange={handleChange}
+              {...register('input', { required: true, minLength: 5 })}
+              placeholder='Username, email, or phone'
               className='w-64 h-9 pl-2 m-auto bg-base-200 border-transparent text-sm'
             />
-            <input
-              type='password'
-              placeholder='Password'
-              name='password'
-              value={password}
-              onChange={handleChange}
-              className='w-64 h-9 pl-2 m-auto bg-base-200 border-transparent text-sm'
-            />
+            <div className='w-64 h-9 mx-auto relative'>
+              <input
+                type={showPassword ? 'text' : 'password'}
+                placeholder='Password'
+                {...register('password', { required: true, minLength: 6 })}
+                className='pl-2 h-full w-full bg-base-200 border-transparent text-sm rounded'
+              />
+              {hasPassword && (
+                <button
+                  className='absolute top-2 right-2 text-sm font-semibold'
+                  onClick={toggleShowPassword}
+                >
+                  {showPassword ? 'Hide' : 'Show'}
+                </button>
+              )}
+            </div>
+
             <button
-              disabled={!email || !password}
+              disabled={!isValid || isSubmitting}
               type='submit'
               className='text-white font-bold rounded py-1  mt-2 bg-primary border-transparent hover:bg-primary hover:border-transparent disabled:bg-primary disabled:opacity-50 disabled:text-white'
             >
