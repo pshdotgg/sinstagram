@@ -1,8 +1,10 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
+import { FiMenu } from 'react-icons/fi'
 import Layout from '../components/shared/Layout'
+import ProfilePicture from '../components/shared/ProfilePicture'
 
-const EditProfile = () => {
+const EditProfile = ({ user }) => {
   const [showDrawer, setShowDrawer] = React.useState(false)
   const [selected, setSelected] = React.useState(0)
   const navigate = useNavigate()
@@ -39,16 +41,13 @@ const EditProfile = () => {
 
   return (
     <Layout title='Edit Profile'>
-      <section>
-        <div className='drawer drawer-mobile'>
+      <section className='flex '>
+        <div className='drawer drawer-mobile rounded w-80'>
           <input id='edit-drawer' type='checkbox' className='drawer-toggle' />
-          <div className='drawer-content flex flex-col items-center justify-center'>
-            {/* <label
-              htmlFor='edit-drawer'
-              className='btn btn-primary drawer-button lg:hidden'
-            >
-              Open drawer
-            </label> */}
+          <div className='drawer-content '>
+            <label htmlFor='edit-drawer' className=' md:hidden'>
+              <FiMenu size={20} />
+            </label>
           </div>
           <div className='drawer-side'>
             <label htmlFor='edit-drawer' className='drawer-overlay'></label>
@@ -69,8 +68,23 @@ const EditProfile = () => {
             </ul>
           </div>
         </div>
+        <main className='w-full'>
+          <EditUserInfo user={user} />
+        </main>
       </section>
     </Layout>
+  )
+}
+
+const EditUserInfo = ({ user }) => {
+  return (
+    <section className='card bg-white w-full h-full rounded border-2 border-base-300'>
+      <div className='card-body'>
+        <div className='mt-0 w-9 h-9'>
+          <ProfilePicture />
+        </div>
+      </div>
+    </section>
   )
 }
 

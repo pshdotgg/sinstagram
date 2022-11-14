@@ -52,14 +52,17 @@ const FeedPost = ({ post, index }) => {
               <span>{caption}</span>
             ) : (
               <div className='inline-block'>
-                <span>{`${caption.slice(0, 45)}...   `}</span>
+                <span>
+                  {caption.length >= 45
+                    ? `${caption.slice(0, 45)}...   `
+                    : caption}
+                </span>
                 <button
                   type='button'
                   className='pl-2 text-gray-500'
                   onClick={() => setShowCaption(true)}
                 >
-                  {' '}
-                  more
+                  {caption.length >= 45 && ' more'}
                 </button>
               </div>
             )}

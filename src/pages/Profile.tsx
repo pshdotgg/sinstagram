@@ -191,7 +191,7 @@ const NameBioSection = ({ user }) => {
       <span>{user.bio}</span>
       <a
         href={user.website}
-        className='block text-[#00376b] font-semibold'
+        className='block text-[#00376b] font-semibold w-max'
         target='_blank'
         rel='noopener noreferrer'
       >

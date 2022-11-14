@@ -1,10 +1,15 @@
 import React from 'react'
 import logo from '../images/logo.png'
 import { Link } from 'react-router-dom'
-import { AiFillFacebook } from 'react-icons/ai'
+import { AiFillGoogleSquare } from 'react-icons/ai'
 import Seo from '../components/shared/Seo'
+import { signInWithGooglePopup } from '../firebase'
 
 const Login = () => {
+  const logGoogleUser = async () => {
+    const response = await signInWithGooglePopup()
+    console.log(response)
+  }
   return (
     <>
       <Seo title='Log in' />
@@ -18,12 +23,12 @@ const Login = () => {
             <input
               type='email'
               placeholder='Phone number, username, or email'
-              className='w-64 h-9 m-auto bg-base-200 border-transparent text-sm'
+              className='w-64 h-9 pl-2 m-auto bg-base-200 border-transparent text-sm'
             />
             <input
               type='password'
               placeholder='Password'
-              className='w-64 h-9 m-auto bg-base-200 border-transparent text-sm'
+              className='w-64 h-9 pl-2 m-auto bg-base-200 border-transparent text-sm'
             />
             <button
               disabled
@@ -34,13 +39,17 @@ const Login = () => {
             </button>
           </form>
           <div className='divider text-gray-400 text-sm font-bold'>OR</div>
-          <button type='button' className='flex items-center gap-2 m-auto'>
-            <AiFillFacebook color='#4267B2' size={22} />{' '}
+          <button
+            type='button'
+            className='flex items-center gap-2 m-auto'
+            onClick={logGoogleUser}
+          >
+            <AiFillGoogleSquare color='#DB4437' size={22} />{' '}
             <Link
               to='/'
-              className='text-[#4267b2] font-bold text-sm tracking-wide'
+              className='text-[#DB4437] font-bold text-sm tracking-wide'
             >
-              Log in with Facebook
+              Log in with Google
             </Link>
           </button>
           <Link to='/' className='text-sm text-center text-[#4267b2]'>

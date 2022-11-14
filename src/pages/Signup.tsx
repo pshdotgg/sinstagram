@@ -1,10 +1,30 @@
-import React from 'react'
+import React, { useState } from 'react'
 import logo from '../images/logo.png'
 import { Link } from 'react-router-dom'
 import { AiFillFacebook } from 'react-icons/ai'
 import Seo from '../components/shared/Seo'
 
+const defaultFormFields = {
+  email: '',
+  fullName: '',
+  username: '',
+  password: '',
+}
+
 const Signup = () => {
+  const [formFields, setFormFields] = useState(defaultFormFields)
+  const { email, fullName, username, password } = formFields
+
+  const handleChange = (event) => {
+    const { name, value } = event.target
+
+    setFormFields((prev) => {
+      return { ...prev, [name]: value }
+    })
+  }
+
+  const handleSubmit = (event) => {}
+
   return (
     <>
       <Seo title='Sign up' />
@@ -35,26 +55,42 @@ const Signup = () => {
 
           <div className='divider text-gray-400 text-sm font-bold p-5'>OR</div>
 
-          <form className='flex flex-col gap-2'>
+          <form className='flex flex-col gap-2' onSubmit={handleSubmit}>
             <input
               type='email'
               placeholder='Email'
-              className='w-64 h-9 mx-auto bg-base-200 border-transparent text-sm'
+              name='email'
+              value={email}
+              onChange={handleChange}
+              className='w-64 h-9 pl-2 mx-auto bg-base-200 border-transparent text-sm rounded'
+              required
             />
             <input
               type='text'
               placeholder='Full Name'
-              className='w-64 h-9 mx-auto bg-base-200 border-transparent text-sm'
+              name='fullName'
+              value={fullName}
+              onChange={handleChange}
+              className='w-64 h-9 pl-2 mx-auto bg-base-200 border-transparent text-sm'
+              required
             />
             <input
               type='text'
-              placeholder='username'
-              className='w-64 h-9 mx-auto bg-base-200 border-transparent text-sm'
+              placeholder='Username'
+              name='username'
+              value={username}
+              onChange={handleChange}
+              className='w-64 h-9 pl-2 mx-auto bg-base-200 border-transparent text-sm rounded'
+              required
             />
             <input
               type='password'
               placeholder='Password'
-              className='w-64 h-9 mx-auto bg-base-200 border-transparent text-sm'
+              name='password'
+              value={password}
+              onChange={handleChange}
+              className='w-64 h-9 pl-2 mx-auto bg-base-200 border-transparent text-sm rounded'
+              required
             />
 
             <span className='text-xs w-64 text-center mx-auto text-gray-500 mt-4'>
