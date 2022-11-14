@@ -40,10 +40,10 @@ export const createUserDocument = async (userAuth) => {
   const userSnapshot = await getDoc(userDocRef)
 
   if (!userSnapshot.exists()) {
-    const { email, displayName } = userAuth
-
+    const { uid, email, displayName, photoURL } = userAuth
+    const username = `${displayName.replace(/\s+/g, '')}${uid.slice(-5)}`
     const userData = {
-      username: email,
+      username: username,
       email: email,
       name: displayName,
       lastChecked: 'null',
@@ -51,6 +51,7 @@ export const createUserDocument = async (userAuth) => {
       phoneNumber: '',
       website: '',
       profileImage:
+        photoURL ||
         'https://firebasestorage.googleapis.com/v0/b/sinstagram-pr.appspot.com/o/default-user-image.jpg?alt=media&token=b60c36ec-f909-4789-bf23-2390f04b406f',
     }
 

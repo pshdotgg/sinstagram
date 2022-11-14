@@ -9,6 +9,7 @@ import {
   logInWithEmailAndPassword,
 } from '../firebase'
 import { useForm } from 'react-hook-form'
+import AuthError from '../components/shared/AuthError'
 
 const Login = () => {
   const {
@@ -19,7 +20,7 @@ const Login = () => {
   } = useForm()
   const [showPassword, setShowPassword] = useState(false)
   const navigate = useNavigate()
-
+  const [error, setError] = useState('')
   const hasPassword = Boolean(watch('password'))
 
   const toggleShowPassword = () => {
@@ -32,13 +33,15 @@ const Login = () => {
   }
 
   const onSubmit = async (data) => {
-    const { input, password } = data
+    const { email, password } = data
     try {
-      const { user } = await logInWithEmailAndPassword(input, password)
+      setError('')
+      const { user } = await logInWithEmailAndPassword(email, password)
       navigate('/')
       return user
     } catch (error) {
-      console.log(error)
+      console.error('Error logging in', error)
+      setError(error.message)
     }
   }
 
@@ -56,8 +59,8 @@ const Login = () => {
             onSubmit={handleSubmit(onSubmit)}
           >
             <input
-              {...register('input', { required: true, minLength: 5 })}
-              placeholder='Username, email, or phone'
+              {...register('email', { required: true, minLength: 5 })}
+              placeholder='Email'
               className='w-64 h-9 pl-2 m-auto bg-base-200 border-transparent text-sm'
             />
             <div className='w-64 h-9 mx-auto relative'>
@@ -99,6 +102,7 @@ const Login = () => {
               Log in with Google
             </Link>
           </button>
+          <AuthError error={error} />
           <Link to='/' className='text-sm text-center text-[#4267b2]'>
             Forgot Password?
           </Link>
