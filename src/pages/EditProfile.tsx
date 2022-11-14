@@ -3,88 +3,100 @@ import { useNavigate } from 'react-router-dom'
 import { FiMenu } from 'react-icons/fi'
 import Layout from '../components/shared/Layout'
 import ProfilePicture from '../components/shared/ProfilePicture'
+import { defaultCurrentUser } from '../data'
 
-const EditProfile = ({ user }) => {
-  const [showDrawer, setShowDrawer] = React.useState(false)
+const EditProfile = ({ user = defaultCurrentUser }) => {
   const [selected, setSelected] = React.useState(0)
   const navigate = useNavigate()
 
-  const options = [
-    'Edit Profile',
-    'Change Password',
-    'Apps and Websites',
-    'Email and SMS',
-    'Push Notifications',
-    'Manage Contacts',
-    'Privacy and Security',
-    'Login Activity',
-    'Emails from Sinstagram',
-    'Change Password',
-  ]
-
-  const handleListClick = (index) => {
-    setSelected(index)
-    switch (index) {
-      case 0: {
-        navigate('/accounts/edit')
-        break
-      }
-
-      default:
-        break
-    }
-  }
-
-  const handleToggleDrawer = () => {
-    setShowDrawer((prev) => !prev)
-  }
-
   return (
     <Layout title='Edit Profile'>
-      <section className='flex '>
-        <div className='drawer drawer-mobile rounded w-80'>
-          <input id='edit-drawer' type='checkbox' className='drawer-toggle' />
-          <div className='drawer-content '>
-            <label htmlFor='edit-drawer' className=' md:hidden'>
-              <FiMenu size={20} />
-            </label>
+      <h2 className='text-2xl pb-5'>Edit Profile</h2>
+      <section className='card bg-white w-full rounded border-2 border-base-300 mx-auto'>
+        <div className='card-body p-5 mx-auto md:w-[552px]'>
+          <div className='mt-0 flex items-center md:gap-10 mb-5 md:mb-0'>
+            <ProfilePicture user={user} />
+            <div>
+              <span className='font-semibold text-2xl md:text-3xl'>
+                {user.username}
+              </span>
+              <span className='text-primary block cursor-pointer text-xs md:text-base'>
+                Change Profile Photo
+              </span>
+            </div>
           </div>
-          <div className='drawer-side'>
-            <label htmlFor='edit-drawer' className='drawer-overlay'></label>
-            <ul className='menu w-72 bg-base-100 border-2 border-base-300 text-base-content'>
-              {options.map((option, index) => {
-                return (
-                  <li
-                    key={option}
-                    className={`border-2 border-transparent ${
-                      selected === index && '  border-l-gray-600'
-                    }`}
-                    onClick={() => handleListClick(index)}
-                  >
-                    <a className='active:bg-base-100 text-black'>{option}</a>
-                  </li>
-                )
-              })}
-            </ul>
-          </div>
+          <form className='h-full flex flex-col gap-4'>
+            <SectionItem label='Name' name='name' value={user.name} />
+            <SectionItem
+              label='Username'
+              name='username'
+              value={user.username}
+            />
+            <SectionItem label='Website' name='website' value={user.website} />
+            <div className='flex flex-col md:flex-row md:gap-8 md:items-center justify-between'>
+              <label htmlFor='bio' className='font-semibold'>
+                Bio
+              </label>
+              <textarea
+                name='bio'
+                rows={3}
+                value={user.bio}
+                placeholder='bio'
+                className='textarea md:w-96 rounded border-2 border-gray-300 focus:border-primary focus:outline-none focus:bg-white resize-none m-0 overflow-hidden'
+              ></textarea>
+            </div>
+            <div className='md:pl-32'>
+              <span className='block text-sm font-semibold text-gray-600'>
+                Personal Information
+              </span>
+              <span className='text-sm text-gray-500'>
+                Provide your personal information, even if the account is used
+                for a business, a pet or something else. This won't be a part of
+                your public profile.
+              </span>
+            </div>
+            <SectionItem
+              type='email'
+              label='Email'
+              name='email'
+              value={user.email}
+            />
+            <SectionItem
+              label='Phone'
+              name='phoneNumber'
+              value={user.phone_number}
+            />
+
+            <button
+              type='submit'
+              className='py-3 px-4 mt-1 md:ml-32 bg-primary text-white rounded w-32'
+            >
+              Submit
+            </button>
+          </form>
         </div>
-        <main className='w-full'>
-          <EditUserInfo user={user} />
-        </main>
       </section>
     </Layout>
   )
 }
 
-const EditUserInfo = ({ user }) => {
+const SectionItem = ({ type = 'text', label, name, value }) => {
   return (
-    <section className='card bg-white w-full h-full rounded border-2 border-base-300'>
-      <div className='card-body'>
-        <div className='mt-0 w-9 h-9'>
-          <ProfilePicture />
-        </div>
-      </div>
-    </section>
+    <div className='flex flex-col md:flex-row w-full md:gap-8 md:items-center justify-between'>
+      <label
+        htmlFor={name}
+        className='text-sm md:text-base font-semibold text-left'
+      >
+        {label}
+      </label>
+      <input
+        type={type}
+        name={name}
+        placeholder='Full Name'
+        value={value}
+        className='pl-2 md:w-96 rounded border-2 border-gray-300 focus:outline-primary focus:bg-white'
+      />
+    </div>
   )
 }
 

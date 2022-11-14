@@ -25,15 +25,15 @@ const App = () => {
 
   const isModalOpen = modal && prevLocation.current !== location
 
-  if (!currentUser) {
-    return (
-      <Routes>
-        <Route path='/accounts/login' element={<Login />} />
-        <Route path='/accounts/emailsignup' element={<Signup />} />
-        <Route path='*' element={<Navigate to='/accounts/login' />} />
-      </Routes>
-    )
-  }
+  // if (!currentUser) {
+  //   return (
+  //     <Routes>
+  //       <Route path='/accounts/login' element={<Login />} />
+  //       <Route path='/accounts/emailsignup' element={<Signup />} />
+  //       <Route path='*' element={<Navigate to='/accounts/login' />} />
+  //     </Routes>
+  //   )
+  // }
   return (
     <>
       <Routes location={isModalOpen ? prevLocation.current : location}>

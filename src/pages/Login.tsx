@@ -72,6 +72,7 @@ const Login = () => {
               />
               {hasPassword && (
                 <button
+                  type='button'
                   className='absolute top-2 right-2 text-sm font-semibold'
                   onClick={toggleShowPassword}
                 >
