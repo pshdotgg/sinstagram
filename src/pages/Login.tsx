@@ -3,12 +3,12 @@ import logo from '../images/logo.png'
 import { Link } from 'react-router-dom'
 import { AiFillGoogleSquare } from 'react-icons/ai'
 import Seo from '../components/shared/Seo'
-import { signInWithGooglePopup } from '../firebase'
+import { signInWithGooglePopup, createUserDocument } from '../firebase'
 
 const Login = () => {
   const logGoogleUser = async () => {
-    const response = await signInWithGooglePopup()
-    console.log(response)
+    const { user } = await signInWithGooglePopup()
+    const userDocRef = await createUserDocument(user)
   }
   return (
     <>

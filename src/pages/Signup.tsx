@@ -6,14 +6,14 @@ import Seo from '../components/shared/Seo'
 
 const defaultFormFields = {
   email: '',
-  fullName: '',
+  name: '',
   username: '',
   password: '',
 }
 
 const Signup = () => {
   const [formFields, setFormFields] = useState(defaultFormFields)
-  const { email, fullName, username, password } = formFields
+  const { email, name, username, password } = formFields
 
   const handleChange = (event) => {
     const { name, value } = event.target
@@ -68,8 +68,8 @@ const Signup = () => {
             <input
               type='text'
               placeholder='Full Name'
-              name='fullName'
-              value={fullName}
+              name='name'
+              value={name}
               onChange={handleChange}
               className='w-64 h-9 pl-2 mx-auto bg-base-200 border-transparent text-sm'
               required

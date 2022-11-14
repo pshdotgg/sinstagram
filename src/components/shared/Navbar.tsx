@@ -145,8 +145,6 @@ const NavLinks = ({ path }) => {
   const [showNotifications, setShowNotifications] = useState(false)
   const notificationListRef = useRef(null)
 
-  console.log('show', showNotifications)
-
   const handleToggleNotifications = () => {
     setShowNotifications((prevShowNotifications) => !prevShowNotifications)
   }
