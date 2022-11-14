@@ -1,40 +1,56 @@
 import React, { useState } from 'react'
 import logo from '../images/logo.png'
-import { Link } from 'react-router-dom'
-import { AiFillGoogleSquare } from 'react-icons/ai'
+import { Link, useNavigate } from 'react-router-dom'
+import { AiFillGoogleSquare, AiOutlineCheckCircle } from 'react-icons/ai'
 import Seo from '../components/shared/Seo'
 import {
   signInWithGooglePopup,
-  createUserDocument,
   signUpWithEmailAndPassword,
+  createUserDocument,
 } from '../firebase'
-
-const defaultFormFields = {
-  email: '',
-  name: '',
-  username: '',
-  password: '',
-}
+import { useForm } from 'react-hook-form'
+import isEmail from 'validator/lib/isEmail'
+import { ImCancelCircle } from 'react-icons/im'
+import AuthError from '../components/shared/AuthError'
 
 const Signup = () => {
-  const [formFields, setFormFields] = useState(defaultFormFields)
-  const { email, name, username, password } = formFields
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid, isSubmitting, touchedFields },
+  } = useForm({
+    mode: 'onBlur',
+  })
+  const [error, setError] = useState('')
+
+  const navigate = useNavigate()
+
+  const errorIcon = (
+    <span className='absolute right-2 top-2'>
+      <ImCancelCircle size={22} className='fill-red-600' />
+    </span>
+  )
+
+  const validIcon = (
+    <span className='absolute right-2 top-2'>
+      <AiOutlineCheckCircle size={24} className='fill-gray-400' />
+    </span>
+  )
 
   const logGoogleUser = async () => {
-    await signInWithGooglePopup()
+    const { user } = await signInWithGooglePopup()
+    await createUserDocument(user)
   }
 
-  const handleChange = (event) => {
-    const { name, value } = event.target
-
-    setFormFields((prev) => {
-      return { ...prev, [name]: value }
-    })
-  }
-
-  const handleSubmit = async (event) => {
-    event.preventDefault()
-    await signUpWithEmailAndPassword(formFields)
+  const onSubmit = async (data) => {
+    try {
+      setError('')
+      await signUpWithEmailAndPassword(data)
+      navigate('/')
+    } catch (error) {
+      console.error('Error signing up', error)
+      setError(error.message)
+    }
   }
 
   return (
@@ -70,43 +86,65 @@ const Signup = () => {
 
           <div className='divider text-gray-400 text-sm font-bold p-5'>OR</div>
 
-          <form className='flex flex-col gap-2' onSubmit={handleSubmit}>
-            <input
-              type='email'
-              placeholder='Email'
-              name='email'
-              value={email}
-              onChange={handleChange}
-              className='w-64 h-9 pl-2 mx-auto bg-base-200 border-transparent text-sm rounded'
-              required
-            />
-            <input
-              type='text'
-              placeholder='Full Name'
-              name='name'
-              value={name}
-              onChange={handleChange}
-              className='w-64 h-9 pl-2 mx-auto bg-base-200 border-transparent text-sm'
-              required
-            />
-            <input
-              type='text'
-              placeholder='Username'
-              name='username'
-              value={username}
-              onChange={handleChange}
-              className='w-64 h-9 pl-2 mx-auto bg-base-200 border-transparent text-sm rounded'
-              required
-            />
-            <input
-              type='password'
-              placeholder='Password'
-              name='password'
-              value={password}
-              onChange={handleChange}
-              className='w-64 h-9 pl-2 mx-auto bg-base-200 border-transparent text-sm rounded'
-              required
-            />
+          <form
+            className='flex flex-col gap-2'
+            onSubmit={handleSubmit(onSubmit)}
+          >
+            <div className=' w-64 h-9 mx-auto relative'>
+              <input
+                type='email'
+                placeholder='Email'
+                {...register('email', {
+                  required: true,
+                  validate: (input) => isEmail(input),
+                })}
+                className='pl-2 h-full w-full bg-base-200 border-transparent text-sm rounded'
+              />
+              {errors.email ? errorIcon : touchedFields.email && validIcon}
+            </div>
+
+            <div className=' w-64 h-9 mx-auto relative'>
+              <input
+                type='text'
+                placeholder='Full Name'
+                {...register('name', {
+                  required: true,
+                  minLength: 5,
+                  maxLength: 20,
+                })}
+                className='pl-2 h-full w-full bg-base-200 border-transparent text-sm rounded'
+              />
+              {errors.name ? errorIcon : touchedFields.name && validIcon}
+            </div>
+
+            <div className=' w-64 h-9 mx-auto relative'>
+              <input
+                type='text'
+                placeholder='Username'
+                {...register('username', {
+                  required: true,
+                  minLength: 5,
+                  maxLength: 20,
+                  pattern: /^[a-zA-Z0-9_.]*$/,
+                })}
+                className='w-64 h-9 pl-2 mx-auto bg-base-200 border-transparent text-sm rounded'
+              />
+              {errors.username
+                ? errorIcon
+                : touchedFields.username && validIcon}
+            </div>
+
+            <div className=' w-64 h-9 mx-auto relative'>
+              <input
+                type='password'
+                placeholder='Password'
+                {...register('password', { required: true, minLength: 8 })}
+                className='w-64 h-9 pl-2 mx-auto bg-base-200 border-transparent text-sm rounded'
+              />
+              {errors.password
+                ? errorIcon
+                : touchedFields.password && validIcon}
+            </div>
 
             <span className='text-xs w-64 text-center mx-auto text-gray-500 mt-4'>
               By signing up, you agree to our{' '}
@@ -115,12 +153,14 @@ const Signup = () => {
               </span>
             </span>
             <button
+              disabled={!isValid || isSubmitting}
               type='submit'
               className='text-white font-bold rounded py-1 mt-2 w-64 mx-auto bg-primary border-transparent hover:bg-primary hover:border-transparent disabled:bg-primary disabled:opacity-50 disabled:text-white'
             >
               Sign up
             </button>
           </form>
+          <AuthError error={error} />
         </div>
 
         <div className='border py-6 min-w-[24rem] text-center shadow-sm bg-white gap-5 rounded'>

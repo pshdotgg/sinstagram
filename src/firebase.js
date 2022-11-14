@@ -36,7 +36,7 @@ export const signInWithGooglePopup = () => signInWithPopup(auth, provider)
 export const db = getFirestore()
 
 export const createUserDocument = async (userAuth) => {
-  const userDocRef = doc(db, 'users', userAuth.uid)
+  const userDocRef = doc(db, 'users', userAuth.email)
 
   const userSnapshot = await getDoc(userDocRef)
 
@@ -68,13 +68,14 @@ export const createUserDocument = async (userAuth) => {
 export const signUpWithEmailAndPassword = async (formData) => {
   const { name, email, password, username } = formData
   const { user } = await createUserWithEmailAndPassword(auth, email, password)
-  const userDocRef = doc(db, 'users', user.uid)
+  const userDocRef = doc(db, 'users', username)
 
   const userSnapshot = await getDoc(userDocRef)
 
   try {
     if (!userSnapshot.exists()) {
       const userData = {
+        id: user.uid,
         username: username,
         email: email,
         name: name,
@@ -104,7 +105,6 @@ export const logInWithEmailAndPassword = async (email, password) => {
 }
 
 export const signOutUser = () => {
-  console.log(auth)
   signOut(auth)
 }
 
