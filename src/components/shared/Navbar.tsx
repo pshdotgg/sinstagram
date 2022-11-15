@@ -25,8 +25,7 @@ const Navbar = () => {
   const location = useLocation()
   const path = location.pathname
   const [isLoadingPage, setIsLoadingPage] = useState(true)
-  const { currentUser } = useUserContext()
-  console.log(currentUser)
+  const { currentUserId } = useUserContext()
 
   useEffect(() => {
     setIsLoadingPage(false)
@@ -42,7 +41,7 @@ const Navbar = () => {
           </Link>
           <Search />
 
-          {!currentUser ? (
+          {!currentUserId ? (
             <div className='flex gap-2'>
               <Link to='/accounts/login'>
                 <button

@@ -28,7 +28,10 @@ const Feed = ({ loading = false }) => {
         </div>
         <div className='hidden md:col-span-2 md:block'>
           <div className='w-full flex flex-col gap-5 sticky top-20'>
-            <UserCard />
+            <div className='pl-5 mt-4'>
+              <UserCard />
+            </div>
+
             <FeedSideSuggestions />
           </div>
         </div>

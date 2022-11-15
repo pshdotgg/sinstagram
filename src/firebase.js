@@ -1,4 +1,4 @@
-import { initializeApp } from 'firebase/app'
+import firebase from 'firebase/compat/app'
 import {
   getAuth,
   signInWithPopup,
@@ -9,7 +9,15 @@ import {
   onAuthStateChanged,
 } from 'firebase/auth'
 
-import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore'
+import {
+  getFirestore,
+  doc,
+  collection,
+  getDoc,
+  setDoc,
+  query,
+  getDocs,
+} from 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBvlLhOh5ZnK3_k7SsIxyU-WHsrpOurl9o',
@@ -20,7 +28,7 @@ const firebaseConfig = {
   appId: '1:570314022901:web:e3dd9b5d73364eb9214abc',
 }
 
-const app = initializeApp(firebaseConfig)
+const app = firebase.initializeApp(firebaseConfig)
 
 const provider = new GoogleAuthProvider()
 
@@ -35,7 +43,7 @@ export const signInWithGooglePopup = () => signInWithPopup(auth, provider)
 export const db = getFirestore()
 
 export const createUserDocument = async (userAuth) => {
-  const userDocRef = doc(db, 'users', userAuth.email)
+  const userDocRef = doc(db, 'users', userAuth.uid)
 
   const userSnapshot = await getDoc(userDocRef)
 
@@ -43,6 +51,7 @@ export const createUserDocument = async (userAuth) => {
     const { uid, email, displayName, photoURL } = userAuth
     const username = `${displayName.replace(/\s+/g, '')}${uid.slice(-5)}`
     const userData = {
+      id: uid,
       username: username,
       email: email,
       name: displayName,
@@ -68,7 +77,7 @@ export const createUserDocument = async (userAuth) => {
 export const signUpWithEmailAndPassword = async (formData) => {
   const { name, email, password, username } = formData
   const { user } = await createUserWithEmailAndPassword(auth, email, password)
-  const userDocRef = doc(db, 'users', username)
+  const userDocRef = doc(db, 'users', user.uid)
 
   const userSnapshot = await getDoc(userDocRef)
 
@@ -110,3 +119,20 @@ export const signOutUser = () => {
 
 export const onAuthStateChangedListener = (callback) =>
   onAuthStateChanged(auth, callback)
+
+export const getUserDoc = async (userId) => {
+  // const collectionRef = collection(db, 'users')
+
+  // const q = query(collectionRef)
+
+  // const querySnapshot = await getDocs(q)
+
+  // console.log(querySnapshot)
+
+  const userDocRef = doc(db, 'users', userId)
+
+  const userSnapshot = await getDoc(userDocRef)
+
+  if (userSnapshot.exists()) return userSnapshot.data()
+  else console.log('error')
+}

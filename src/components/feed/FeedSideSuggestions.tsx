@@ -8,7 +8,7 @@ const FeedSideSuggestions = () => {
   let loading = false
   return (
     <article className='card bg-white rounded'>
-      <div className='card-body'>
+      <div className='card-body p-5'>
         <h3>Suggestions For You</h3>
         {loading ? (
           <LoadingSpinner />

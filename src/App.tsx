@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom'
 import PostModal from './components/post/PostModal'
+import LoadingScreen from './components/shared/LoadingScreen'
 import { useUserContext } from './contexts/userContext'
 import {
   EditProfile,
@@ -17,13 +18,15 @@ const App = () => {
   const location = useLocation()
   const prevLocation = useRef(location)
   const modal = location.state?.modal
-  const { currentUser } = useUserContext()
+  const { currentUser, loading } = useUserContext()
 
   useEffect(() => {
     if (!modal) prevLocation.current = location
   }, [location, modal])
 
   const isModalOpen = modal && prevLocation.current !== location
+
+  if (loading) return <LoadingScreen />
 
   // if (!currentUser) {
   //   return (

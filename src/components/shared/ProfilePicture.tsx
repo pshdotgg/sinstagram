@@ -5,9 +5,9 @@ import { defaultCurrentUser } from '../../data'
 const ProfilePicture = ({ isOwner, className = '', user }) => {
   return (
     <div className={`w-40 md:w-44 md:my-16 ${className}`}>
-      {user.profile_image ? (
+      {user.profileImage ? (
         <img
-          src={user.profile_image}
+          src={user.profileImage}
           className='w-20 h-20 md:w-40 md:h-40 object-cover rounded-full'
           alt='profile'
         />
