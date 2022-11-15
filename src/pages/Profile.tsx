@@ -6,8 +6,10 @@ import ProfilePicture from '../components/shared/ProfilePicture'
 import ProfileTabs from '../components/profile/ProfileTabs'
 import { defaultCurrentUser } from '../data'
 import { signOutUser } from '../firebase'
+import { useUserContext } from '../contexts/userContext'
 
 const Profile = () => {
+  const { currentUser } = useUserContext()
   const isOwner = true
   // const [showOptionsMenu, setOptionsMenu] = useState(false)
 
@@ -20,7 +22,7 @@ const Profile = () => {
       title={`${defaultCurrentUser.name} (@${defaultCurrentUser.username})`}
     >
       <section className='hidden md:flex gap-28'>
-        <ProfilePicture isOwner={isOwner} />
+        <ProfilePicture user={currentUser} isOwner={isOwner} />
         <div className='flex flex-col gap-8'>
           <ProfileNameSection
             user={defaultCurrentUser}
@@ -35,7 +37,7 @@ const Profile = () => {
       <section className='md:hidden'>
         <div>
           <div className='flex gap-5'>
-            <ProfilePicture isOwner={isOwner} />
+            <ProfilePicture user={currentUser} isOwner={isOwner} />
             <ProfileNameSection
               user={defaultCurrentUser}
               isOwner={isOwner}

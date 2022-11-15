@@ -1,15 +1,17 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { useUserContext } from '../../contexts/userContext'
 import { defaultUser } from '../../data'
 
-const UserCard = ({ user = defaultUser }) => {
-  const { profile_image, username, name } = user
+const UserCard = () => {
+  const { currentUser } = useUserContext()
+  const { profileImage, username, name } = currentUser
   return (
     <div className='flex gap-3'>
       <Link to={`/${username}`}>
         <div className='avatar'>
           <div className='w-12 rounded-full'>
-            <img src={profile_image} />
+            <img src={profileImage} />
           </div>
         </div>
       </Link>

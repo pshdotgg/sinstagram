@@ -7,8 +7,8 @@ const Layout = ({ children, title, className = '' }) => {
     <section>
       <SEO title={title} />
       <Navbar />
-      <main className={`${className} 'min-h-screen p-5 bg-base-200'`}>
-        <section className='md:mt-16 max-w-5xl mx-auto'>
+      <main className={`${className} ' min-h-screen p-5 bg-base-200'`}>
+        <section className='md:mt-20 max-w-5xl mx-auto'>
           <div>{children}</div>
         </section>
       </main>

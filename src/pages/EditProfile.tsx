@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Layout from '../components/shared/Layout'
 import ProfilePicture from '../components/shared/ProfilePicture'
@@ -7,15 +7,27 @@ import { useUserContext } from '../contexts/userContext'
 import isURL from 'validator/lib/isURL'
 import isEmail from 'validator/lib/isEmail'
 import isMobilePhone from 'validator/lib/isMobilePhone'
+import { setUserDoc, updateUserEmail } from '../firebase'
 
 const EditProfile = () => {
-  const [selected, setSelected] = React.useState(0)
   const navigate = useNavigate()
-  const { currentUser } = useUserContext()
+  const { currentUser, currentUserId } = useUserContext()
+  const [profileUpdated, setProfileUpdated] = useState(false)
   const { register, handleSubmit } = useForm({ mode: 'onBlur' })
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     console.log(data)
+    try {
+      setProfileUpdated(false)
+      await updateUserEmail(data.email)
+      await setUserDoc(currentUserId, data)
+      setProfileUpdated(true)
+      setTimeout(() => {
+        setProfileUpdated(false)
+      }, 2000)
+    } catch (error) {
+      console.error('Error updating profile', error)
+    }
   }
 
   return (
@@ -122,7 +134,7 @@ const EditProfile = () => {
                     Boolean(input) ? isMobilePhone(input) : true,
                 }),
               }}
-              value={currentUser.phone_number}
+              value={currentUser.phoneNumber}
             />
 
             <button
@@ -132,6 +144,16 @@ const EditProfile = () => {
               Submit
             </button>
           </form>
+          {console.log(profileUpdated)}
+          {profileUpdated && (
+            <div className='toast toast-center'>
+              <div className='alert text-white bg-gray-700 w-max mb-5'>
+                <div>
+                  <span>Profile Updated Successfully</span>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </section>
     </Layout>

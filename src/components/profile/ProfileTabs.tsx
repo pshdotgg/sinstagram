@@ -9,7 +9,7 @@ const ProfileTabs = ({ user, isOwner }) => {
 
   return (
     <>
-      <div className='hidden md:block divider mt-10 mb-2' />
+      <div className='hidden md:block divider mt-5 mb-2' />
       <div className='hidden md:flex tabs justify-center gap-5'>
         <a
           onClick={() => setValue(0)}

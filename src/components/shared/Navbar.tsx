@@ -13,7 +13,7 @@ import { RiArrowUpSFill } from 'react-icons/ri'
 import logo from '../../images/logo.png'
 import LoadingSpinner from './LoadingSpinner'
 import { MdCancel } from 'react-icons/md'
-import { defaultCurrentUser, getDefaultUser } from '../../data'
+import { getDefaultUser } from '../../data'
 import UserCard from './UserCard'
 import NotificationTooltip from '../notifications/NotificationTooltip'
 import NotificationList from '../notifications/NotificationList'
@@ -150,6 +150,7 @@ const NavLinks = ({ path }) => {
   const [showNotificationsTooltip, setShowNotificationsTooltip] = useState(true)
   const [showNotifications, setShowNotifications] = useState(false)
   const notificationListRef = useRef(null)
+  const { currentUser } = useUserContext()
 
   const handleToggleNotifications = () => {
     setShowNotifications((prevShowNotifications) => !prevShowNotifications)
@@ -202,18 +203,15 @@ const NavLinks = ({ path }) => {
         {showNotifications && <NotificationList className='-right-3 top-8' />}
       </div>
 
-      <Link to={`/${defaultCurrentUser.username}`}>
+      <Link to={`/${currentUser.username}`}>
         <div className='avatar flex justify-center items-center'>
           <div
             className={`w-10 rounded-full border-2 border-transparent ${
-              path === `/${defaultCurrentUser.username}` &&
+              path === `/${currentUser.username}` &&
               'border-gray-700 ring-offset-base-100 ring-offset-1'
             }`}
           >
-            <img
-              src={defaultCurrentUser.profile_image}
-              className='rounded-full'
-            />
+            <img src={currentUser.profileImage} className='rounded-full' />
           </div>
         </div>
       </Link>

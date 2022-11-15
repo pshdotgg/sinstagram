@@ -7,6 +7,7 @@ import {
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
+  updateEmail,
 } from 'firebase/auth'
 
 import {
@@ -18,6 +19,7 @@ import {
   query,
   getDocs,
 } from 'firebase/firestore'
+import { async } from '@firebase/util'
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBvlLhOh5ZnK3_k7SsIxyU-WHsrpOurl9o',
@@ -117,22 +119,22 @@ export const signOutUser = () => {
   signOut(auth)
 }
 
+export const updateUserEmail = async (email) => {
+  await updateEmail(auth.currentUser, email)
+}
+
 export const onAuthStateChangedListener = (callback) =>
   onAuthStateChanged(auth, callback)
 
 export const getUserDoc = async (userId) => {
-  // const collectionRef = collection(db, 'users')
-
-  // const q = query(collectionRef)
-
-  // const querySnapshot = await getDocs(q)
-
-  // console.log(querySnapshot)
-
   const userDocRef = doc(db, 'users', userId)
 
   const userSnapshot = await getDoc(userDocRef)
 
   if (userSnapshot.exists()) return userSnapshot.data()
   else console.log('error')
+}
+
+export const setUserDoc = async (userId, data) => {
+  await setDoc(doc(db, 'users', userId), data, { merge: true })
 }
