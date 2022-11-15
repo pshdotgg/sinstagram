@@ -1,16 +1,22 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { FiMenu } from 'react-icons/fi'
 import Layout from '../components/shared/Layout'
 import ProfilePicture from '../components/shared/ProfilePicture'
-import { defaultCurrentUser } from '../data'
-import { getUserDoc } from '../firebase'
+import { useForm } from 'react-hook-form'
 import { useUserContext } from '../contexts/userContext'
+import isURL from 'validator/lib/isURL'
+import isEmail from 'validator/lib/isEmail'
+import isMobilePhone from 'validator/lib/isMobilePhone'
 
 const EditProfile = () => {
   const [selected, setSelected] = React.useState(0)
   const navigate = useNavigate()
   const { currentUser } = useUserContext()
+  const { register, handleSubmit } = useForm({ mode: 'onBlur' })
+
+  const onSubmit = (data) => {
+    console.log(data)
+  }
 
   return (
     <Layout title='Edit Profile'>
@@ -28,27 +34,60 @@ const EditProfile = () => {
               </span>
             </div>
           </div>
-          <form className='h-full flex flex-col gap-4'>
-            <SectionItem label='Name' name='name' value={currentUser.name} />
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className='h-full flex flex-col gap-4'
+          >
             <SectionItem
-              label='Username'
-              name='username'
-              value={currentUser.username}
+              text='Full Name'
+              placeholder='Harvey Specter'
+              value={currentUser.name}
+              formOptions={{
+                ...register('name', {
+                  required: true,
+                  minLength: 5,
+                  maxLength: 20,
+                }),
+              }}
             />
             <SectionItem
-              label='Website'
-              name='website'
+              text='Username'
+              placeholder='harvey'
+              value={currentUser.username}
+              formOptions={{
+                ...register('username', {
+                  required: true,
+                  pattern: /^[a-zA-Z0-9_.]*$/,
+                  minLength: 5,
+                  maxLength: 20,
+                }),
+              }}
+            />
+            <SectionItem
+              text='Website'
+              placeholder='https://kenizaya.com'
               value={currentUser.website}
+              formOptions={{
+                ...register('website', {
+                  validate: (input) =>
+                    Boolean(input)
+                      ? isURL(input, {
+                          protocols: ['http', 'https'],
+                          require_protocol: true,
+                        })
+                      : true,
+                }),
+              }}
             />
             <div className='flex flex-col md:flex-row md:gap-8 md:items-center justify-between'>
-              <label htmlFor='bio' className='font-semibold'>
-                Bio
-              </label>
+              <span className='font-semibold'>Bio</span>
               <textarea
-                name='bio'
+                {...register('bio', {
+                  maxLength: 120,
+                })}
                 rows={3}
-                value={currentUser.bio}
-                placeholder='bio'
+                defaultValue={currentUser.bio}
+                placeholder="I'm the best."
                 className='textarea md:w-96 rounded border-2 border-gray-300 focus:border-primary focus:outline-none focus:bg-white resize-none m-0 overflow-hidden'
               ></textarea>
             </div>
@@ -64,13 +103,25 @@ const EditProfile = () => {
             </div>
             <SectionItem
               type='email'
-              label='Email'
-              name='email'
+              text='Email'
+              placeholder='harveylstark@gmail.com'
               value={currentUser.email}
+              formOptions={{
+                ...register('email', {
+                  required: true,
+                  validate: (input) => isEmail(input),
+                }),
+              }}
             />
             <SectionItem
-              label='Phone'
-              name='phoneNumber'
+              text='Phone'
+              placeholder='1234567890'
+              formOptions={{
+                ...register('phoneNumber', {
+                  validate: (input) =>
+                    Boolean(input) ? isMobilePhone(input) : true,
+                }),
+              }}
               value={currentUser.phone_number}
             />
 
@@ -87,20 +138,23 @@ const EditProfile = () => {
   )
 }
 
-const SectionItem = ({ type = 'text', label, name, value }) => {
+const SectionItem = ({
+  type = 'text',
+  text,
+  placeholder,
+  value,
+  formOptions,
+}) => {
   return (
     <div className='flex flex-col md:flex-row w-full md:gap-8 md:items-center justify-between'>
-      <label
-        htmlFor={name}
-        className='text-sm md:text-base font-semibold text-left'
-      >
-        {label}
-      </label>
+      <span className='text-sm md:text-base font-semibold text-left'>
+        {text}
+      </span>
       <input
+        {...formOptions}
         type={type}
-        name={name}
-        placeholder='Full Name'
-        value={value}
+        placeholder={placeholder}
+        defaultValue={value}
         className='pl-2 md:w-96 rounded border-2 border-gray-300 focus:outline-primary focus:bg-white'
       />
     </div>
