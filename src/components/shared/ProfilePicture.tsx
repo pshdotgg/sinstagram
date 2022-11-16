@@ -2,12 +2,12 @@ import React from 'react'
 import { BsPersonFill } from 'react-icons/bs'
 import { defaultCurrentUser } from '../../data'
 
-const ProfilePicture = ({ isOwner, className = '', user }) => {
+const ProfilePicture = ({ isOwner, className = '', image }) => {
   return (
     <div className={`w-40 md:w-44 md:my-16 ${className}`}>
-      {user.profileImage ? (
+      {image ? (
         <img
-          src={user.profileImage}
+          src={image}
           className='w-20 h-20 md:w-40 md:h-40 object-cover rounded-full'
           alt='profile'
         />

@@ -22,7 +22,7 @@ const Profile = () => {
       title={`${defaultCurrentUser.name} (@${defaultCurrentUser.username})`}
     >
       <section className='hidden md:flex gap-28'>
-        <ProfilePicture user={currentUser} isOwner={isOwner} />
+        <ProfilePicture image={currentUser.profileImage} isOwner={isOwner} />
         <div className='flex flex-col gap-8'>
           <ProfileNameSection
             user={defaultCurrentUser}

@@ -14,6 +14,7 @@ const EditProfile = () => {
   const navigate = useNavigate()
   const { currentUser, currentUserId } = useUserContext()
   const [profileUpdated, setProfileUpdated] = useState(false)
+  const [profileImage, setProfileImage] = useState(currentUser.profileImage)
   const { register, handleSubmit } = useForm({ mode: 'onBlur' })
 
   const onSubmit = async (data) => {
@@ -33,7 +34,18 @@ const EditProfile = () => {
 
   const handleUpdateProfilePic = async (event) => {
     const url = await handleImageUpload(event.target.files[0])
-    console.log(url)
+
+    try {
+      setProfileUpdated(false)
+      await setUserDoc(currentUserId, { profileImage: url })
+      setProfileImage(url)
+      setProfileUpdated(true)
+      setTimeout(() => {
+        setProfileUpdated(false)
+      }, 2000)
+    } catch (error) {
+      console.error('Error changing profile photo', error)
+    }
   }
 
   return (
@@ -42,7 +54,7 @@ const EditProfile = () => {
       <section className='card bg-white w-full rounded border-2 border-base-300 mx-auto'>
         <div className='card-body p-5 mx-auto md:w-[552px]'>
           <div className='mt-0 flex items-center md:gap-10 mb-5 md:mb-0'>
-            <ProfilePicture user={currentUser} />
+            <ProfilePicture image={profileImage} />
             <div>
               <span className='font-semibold text-2xl md:text-3xl'>
                 {currentUser.username}

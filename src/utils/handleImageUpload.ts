@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { storage } from '../firebase'
 import { ref, getDownloadURL, uploadBytes } from 'firebase/storage'
 
