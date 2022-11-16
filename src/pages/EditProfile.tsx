@@ -8,6 +8,7 @@ import isURL from 'validator/lib/isURL'
 import isEmail from 'validator/lib/isEmail'
 import isMobilePhone from 'validator/lib/isMobilePhone'
 import { setUserDoc, updateUserEmail } from '../firebase'
+import handleImageUpload from '../utils/handleImageUpload'
 
 const EditProfile = () => {
   const navigate = useNavigate()
@@ -30,6 +31,11 @@ const EditProfile = () => {
     }
   }
 
+  const handleUpdateProfilePic = async (event) => {
+    const url = await handleImageUpload(event.target.files[0])
+    console.log(url)
+  }
+
   return (
     <Layout title='Edit Profile'>
       <h2 className='text-2xl pb-5'>Edit Profile</h2>
@@ -41,9 +47,19 @@ const EditProfile = () => {
               <span className='font-semibold text-2xl md:text-3xl'>
                 {currentUser.username}
               </span>
-              <span className='text-primary block cursor-pointer text-xs md:text-base'>
+              <input
+                accept='image/*'
+                id='image'
+                type='file'
+                className='hidden'
+                onChange={handleUpdateProfilePic}
+              />
+              <label
+                htmlFor='image'
+                className='text-primary block cursor-pointer text-xs md:text-base'
+              >
                 Change Profile Photo
-              </span>
+              </label>
             </div>
           </div>
           <form

@@ -19,7 +19,7 @@ import {
   query,
   getDocs,
 } from 'firebase/firestore'
-import { async } from '@firebase/util'
+import { getStorage } from 'firebase/storage'
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBvlLhOh5ZnK3_k7SsIxyU-WHsrpOurl9o',
@@ -31,6 +31,8 @@ const firebaseConfig = {
 }
 
 const app = firebase.initializeApp(firebaseConfig)
+
+export const storage = getStorage()
 
 const provider = new GoogleAuthProvider()
 
