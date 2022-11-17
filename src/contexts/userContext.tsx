@@ -1,10 +1,11 @@
 import { createContext, useContext, useEffect, useState } from 'react'
-import { onAuthStateChangedListener, getUserDoc } from '../firebase'
+import { onAuthStateChangedListener, getUserDoc, getUsers } from '../firebase'
 
 const UserContext = createContext()
 
 export const UserProvider = ({ children }) => {
   const [currentUserId, setCurrentUserId] = useState(null)
+  const [users, setUsers] = useState({})
   const [currentUser, setCurrentUser] = useState({})
   const [loading, setLoading] = useState(false)
 
@@ -14,13 +15,25 @@ export const UserProvider = ({ children }) => {
     currentUserId,
     setCurrentUserId,
     loading,
+    users,
   }
+
+  useEffect(() => {
+    const getUsersData = async () => {
+      const users = await getUsers()
+      setUsers(users)
+    }
+
+    getUsersData()
+  }, [])
 
   useEffect(() => {
     const unsubscribe = onAuthStateChangedListener(async (user) => {
       setLoading(true)
-      setCurrentUserId(user ? user.uid : null)
-      if (user) setCurrentUser(await getUserDoc(user.uid))
+      if (user) {
+        setCurrentUserId(user ? user.uid : null)
+        setCurrentUser(await getUserDoc(user.uid))
+      }
       setLoading(false)
     })
     return unsubscribe

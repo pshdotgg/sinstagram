@@ -12,6 +12,8 @@ import { useForm } from 'react-hook-form'
 import isEmail from 'validator/lib/isEmail'
 import { ImCancelCircle } from 'react-icons/im'
 import AuthError from '../components/shared/AuthError'
+import { useUserContext } from '../contexts/userContext'
+import LoadingScreen from '../components/shared/LoadingScreen'
 
 const Signup = () => {
   const {
@@ -22,6 +24,9 @@ const Signup = () => {
     mode: 'onBlur',
   })
   const [error, setError] = useState('')
+  const [usernameNotAvailable, setUsernameNotAvailable] = useState(false)
+  const { users, setCurrentUser } = useUserContext()
+  const [loading, setLoading] = useState(false)
 
   const navigate = useNavigate()
 
@@ -43,15 +48,26 @@ const Signup = () => {
   }
 
   const onSubmit = async (data) => {
-    try {
-      setError('')
-      await signUpWithEmailAndPassword(data)
-      navigate('/')
-    } catch (error) {
-      console.error('Error signing up', error)
-      setError(error.message)
+    setError('')
+    if (!(data.username in users)) {
+      try {
+        setLoading(true)
+        const userData = await signUpWithEmailAndPassword(data)
+        setCurrentUser(userData)
+        setUsernameNotAvailable(false)
+        navigate('/')
+        setLoading(false)
+      } catch (error) {
+        setError(error.message)
+        console.error('Error signing up', error.message)
+      }
+    } else {
+      setError('Username not available')
+      setUsernameNotAvailable(true)
     }
   }
+
+  if (loading) return <LoadingScreen />
 
   return (
     <>
@@ -123,13 +139,12 @@ const Signup = () => {
                 placeholder='Username'
                 {...register('username', {
                   required: true,
-                  minLength: 5,
                   maxLength: 20,
                   pattern: /^[a-zA-Z0-9_.]*$/,
                 })}
                 className='w-64 h-9 pl-2 mx-auto bg-base-200 border-transparent text-sm rounded'
               />
-              {errors.username
+              {errors.username || usernameNotAvailable
                 ? errorIcon
                 : touchedFields.username && validIcon}
             </div>

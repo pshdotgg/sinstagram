@@ -2,33 +2,42 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Layout from '../components/shared/Layout'
 import ProfilePicture from '../components/shared/ProfilePicture'
+import AuthError from '../components/shared/AuthError'
 import { useForm } from 'react-hook-form'
 import { useUserContext } from '../contexts/userContext'
 import isURL from 'validator/lib/isURL'
 import isEmail from 'validator/lib/isEmail'
 import isMobilePhone from 'validator/lib/isMobilePhone'
-import { setUserDoc, updateUserEmail } from '../firebase'
+import { setUserDoc, updateUserEmail, getUsers } from '../firebase'
 import handleImageUpload from '../utils/handleImageUpload'
 
 const EditProfile = () => {
   const navigate = useNavigate()
   const { currentUser, currentUserId } = useUserContext()
   const [profileUpdated, setProfileUpdated] = useState(false)
+  const [error, setError] = useState('')
+  const { users } = useUserContext()
   const [profileImage, setProfileImage] = useState(currentUser.profileImage)
   const { register, handleSubmit } = useForm({ mode: 'onBlur' })
 
   const onSubmit = async (data) => {
-    console.log(data)
-    try {
-      setProfileUpdated(false)
-      await updateUserEmail(data.email)
-      await setUserDoc(currentUserId, data)
-      setProfileUpdated(true)
-      setTimeout(() => {
+    setError('')
+    if (currentUser.username === data.username || !(data.username in users)) {
+      try {
         setProfileUpdated(false)
-      }, 2000)
-    } catch (error) {
-      console.error('Error updating profile', error)
+        await updateUserEmail(data.email)
+        await setUserDoc(currentUserId, data)
+        setProfileUpdated(true)
+        setTimeout(() => {
+          setProfileUpdated(false)
+          navigate(0)
+        }, 2000)
+      } catch (error) {
+        console.error('Error updating profile', error)
+        setError(error.message)
+      }
+    } else {
+      setError('Username not available')
     }
   }
 
@@ -98,7 +107,6 @@ const EditProfile = () => {
                 ...register('username', {
                   required: true,
                   pattern: /^[a-zA-Z0-9_.]*$/,
-                  minLength: 5,
                   maxLength: 20,
                 }),
               }}
@@ -164,7 +172,7 @@ const EditProfile = () => {
               }}
               value={currentUser.phoneNumber}
             />
-
+            <AuthError error={error} />
             <button
               type='submit'
               className='py-3 px-4 mt-1 md:ml-32 bg-primary text-white rounded w-32'

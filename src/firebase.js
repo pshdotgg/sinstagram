@@ -55,7 +55,7 @@ export const createUserDocument = async (userAuth) => {
     const { uid, email, displayName, photoURL } = userAuth
     const username = `${displayName.replace(/\s+/g, '')}${uid.slice(-5)}`
     const userData = {
-      id: uid,
+      uid: uid,
       username: username,
       email: email,
       name: displayName,
@@ -88,7 +88,7 @@ export const signUpWithEmailAndPassword = async (formData) => {
   try {
     if (!userSnapshot.exists()) {
       const userData = {
-        id: user.uid,
+        uid: user.uid,
         username: username,
         email: email,
         name: name,
@@ -100,15 +100,13 @@ export const signUpWithEmailAndPassword = async (formData) => {
           'https://firebasestorage.googleapis.com/v0/b/sinstagram-pr.appspot.com/o/default-user-image.jpg?alt=media&token=b60c36ec-f909-4789-bf23-2390f04b406f',
       }
       await setDoc(userDocRef, userData)
-      setCurrentUser(user)
+      return userData
     }
   } catch (error) {
     if (error.code === 'auth/email-already-in-use') {
       alert('Email already in use')
     } else console.log('error creating the user', error.message)
   }
-
-  return userDocRef
 }
 
 export const logInWithEmailAndPassword = async (email, password) => {
@@ -133,10 +131,23 @@ export const getUserDoc = async (userId) => {
 
   const userSnapshot = await getDoc(userDocRef)
 
-  if (userSnapshot.exists()) return userSnapshot.data()
-  else console.log('error')
+  return userSnapshot.data()
 }
 
 export const setUserDoc = async (userId, data) => {
   await setDoc(doc(db, 'users', userId), data, { merge: true })
+}
+
+export const getUsers = async () => {
+  const collectionRef = collection(db, 'users')
+  const q = query(collectionRef)
+
+  const querySnapshot = await getDocs(q)
+  const users = querySnapshot.docs.reduce((acc, docSnapshot) => {
+    const { username, name, uid, profileImage } = docSnapshot.data()
+    acc[username] = { uid, name, profileImage }
+    return acc
+  }, {})
+
+  return users
 }

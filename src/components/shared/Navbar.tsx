@@ -20,6 +20,7 @@ import NotificationList from '../notifications/NotificationList'
 import useOutsideClick from '@rooks/use-outside-click'
 import { useNProgress } from '@tanem/react-nprogress'
 import { useUserContext } from '../../contexts/userContext'
+import { getUsers } from '../../firebase'
 
 const Navbar = () => {
   const location = useLocation()
@@ -82,6 +83,7 @@ const Search = () => {
     if (!query.trim()) return
 
     setLoading(true)
+    getUsers()
     setResults(Array.from({ length: 5 }, () => getDefaultUser()))
     setLoading(false)
   }, [query])
