@@ -145,7 +145,7 @@ export const getUsers = async () => {
   const querySnapshot = await getDocs(q)
   const users = querySnapshot.docs.reduce((acc, docSnapshot) => {
     const { username, name, uid, profileImage } = docSnapshot.data()
-    acc[username] = { uid, name, profileImage }
+    acc[username] = { uid, name, profileImage, username }
     return acc
   }, {})
 

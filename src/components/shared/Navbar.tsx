@@ -21,6 +21,7 @@ import useOutsideClick from '@rooks/use-outside-click'
 import { useNProgress } from '@tanem/react-nprogress'
 import { useUserContext } from '../../contexts/userContext'
 import { getUsers } from '../../firebase'
+import Fuse from 'fuse.js'
 
 const Navbar = () => {
   const location = useLocation()
@@ -76,6 +77,9 @@ const Search = () => {
   const [loading, setLoading] = useState(false)
   const [hasFocus, setHasFocus] = useState(false)
   const [results, setResults] = useState([])
+  const { users } = useUserContext()
+  const usersList = Object.values(users)
+  const fuse = new Fuse(usersList, { keys: ['username', 'name'] })
 
   const hasResults = query && results.length > 0
 
@@ -83,8 +87,7 @@ const Search = () => {
     if (!query.trim()) return
 
     setLoading(true)
-    getUsers()
-    setResults(Array.from({ length: 5 }, () => getDefaultUser()))
+    setResults(fuse.search(query))
     setLoading(false)
   }, [query])
 
@@ -125,17 +128,19 @@ const Search = () => {
 }
 
 const SearchCard = ({ results }) => {
+  console.log(results)
   return (
     <div className='absolute top-8 w-full flex flex-col gap-0 justify-center items-center m-0'>
       <RiArrowUpSFill size={50} className='fill-white p-0' />
       <div className='card w-full bg-base-100 shadow-xl rounded -mt-5'>
         <div className='card-body p-0 m-0'>
           {results.map((result) => {
+            console.log(result.item)
             return (
-              <div key={result.id}>
-                <Link to={`/${result.username}`}>
+              <div key={result.item.uid}>
+                <Link to={`/${result.item.username}`}>
                   <div className='cursor-pointer hover:bg-base-300 p-4 pb-0 -mt-2'>
-                    <UserCard user={result} />
+                    <UserCard user={result.item} />
                   </div>
                 </Link>
                 <div className='divider -m-2'></div>

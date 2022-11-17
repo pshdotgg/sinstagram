@@ -5,11 +5,13 @@ import Layout from '../components/shared/Layout'
 import LoadingScreen from '../components/shared/LoadingScreen'
 import LoadingSpinner from '../components/shared/LoadingSpinner'
 import UserCard from '../components/shared/UserCard'
+import { useUserContext } from '../contexts/userContext'
 import { getDefaultPost } from '../data'
 const FeedPost = React.lazy(() => import('../components/feed/FeedPost'))
 
 const Feed = ({ loading = false }) => {
   const [isEndOfFeed, setIsEndOfFeed] = React.useState(false)
+  const { currentUser } = useUserContext()
 
   if (loading) return <LoadingScreen />
 
@@ -29,7 +31,7 @@ const Feed = ({ loading = false }) => {
         <div className='hidden md:col-span-2 md:block'>
           <div className='w-full flex flex-col gap-5 sticky top-20'>
             <div className='pl-5 mt-4'>
-              <UserCard />
+              <UserCard user={currentUser} />
             </div>
 
             <FeedSideSuggestions />
