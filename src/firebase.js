@@ -18,6 +18,9 @@ import {
   setDoc,
   query,
   getDocs,
+  updateDoc,
+  arrayUnion,
+  arrayRemove,
 } from 'firebase/firestore'
 import { getStorage } from 'firebase/storage'
 
@@ -153,3 +156,21 @@ export const getUsers = async () => {
 
   return users
 }
+
+export const getUserPosts = async (userId) => {
+  const posts = []
+  const userDocRef = doc(db, 'users', userId)
+
+  const userSnapshot = await getDoc(userDocRef)
+
+  userSnapshot.data().postsId.forEach(async (post) => {
+    const postSnapshot = await getDoc(post)
+    posts.push(postSnapshot.data())
+  })
+
+  return posts
+}
+
+// export const setUserPosts = async (userId, media, caption) => {
+//   await updateDoc(doc(db, 'users', userId), {postsId.arrayUnion()})
+// }

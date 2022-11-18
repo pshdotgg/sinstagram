@@ -3,7 +3,9 @@ import Modal from 'react-modal'
 import { MdClose } from 'react-icons/md'
 import { createEditor } from 'slate'
 import { Slate, Editable, withReact } from 'slate-react'
+import serialize from '../../utils/serialize'
 import { useUserContext } from '../../contexts/userContext'
+import handleImageUpload from '../../utils/handleImageUpload'
 
 const initialValue = [
   {
@@ -14,6 +16,8 @@ const initialValue = [
 
 const AddPostDialog = ({ media, handleClose }) => {
   const [editor] = useState(() => withReact(createEditor()))
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [value, setValue] = useState(initialValue)
   const { currentUser } = useUserContext()
 
   const customStyles = {
@@ -39,6 +43,12 @@ const AddPostDialog = ({ media, handleClose }) => {
     },
   }
 
+  const handleSharePost = async () => {
+    setIsSubmitting(true)
+    // const url = await handleImageUpload(media)
+    console.log(value)
+  }
+
   return (
     <>
       <Modal
@@ -60,7 +70,7 @@ const AddPostDialog = ({ media, handleClose }) => {
           <div className='w-full flex justify-center my-5'>
             <img
               src={URL.createObjectURL(media)}
-              className='w-[600px] object-contain'
+              className='w-[500px] h-[500px] object-contain'
             />
           </div>
           <div className='flex items-center p-7 gap-5'>
@@ -71,11 +81,20 @@ const AddPostDialog = ({ media, handleClose }) => {
             </div>
 
             <div className='flex-1'>
-              <Slate editor={editor} value={initialValue}>
+              <Slate
+                editor={editor}
+                value={initialValue}
+                onChange={() => setValue(value)}
+              >
                 <Editable placeholder='Write your caption...' />
               </Slate>
             </div>
-            <button type='button' className='text-primary font-semibold'>
+            <button
+              type='button'
+              className='text-primary font-semibold cursor-pointer'
+              disabled={isSubmitting}
+              onClick={handleSharePost}
+            >
               Share
             </button>
           </div>

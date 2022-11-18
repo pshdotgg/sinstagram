@@ -13,13 +13,15 @@ import {
   Profile,
   Signup,
 } from './pages'
+import { getUserPosts } from './firebase'
 
 const App = () => {
   const location = useLocation()
   const prevLocation = useRef(location)
   const modal = location.state?.modal
-  const { currentUser, loading } = useUserContext()
+  const { currentUser, currentUserId, loading } = useUserContext()
 
+  console.log(getUserPosts(currentUserId))
   useEffect(() => {
     if (!modal) prevLocation.current = location
   }, [location, modal])

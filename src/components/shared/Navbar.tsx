@@ -157,7 +157,7 @@ const NavLinks = ({ path }) => {
   const [showNotificationsTooltip, setShowNotificationsTooltip] = useState(true)
   const [showNotifications, setShowNotifications] = useState(false)
   const [media, setMedia] = useState(null)
-  const [showAddPostDialog, setShowAddPostDialog] = useState(true)
+  const [showAddPostDialog, setShowAddPostDialog] = useState(false)
   const notificationListRef = useRef(null)
   const inputRef = useRef()
   const { currentUser } = useUserContext()
