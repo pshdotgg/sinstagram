@@ -61,6 +61,7 @@ export const createUserDocument = async (userAuth) => {
       name: displayName,
       lastChecked: 'null',
       bio: '',
+      postsId: '',
       phoneNumber: '',
       website: '',
       profileImage:
@@ -94,6 +95,7 @@ export const signUpWithEmailAndPassword = async (formData) => {
         name: name,
         lastChecked: 'null',
         bio: '',
+        postsId: [],
         phoneNumber: '',
         website: '',
         profileImage:

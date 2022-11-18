@@ -10,18 +10,18 @@ import {
   AiFillHeart,
 } from 'react-icons/ai'
 import { RiArrowUpSFill } from 'react-icons/ri'
+import { FiPlusSquare } from 'react-icons/fi'
 import logo from '../../images/logo.png'
 import LoadingSpinner from './LoadingSpinner'
 import { MdCancel } from 'react-icons/md'
-import { getDefaultUser } from '../../data'
 import UserCard from './UserCard'
 import NotificationTooltip from '../notifications/NotificationTooltip'
 import NotificationList from '../notifications/NotificationList'
 import useOutsideClick from '@rooks/use-outside-click'
 import { useNProgress } from '@tanem/react-nprogress'
 import { useUserContext } from '../../contexts/userContext'
-import { getUsers } from '../../firebase'
 import Fuse from 'fuse.js'
+import AddPostDialog from '../post/AddPostDialog'
 
 const Navbar = () => {
   const location = useLocation()
@@ -156,7 +156,10 @@ const SearchCard = ({ results }) => {
 const NavLinks = ({ path }) => {
   const [showNotificationsTooltip, setShowNotificationsTooltip] = useState(true)
   const [showNotifications, setShowNotifications] = useState(false)
+  const [media, setMedia] = useState(null)
+  const [showAddPostDialog, setShowAddPostDialog] = useState(true)
   const notificationListRef = useRef(null)
+  const inputRef = useRef()
   const { currentUser } = useUserContext()
 
   const handleToggleNotifications = () => {
@@ -171,6 +174,19 @@ const NavLinks = ({ path }) => {
     setShowNotifications(false)
   }
 
+  const openFileInput = () => {
+    inputRef.current.click()
+  }
+
+  const handleAddPost = (event) => {
+    setMedia(event.target.files[0])
+    setShowAddPostDialog(true)
+  }
+
+  const handleClose = () => {
+    setShowAddPostDialog(false)
+  }
+
   // useOutsideClick(notificationListRef, handleHideNotificationsList)
 
   useEffect(() => {
@@ -181,6 +197,19 @@ const NavLinks = ({ path }) => {
 
   return (
     <div className='flex gap-5 items-center'>
+      {showAddPostDialog && (
+        <AddPostDialog media={media} handleClose={handleClose} />
+      )}
+      <div className='cursor-pointer'>
+        <input
+          type='file'
+          ref={inputRef}
+          onChange={handleAddPost}
+          className='hidden'
+        />
+        <FiPlusSquare size={28} onClick={openFileInput} />
+      </div>
+
       <Link to='/'>
         {path === '/' ? <AiFillHome size={28} /> : <AiOutlineHome size={28} />}
       </Link>

@@ -28,15 +28,15 @@ const App = () => {
 
   if (loading) return <LoadingScreen />
 
-  // if (!currentUser) {
-  //   return (
-  //     <Routes>
-  //       <Route path='/accounts/login' element={<Login />} />
-  //       <Route path='/accounts/emailsignup' element={<Signup />} />
-  //       <Route path='*' element={<Navigate to='/accounts/login' />} />
-  //     </Routes>
-  //   )
-  // }
+  if (!currentUser) {
+    return (
+      <Routes>
+        <Route path='/accounts/login' element={<Login />} />
+        <Route path='/accounts/emailsignup' element={<Signup />} />
+        <Route path='*' element={<Navigate to='/accounts/login' />} />
+      </Routes>
+    )
+  }
 
   return (
     <>
