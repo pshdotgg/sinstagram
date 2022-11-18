@@ -6,6 +6,8 @@ import { Slate, Editable, withReact } from 'slate-react'
 import serialize from '../../utils/serialize'
 import { useUserContext } from '../../contexts/userContext'
 import handleImageUpload from '../../utils/handleImageUpload'
+import { setUserPosts } from '../../firebase'
+import LoadingSpinner from '../shared/LoadingSpinner'
 
 const initialValue = [
   {
@@ -18,7 +20,7 @@ const AddPostDialog = ({ media, handleClose }) => {
   const [editor] = useState(() => withReact(createEditor()))
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [value, setValue] = useState(initialValue)
-  const { currentUser } = useUserContext()
+  const { currentUser, currentUserId } = useUserContext()
 
   const customStyles = {
     overlay: {
@@ -45,8 +47,11 @@ const AddPostDialog = ({ media, handleClose }) => {
 
   const handleSharePost = async () => {
     setIsSubmitting(true)
-    // const url = await handleImageUpload(media)
-    console.log(value)
+    const url = await handleImageUpload(media)
+    const caption = serialize({ children: value })
+    await setUserPosts(currentUserId, url, caption)
+    setIsSubmitting(false)
+    window.location.reload()
   }
 
   return (
@@ -84,7 +89,7 @@ const AddPostDialog = ({ media, handleClose }) => {
               <Slate
                 editor={editor}
                 value={initialValue}
-                onChange={() => setValue(value)}
+                onChange={(value) => setValue(value)}
               >
                 <Editable placeholder='Write your caption...' />
               </Slate>
@@ -95,7 +100,7 @@ const AddPostDialog = ({ media, handleClose }) => {
               disabled={isSubmitting}
               onClick={handleSharePost}
             >
-              Share
+              {isSubmitting ? <LoadingSpinner /> : 'Share'}
             </button>
           </div>
         </div>

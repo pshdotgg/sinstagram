@@ -44,19 +44,19 @@ const FeedPost = ({ post, index }) => {
           <span className='font-semibold'>
             {likes === 1 ? '1 like' : `${likes} likes`}
           </span>
-          <div>
+          <div className='flex flex-col mb-0'>
             <Link to={`/${user.username}`} className='font-bold '>
               {`${user.username} `}
             </Link>
             {showCaption ? (
-              <span>{caption}</span>
+              <p dangerouslySetInnerHTML={{ __html: caption }}></p>
             ) : (
-              <div className='inline-block'>
-                <span>
-                  {caption.length >= 45
-                    ? `${caption.slice(0, 45)}...   `
-                    : caption}
-                </span>
+              <div className='inline-block -mb-5'>
+                {caption.length >= 45 ? (
+                  `${caption.slice(0, 45)}...   `
+                ) : (
+                  <p dangerouslySetInnerHTML={{ __html: caption }}></p>
+                )}
                 <button
                   type='button'
                   className='pl-2 text-gray-500'

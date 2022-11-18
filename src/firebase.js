@@ -21,6 +21,7 @@ import {
   updateDoc,
   arrayUnion,
   arrayRemove,
+  addDoc,
 } from 'firebase/firestore'
 import { getStorage } from 'firebase/storage'
 
@@ -171,6 +172,16 @@ export const getUserPosts = async (userId) => {
   return posts
 }
 
-// export const setUserPosts = async (userId, media, caption) => {
-//   await updateDoc(doc(db, 'users', userId), {postsId.arrayUnion()})
-// }
+export const setUserPosts = async (userId, media, caption) => {
+  const post = {
+    createdAt: Date.now(),
+    media: media,
+    caption: caption,
+    userId: doc(db, 'users', userId),
+  }
+
+  const postRef = await addDoc(collection(db, 'posts'), post)
+  await updateDoc(doc(db, 'users', userId), {
+    postsId: arrayUnion(doc(db, 'posts', postRef.id)),
+  })
+}
