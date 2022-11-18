@@ -65,7 +65,9 @@ export const createUserDocument = async (userAuth) => {
       name: displayName,
       lastChecked: 'null',
       bio: '',
-      postsId: '',
+      postsId: [],
+      likes: [],
+      savedPostsId: [],
       phoneNumber: '',
       website: '',
       profileImage:
@@ -100,6 +102,8 @@ export const signUpWithEmailAndPassword = async (formData) => {
         lastChecked: 'null',
         bio: '',
         postsId: [],
+        likes: [],
+        savedPostsId: [],
         phoneNumber: '',
         website: '',
         profileImage:
@@ -178,10 +182,38 @@ export const setUserPosts = async (userId, media, caption) => {
     media: media,
     caption: caption,
     userId: doc(db, 'users', userId),
+    likes: [],
+    comments: [],
   }
 
   const postRef = await addDoc(collection(db, 'posts'), post)
   await updateDoc(doc(db, 'users', userId), {
     postsId: arrayUnion(doc(db, 'posts', postRef.id)),
   })
+}
+
+export const getPostData = async (postId) => {
+  let post = {}
+
+  let postLikes = []
+  let postComments = []
+  console.log('running')
+  const postSnapshot = await getDoc(doc(db, 'posts', postId))
+  post = { ...postSnapshot.data() }
+
+  post.user = (await getDoc(post.userId)).data()
+
+  post.likes.forEach(async (pl) => {
+    const plSnapshot = await getDoc(pl)
+    postLikes.push(plSnapshot.data())
+  })
+
+  post.comments.forEach(async (pc) => {
+    postComments.push({ ...pc, user: (await getDoc(pc.user)).data() })
+  })
+
+  post.likes = postLikes
+  post.comments = postComments
+
+  return post
 }

@@ -8,7 +8,7 @@ const PostPage = () => {
   const { postId } = useParams()
   return (
     <Layout>
-      <Post />
+      <Post postId='gqcecmDaUpxtlCu8zzjr' />
       <MorePostsFromUser />
     </Layout>
   )
