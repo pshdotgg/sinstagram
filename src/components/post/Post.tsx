@@ -10,18 +10,19 @@ import { Link } from 'react-router-dom'
 import UserCard from '../shared/UserCard'
 import OptionsDialog from '../shared/OptionsDialog'
 import PostSkeleton from './PostSkeleton'
-import { getPostData } from '../../firebase'
+import { getPostData, likePost, unlikePost } from '../../firebase'
+import { useUserContext } from '../../contexts/userContext'
 
 const Post = ({ postId }) => {
   const [post, setPost] = useState({})
-
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const getPost = async () => {
       setLoading(true)
       try {
-        setPost(await getPostData(postId))
+        const tempPost = await getPostData(postId)
+        setPost(tempPost)
       } catch (error) {
         console.log(error)
       }
@@ -31,8 +32,9 @@ const Post = ({ postId }) => {
   }, [])
 
   if (loading) return <PostSkeleton />
+
   const { media, likes, user, caption, comments, createdAt } = post
-  console.log(likes)
+  console.log(post)
 
   return (
     <div className='bg-white w-full '>
@@ -65,7 +67,11 @@ const Post = ({ postId }) => {
           <div className='p-4 pb-2'>
             <div className='flex pb-2 gap-5 justify-between items-center '>
               <div className='flex gap-5 items-center'>
-                <LikeButton />
+                <LikeButton
+                  likes={likes}
+                  postId='gqcecmDaUpxtlCu8zzjr'
+                  authorId={user.uid}
+                />
                 {/* <Link to={`/p/${id}`}>
                   <FaRegComment size={20} />
                 </Link> */}
@@ -130,20 +136,27 @@ const UserComment = ({ comment }) => {
   )
 }
 
-const LikeButton = () => {
-  const [liked, setLiked] = useState(false)
+const LikeButton = ({ likes, authorId, postId }) => {
+  console.log(likes)
+  const { currentUserId } = useUserContext()
+  const isAlredyLiked = likes.some(({ uid }) => uid === currentUserId)
+  const [liked, setLiked] = useState(isAlredyLiked)
+  console.log(liked)
+
   const Icon = liked ? (
     <BsHeartFill size={20} className='fill-red-500 animate-ping-once' />
   ) : (
     <BsHeart size={20} />
   )
 
-  const handleLike = () => {
+  const handleLike = async () => {
     setLiked(true)
+    await likePost(postId, currentUserId)
   }
 
-  const handleUnlike = () => {
+  const handleUnlike = async () => {
     setLiked(false)
+    await unlikePost(postId, currentUserId)
   }
 
   return (

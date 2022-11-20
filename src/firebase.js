@@ -201,7 +201,7 @@ export const getPostData = async (postId) => {
   post.likes = await getPostLikes(post.likes)
   post.comments = await getPostComments(post.comments)
 
-  console.log('post from f', post)
+  console.log('likess', post.likes)
 
   return post
 }
@@ -225,4 +225,30 @@ export const getPostComments = async (commentsArr) => {
   })
 
   return comments
+}
+
+export const likePost = async (postId, userId) => {
+  try {
+    await updateDoc(doc(db, 'users', userId), {
+      likes: arrayUnion(doc(db, 'posts', postId)),
+    })
+    await updateDoc(doc(db, 'posts', postId), {
+      likes: arrayUnion(doc(db, 'users', userId)),
+    })
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const unlikePost = async (postId, userId) => {
+  try {
+    await updateDoc(doc(db, 'users', userId), {
+      likes: arrayRemove(doc(db, 'posts', postId)),
+    })
+    await updateDoc(doc(db, 'posts', postId), {
+      likes: arrayRemove(doc(db, 'users', userId)),
+    })
+  } catch (error) {
+    console.log(error)
+  }
 }
