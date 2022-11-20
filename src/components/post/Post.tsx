@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import {
   FaRegComment,
   FaShare,
@@ -10,7 +10,13 @@ import { Link } from 'react-router-dom'
 import UserCard from '../shared/UserCard'
 import OptionsDialog from '../shared/OptionsDialog'
 import PostSkeleton from './PostSkeleton'
-import { getPostData, likePost, unlikePost } from '../../firebase'
+import {
+  getPostData,
+  likePost,
+  unlikePost,
+  savePost,
+  unsavePost,
+} from '../../firebase'
 import { useUserContext } from '../../contexts/userContext'
 
 const Post = ({ postId }) => {
@@ -77,7 +83,7 @@ const Post = ({ postId }) => {
                 </Link> */}
                 <FaShare size={20} />
               </div>
-              <SaveButton />
+              <SaveButton postId={postId} />
             </div>
             <span className='font-semibold'>
               {likes.length === 1 ? '1 like' : `${likes.length} likes`}
@@ -169,16 +175,20 @@ const LikeButton = ({ likes, authorId, postId }) => {
   )
 }
 
-const SaveButton = () => {
-  const [saved, setSaved] = useState(false)
+const SaveButton = ({ postId }) => {
+  const { currentUserId, currentUser } = useUserContext()
+  const isAlreadySaved = currentUser.savedPosts.includes(postId)
+  const [saved, setSaved] = useState(isAlreadySaved)
   const Icon = saved ? <FaBookmark size={20} /> : <FaRegBookmark size={20} />
 
-  const handleSave = () => {
+  const handleSave = async () => {
     setSaved(true)
+    await savePost(postId, currentUserId)
   }
 
-  const handleRemove = () => {
+  const handleRemove = async () => {
     setSaved(false)
+    await unsavePost(postId, currentUserId)
   }
 
   return (

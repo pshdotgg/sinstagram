@@ -65,9 +65,9 @@ export const createUserDocument = async (userAuth) => {
       name: displayName,
       lastChecked: 'null',
       bio: '',
-      postsId: [],
+      posts: [],
       likes: [],
-      savedPostsId: [],
+      savedPosts: [],
       phoneNumber: '',
       website: '',
       profileImage:
@@ -101,9 +101,9 @@ export const signUpWithEmailAndPassword = async (formData) => {
         name: name,
         lastChecked: 'null',
         bio: '',
-        postsId: [],
+        posts: [],
         likes: [],
-        savedPostsId: [],
+        savedPosts: [],
         phoneNumber: '',
         website: '',
         profileImage:
@@ -247,6 +247,26 @@ export const unlikePost = async (postId, userId) => {
     })
     await updateDoc(doc(db, 'posts', postId), {
       likes: arrayRemove(doc(db, 'users', userId)),
+    })
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const savePost = async (postId, userId) => {
+  try {
+    await updateDoc(doc(db, 'users', userId), {
+      savedPosts: arrayUnion(postId),
+    })
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const unsavePost = async (postId, userId) => {
+  try {
+    await updateDoc(doc(db, 'users', userId), {
+      savedPosts: arrayRemove(postId),
     })
   } catch (error) {
     console.log(error)
