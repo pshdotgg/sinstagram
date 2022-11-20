@@ -16,21 +16,23 @@ const Post = ({ postId }) => {
   const [post, setPost] = useState({})
 
   const [loading, setLoading] = useState(true)
-  const { media, likes, user, caption, comments } = post
 
-  const getPost = async () => {
-    setLoading(true)
-    try {
-      setPost(await getPostData(postId))
-    } catch (error) {
-      console.log(error)
-    }
-    setLoading(false)
-  }
   useEffect(() => {
+    const getPost = async () => {
+      setLoading(true)
+      try {
+        setPost(await getPostData(postId))
+      } catch (error) {
+        console.log(error)
+      }
+      setLoading(false)
+    }
     getPost()
   }, [])
+
   if (loading) return <PostSkeleton />
+  const { media, likes, user, caption, comments, createdAt } = post
+  console.log(likes)
 
   return (
     <div className='bg-white w-full '>
@@ -48,24 +50,19 @@ const Post = ({ postId }) => {
             <OptionsDialog />
           </div>
 
-          <div className='flex flex-col flex-grow overflow-x-hidden overflow-hidden border border-t-0 border-l-0 border-r-0 border-b-base-300 '>
-            <span
-              className='pt-1 px-6 '
-              dangerouslySetInnerHTML={{ __html: caption }}
-            ></span>
-            {comments.map((comment) => {
-              return (
-                <div key={comment.id}>
-                  <Link to={`/${comment.user.username}`}>
-                    <span>{comment.user.username}</span>
-                  </Link>
-                  <span>{comment.content}</span>
-                </div>
-              )
-            })}
+          <div className='flex flex-col flex-grow overflow-x-hidden overflow-y-scroll overflow-hidden pt-4 px-3 h-full border border-t-0 border-l-0 border-r-0 border-b-base-300 '>
+            <AuthorCaption
+              user={user}
+              createdAt={createdAt}
+              caption={caption}
+            />
+
+            {comments.map((comment) => (
+              <UserComment key={comment.id} comment={comment} />
+            ))}
           </div>
 
-          <div className='p-4 pb-2 '>
+          <div className='p-4 pb-2'>
             <div className='flex pb-2 gap-5 justify-between items-center '>
               <div className='flex gap-5 items-center'>
                 <LikeButton />
@@ -76,7 +73,6 @@ const Post = ({ postId }) => {
               </div>
               <SaveButton />
             </div>
-
             <span className='font-semibold'>
               {likes.length === 1 ? '1 like' : `${likes.length} likes`}
             </span>
@@ -89,6 +85,47 @@ const Post = ({ postId }) => {
           </div>
         </div>
       </article>
+    </div>
+  )
+}
+
+const AuthorCaption = ({ user, caption, createdAt }) => {
+  return (
+    <div className='flex'>
+      <div className='mr-4 avatar'>
+        <div className='w-10 h-10 rounded-full'>
+          <img src={user.profileImage} />
+        </div>
+      </div>
+      <div className='flex flex-col'>
+        <Link to={`/${user.username}`}>
+          <span className='font-semibold'>{user.username}</span>
+          <span
+            className='pt-1 px-6 '
+            dangerouslySetInnerHTML={{ __html: caption }}
+          />
+          <span className='text-gray-400 text-sm'>{createdAt}</span>
+        </Link>
+      </div>
+    </div>
+  )
+}
+
+const UserComment = ({ comment }) => {
+  return (
+    <div className='flex'>
+      <div className='mr-4 avatar'>
+        <div className='w-10 h-10 rounded-full'>
+          <img src={comment.user.profileImage} />
+        </div>
+      </div>
+      <div className='flex flex-col'>
+        <Link to={`/${comment.user.username}`}>
+          <span>{comment.user.username}</span>
+          <span className='pt-1 px-6 '>{comment.content}</span>
+          <span className='text-base-300 text-sm'>{comment.createdAt}</span>
+        </Link>
+      </div>
     </div>
   )
 }

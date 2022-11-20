@@ -193,27 +193,36 @@ export const setUserPosts = async (userId, media, caption) => {
 }
 
 export const getPostData = async (postId) => {
-  let post = {}
-
-  let postLikes = []
-  let postComments = []
-  console.log('running')
   const postSnapshot = await getDoc(doc(db, 'posts', postId))
-  post = { ...postSnapshot.data() }
+  const post = postSnapshot.data()
 
-  post.user = (await getDoc(post.userId)).data()
+  const ownerSnapshot = await getDoc(post.userId)
+  post.user = ownerSnapshot.data()
+  post.likes = await getPostLikes(post.likes)
+  post.comments = await getPostComments(post.comments)
 
-  post.likes.forEach(async (pl) => {
-    const plSnapshot = await getDoc(pl)
-    postLikes.push(plSnapshot.data())
-  })
-
-  post.comments.forEach(async (pc) => {
-    postComments.push({ ...pc, user: (await getDoc(pc.user)).data() })
-  })
-
-  post.likes = postLikes
-  post.comments = postComments
+  console.log('post from f', post)
 
   return post
+}
+
+export const getPostLikes = async (likesArr) => {
+  const likes = []
+  likesArr.forEach(async (like) => {
+    const likeSnapshot = await getDoc(like)
+    likes.push(likeSnapshot.data())
+  })
+
+  return likes
+}
+
+export const getPostComments = async (commentsArr) => {
+  const comments = []
+  commentsArr.forEach(async (comment) => {
+    const commentAuthorSnapshot = await getDoc(comment.user)
+    comment.user = await commentAuthorSnapshot.data()
+    comments.push({ ...comment, user: comment.user })
+  })
+
+  return comments
 }
