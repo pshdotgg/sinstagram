@@ -198,7 +198,7 @@ export const getPostData = async (postId) => {
 
   const ownerSnapshot = await getDoc(post.userId)
   post.user = ownerSnapshot.data()
-  post.likes = await getPostLikes(post.likes)
+  // post.likes = await getPostLikes(post.likes)
   post.comments = await getPostComments(post.comments)
 
   console.log('likess', post.likes)
@@ -206,21 +206,21 @@ export const getPostData = async (postId) => {
   return post
 }
 
-export const getPostLikes = async (likesArr) => {
-  const likes = []
-  likesArr.forEach(async (like) => {
-    const likeSnapshot = await getDoc(like)
-    likes.push(likeSnapshot.data())
-  })
+// export const getPostLikes = async (likesArr) => {
+//   const likes = []
+//   likesArr.forEach(async (like) => {
+//     const likeSnapshot = await getDoc(like)
+//     likes.push(likeSnapshot.data())
+//   })
 
-  return likes
-}
+//   return likes
+// }
 
 export const getPostComments = async (commentsArr) => {
   const comments = []
   commentsArr.forEach(async (comment) => {
     const commentAuthorSnapshot = await getDoc(comment.user)
-    comment.user = await commentAuthorSnapshot.data()
+    comment.user = commentAuthorSnapshot.data()
     comments.push({ ...comment, user: comment.user })
   })
 
@@ -230,10 +230,10 @@ export const getPostComments = async (commentsArr) => {
 export const likePost = async (postId, userId) => {
   try {
     await updateDoc(doc(db, 'users', userId), {
-      likes: arrayUnion(doc(db, 'posts', postId)),
+      likes: arrayUnion(postId),
     })
     await updateDoc(doc(db, 'posts', postId), {
-      likes: arrayUnion(doc(db, 'users', userId)),
+      likes: arrayUnion(userId),
     })
   } catch (error) {
     console.log(error)
@@ -243,10 +243,10 @@ export const likePost = async (postId, userId) => {
 export const unlikePost = async (postId, userId) => {
   try {
     await updateDoc(doc(db, 'users', userId), {
-      likes: arrayRemove(doc(db, 'posts', postId)),
+      likes: arrayRemove(postId),
     })
     await updateDoc(doc(db, 'posts', postId), {
-      likes: arrayRemove(doc(db, 'users', userId)),
+      likes: arrayRemove(userId),
     })
   } catch (error) {
     console.log(error)

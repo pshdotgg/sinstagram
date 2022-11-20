@@ -144,10 +144,9 @@ const UserComment = ({ comment }) => {
 
 const LikeButton = ({ likes, authorId, postId }) => {
   console.log(likes)
-  const { currentUserId } = useUserContext()
-  const isAlredyLiked = likes.some(({ uid }) => uid === currentUserId)
+  const { currentUserId, currentUser } = useUserContext()
+  const isAlredyLiked = currentUser.likes.includes(postId)
   const [liked, setLiked] = useState(isAlredyLiked)
-  console.log(liked)
 
   const Icon = liked ? (
     <BsHeartFill size={20} className='fill-red-500 animate-ping-once' />
