@@ -53,7 +53,7 @@ const ProfileTabs = ({ user, isOwner }) => {
           </a>
         )}
       </div>
-      {user.posts.length === 0 && <div className='md:hidden divider' />}
+      {user?.posts?.length === 0 && <div className='md:hidden divider' />}
       {value === 0 && <ProfilePosts user={user} isOwner={isOwner} />}
       {value === 1 && <SavedPosts user={user} />}
     </>
@@ -61,7 +61,7 @@ const ProfileTabs = ({ user, isOwner }) => {
 }
 
 const ProfilePosts = ({ user, isOwner }) => {
-  if (user.posts.length === 0)
+  if (user?.posts?.length === 0)
     return (
       <section className='pt-16'>
         <div className='flex flex-col gap-3 justify-center items-center'>
@@ -75,7 +75,7 @@ const ProfilePosts = ({ user, isOwner }) => {
   return (
     <section className='grid mt-5'>
       <div className='grid grid-cols-3 gap-1 md:gap-6'>
-        {user.posts.map((post) => (
+        {user?.posts?.map((post) => (
           <GridPost key={post.id} post={post} />
         ))}
       </div>

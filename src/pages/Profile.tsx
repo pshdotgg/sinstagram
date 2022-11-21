@@ -1,54 +1,76 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { BsGear } from 'react-icons/bs'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import Layout from '../components/shared/Layout'
 import ProfilePicture from '../components/shared/ProfilePicture'
 import ProfileTabs from '../components/profile/ProfileTabs'
-import { defaultCurrentUser } from '../data'
 import { signOutUser } from '../firebase'
 import { useUserContext } from '../contexts/userContext'
+import LoadingScreen from '../components/shared/LoadingScreen'
+import { getUserDoc, getUsers, getUserPosts, getSavedPosts } from '../firebase'
 
 const Profile = () => {
-  const { currentUser } = useUserContext()
-  const isOwner = true
+  const { username } = useParams()
+  const [user, setUser] = useState({})
+  const { currentUser, currentUserId } = useUserContext()
+  const [loading, setLoading] = useState(false)
+
   // const [showOptionsMenu, setOptionsMenu] = useState(false)
 
   // const handleOptionsMenuClick = () => {
   //   setOptionsMenu(true)
   // }
 
+  useEffect(() => {
+    const getUserProfile = async () => {
+      console.log('running')
+      setLoading(true)
+      const userId = (await getUsers())[username].uid
+      const tempUserProfile = await getUserDoc(userId)
+      tempUserProfile.posts = await getUserPosts(userId)
+      tempUserProfile.savedPosts = await getSavedPosts(userId)
+      setUser(tempUserProfile)
+      setLoading(false)
+    }
+
+    getUserProfile()
+  }, [])
+
+  if (loading) <LoadingScreen />
+  console.log(user)
+
+  const isOwner = user?.uid === currentUserId
+
   return (
-    <Layout
-      title={`${defaultCurrentUser.name} (@${defaultCurrentUser.username})`}
-    >
+    <Layout title={`${user.name} (@${user.username})` || 'Sinstagram'}>
       <section className='hidden md:flex gap-28'>
-        <ProfilePicture image={currentUser.profileImage} isOwner={isOwner} />
+        <ProfilePicture image={user.profileImage} isOwner={isOwner} />
         <div className='flex flex-col gap-8'>
           <ProfileNameSection
-            user={defaultCurrentUser}
+            user={user}
             isOwner={isOwner}
             // handleOptionsMenuClick={handleOptionsMenuClick}
           />
-          <PostCountSection user={defaultCurrentUser} />
-          <NameBioSection user={defaultCurrentUser} />
+          <PostCountSection user={user} />
+          <NameBioSection user={user} />
         </div>
       </section>
 
       <section className='md:hidden'>
         <div>
           <div className='flex gap-5'>
-            <ProfilePicture user={currentUser} isOwner={isOwner} />
+            <ProfilePicture user={user} isOwner={isOwner} />
             <ProfileNameSection
-              user={defaultCurrentUser}
+              user={user}
               isOwner={isOwner}
               // handleOptionsMenuClick={handleOptionsMenuClick}
             />
           </div>
-          <NameBioSection user={defaultCurrentUser} />
+          <NameBioSection user={user} />
         </div>
-        <PostCountSection user={defaultCurrentUser} />
+        <PostCountSection user={user} />
       </section>
-      {<ProfileTabs user={defaultCurrentUser} isOwner={isOwner} />}
+      {<ProfileTabs user={user} isOwner={isOwner} />}
     </Layout>
   )
 }
@@ -176,7 +198,7 @@ const PostCountSection = ({ user }) => {
         {options.map((option) => {
           return (
             <div key={option} className='flex flex-col items-center'>
-              <span className='font-semibold'>{user[option].length} </span>
+              <span className='font-semibold'>{user[option]?.length} </span>
               <span className='hidden md:inline-block'>{option}</span>
               <span className='md:hidden text-gray-500'>{option}</span>
             </div>

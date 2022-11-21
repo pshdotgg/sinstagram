@@ -70,6 +70,8 @@ export const createUserDocument = async (userAuth) => {
       likes: [],
       notifications: [],
       savedPosts: [],
+      followers: [],
+      following: [],
       phoneNumber: '',
       website: '',
       profileImage:
@@ -107,6 +109,8 @@ export const signUpWithEmailAndPassword = async (formData) => {
         likes: [],
         notifications: [],
         savedPosts: [],
+        followers: [],
+        following: [],
         phoneNumber: '',
         website: '',
         profileImage:
@@ -171,8 +175,22 @@ export const getUserPosts = async (userId) => {
 
   const userSnapshot = await getDoc(userDocRef)
 
-  userSnapshot.data().postsId.forEach(async (post) => {
+  userSnapshot.data().posts.forEach(async (post) => {
     const postSnapshot = await getDoc(post)
+    posts.push(postSnapshot.data())
+  })
+
+  return posts
+}
+
+export const getSavedPosts = async (userId) => {
+  const posts = []
+  const userDocRef = doc(db, 'users', userId)
+
+  const userSnapshot = await getDoc(userDocRef)
+
+  userSnapshot.data().savedPosts.forEach(async (post) => {
+    const postSnapshot = await getDoc(doc(db, 'posts', post))
     posts.push(postSnapshot.data())
   })
 
@@ -187,11 +205,16 @@ export const setUserPosts = async (userId, media, caption) => {
     userId: doc(db, 'users', userId),
     likes: [],
     comments: [],
+    id: '',
   }
 
   const postRef = await addDoc(collection(db, 'posts'), post)
   await updateDoc(doc(db, 'users', userId), {
-    postsId: arrayUnion(doc(db, 'posts', postRef.id)),
+    posts: arrayUnion(doc(db, 'posts', postRef.id)),
+  })
+
+  await updateDoc(doc(db, 'posts', postRef.id), {
+    id: postRef.id,
   })
 }
 
@@ -340,3 +363,9 @@ export const checkNotifications = async (userId) => {
     console.log(error)
   }
 }
+
+// export const getUserProfile = async (userId) => {
+//   const userSnapshot = await getDoc(doc(db, 'users', userId))
+//   const userProfile = userSnapshot.data()
+
+// }

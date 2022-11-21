@@ -7,7 +7,7 @@ const GridPost = ({ post }) => {
   const navigate = useNavigate()
 
   const handleOpenPostModal = () => {
-    navigate(`/p/${post.id}`, { state: { modal: true } })
+    navigate(`/p/${post?.id}`, { state: { modal: true } })
   }
 
   return (
@@ -15,7 +15,7 @@ const GridPost = ({ post }) => {
       <div className='absolute flex justify-center items-center gap-5 w-full h-full hover:bg-black hover:opacity-60 [&>div]:hover:opacity-100 hover:cursor-pointer'>
         <div className='flex gap-2 items-center opacity-0'>
           <BsHeartFill size={22} className='fill-white' />
-          <span className='text-white text-xl'>{post.likes}</span>
+          <span className='text-white text-xl'>{post?.likes?.length}</span>
         </div>
         <div className='flex gap-2 items-center opacity-0 '>
           :
@@ -25,7 +25,7 @@ const GridPost = ({ post }) => {
             fill-white
           '
           />
-          <span className='text-white text-xl'>{post.likes}</span>
+          <span className='text-white text-xl'>{post?.comments?.length}</span>
         </div>
       </div>
       <img src={post.media} alt='post cover' className='w-full' />
