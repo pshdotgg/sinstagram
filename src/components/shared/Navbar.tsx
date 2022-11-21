@@ -22,28 +22,18 @@ import { useNProgress } from '@tanem/react-nprogress'
 import { useUserContext } from '../../contexts/userContext'
 import Fuse from 'fuse.js'
 import AddPostDialog from '../post/AddPostDialog'
-import { getNotifications } from '../../firebase'
+import { getNotifications, checkNotifications } from '../../firebase'
+import { isAfter } from 'date-fns'
 
 const Navbar = () => {
   const location = useLocation()
   const path = location.pathname
   const [isLoadingPage, setIsLoadingPage] = useState(true)
-  const { currentUserId } = useUserContext()
-  const [notifications, setNotifications] = useState([])
-
-  useEffect(() => {
-    const getNotificationsData = async () => {
-      const tempNotifications = await getNotifications(currentUserId)
-      setNotifications(tempNotifications)
-    }
-    getNotificationsData()
-  }, [])
+  const { currentUser } = useUserContext()
 
   useEffect(() => {
     setIsLoadingPage(false)
   }, [path])
-
-  console.log(notifications)
 
   return (
     <div className='md:fixed bg-white w-full z-20'>
@@ -55,7 +45,7 @@ const Navbar = () => {
           </Link>
           <Search />
 
-          {!currentUserId ? (
+          {!currentUser ? (
             <div className='flex gap-2'>
               <Link to='/accounts/login'>
                 <button
@@ -166,13 +156,29 @@ const SearchCard = ({ results }) => {
 }
 
 const NavLinks = ({ path }) => {
-  const [showNotificationsTooltip, setShowNotificationsTooltip] = useState(true)
+  const { currentUser, currentUserId } = useUserContext()
+  const [notifications, setNotifications] = useState([])
+  const newNotifications = notifications.filter(({ createdAt }) =>
+    isAfter(new Date(createdAt), new Date(currentUser.lastChecked))
+  )
+  const hasNotifications = newNotifications.length > 0
+  const [showNotificationsTooltip, setShowNotificationsTooltip] =
+    useState(hasNotifications)
   const [showNotifications, setShowNotifications] = useState(false)
   const [media, setMedia] = useState(null)
   const [showAddPostDialog, setShowAddPostDialog] = useState(false)
   const notificationListRef = useRef(null)
   const inputRef = useRef()
-  const { currentUser } = useUserContext()
+
+  console.log('hasNot', hasNotifications)
+
+  useEffect(() => {
+    const getNotificationsData = async () => {
+      const tempNotifications = await getNotifications(currentUserId)
+      setNotifications(tempNotifications)
+    }
+    getNotificationsData()
+  }, [])
 
   const handleToggleNotifications = () => {
     setShowNotifications((prevShowNotifications) => !prevShowNotifications)
@@ -237,6 +243,7 @@ const NavLinks = ({ path }) => {
           onClick={() => {
             handleHideNotificationsTooltip()
             handleToggleNotifications()
+            checkNotifications(currentUserId)
           }}
         >
           {showNotifications ? (
@@ -246,9 +253,17 @@ const NavLinks = ({ path }) => {
           )}{' '}
         </div>
         {showNotificationsTooltip && (
-          <NotificationTooltip className='absolute -left-9 animate-ping-once' />
+          <NotificationTooltip
+            notifications={newNotifications}
+            className='absolute -left-9 animate-ping-once'
+          />
         )}
-        {showNotifications && <NotificationList className='-right-3 top-8' />}
+        {showNotifications && (
+          <NotificationList
+            notifications={notifications}
+            className='-right-3 top-8'
+          />
+        )}
       </div>
 
       <Link to={`/${currentUser.username}`}>

@@ -17,6 +17,7 @@ import {
   savePost,
   unsavePost,
   addComment,
+  getUserDoc,
 } from '../../firebase'
 import { useUserContext } from '../../contexts/userContext'
 
@@ -125,6 +126,16 @@ const AuthorCaption = ({ user, caption, createdAt }) => {
 }
 
 const UserComment = ({ comment }) => {
+  // const [user, setUser] = useState({})
+
+  // useEffect(() => {
+  //   const getUser = async () => {
+  //     const tempUser = await getUserDoc(comment.user.id)
+  //     setUser(tempUser)
+  //   }
+  //   getUser()
+  // }, [])
+
   return (
     <div className='flex'>
       <div className='mr-4 avatar'>

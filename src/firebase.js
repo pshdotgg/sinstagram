@@ -202,7 +202,11 @@ export const getPostData = async (postId) => {
   const ownerSnapshot = await getDoc(post.userId)
   post.user = ownerSnapshot.data()
   // post.likes = await getPostLikes(post.likes)
-  post.comments = await getPostComments(post.comments)
+  // post.comments = await getPostComments(post.comments)
+  post.comments.forEach(async (comment) => {
+    const commentAuthorSnapshot = await getDoc(comment.user)
+    comment.user = commentAuthorSnapshot.data()
+  })
 
   return post
 }
@@ -327,4 +331,12 @@ export const getNotifications = async (userId) => {
   })
 
   return notifications
+}
+
+export const checkNotifications = async (userId) => {
+  try {
+    await updateDoc(doc(db, 'users', userId), { lastChecked: Date.now() })
+  } catch (error) {
+    console.log(error)
+  }
 }
