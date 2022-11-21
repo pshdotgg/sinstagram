@@ -20,6 +20,7 @@ import {
   getUserDoc,
 } from '../../firebase'
 import { useUserContext } from '../../contexts/userContext'
+import { formatDateToNowShort, formatPostDate } from '../../utils/formatDate'
 
 const Post = ({ postId }) => {
   const [post, setPost] = useState({})
@@ -91,7 +92,7 @@ const Post = ({ postId }) => {
               {likes.length == 1 ? '1 like' : `${likes.length} likes`}
             </span>
 
-            <p className='text-xs text-gray-500'>4 DAYS AGO</p>
+            <p className='text-xs text-gray-500'>{formatPostDate(createdAt)}</p>
             <div className='py-0'>
               <div className='divider mt-2 mb-0' />
               <Comment postId={postId} />
@@ -118,7 +119,9 @@ const AuthorCaption = ({ user, caption, createdAt }) => {
             className='pt-1 px-6 '
             dangerouslySetInnerHTML={{ __html: caption }}
           />
-          <span className='text-gray-400 text-sm'>{createdAt}</span>
+          <span className='text-gray-400 text-sm'>
+            {formatDateToNowShort(createdAt)}
+          </span>
         </Link>
       </div>
     </div>
@@ -136,6 +139,8 @@ const UserComment = ({ comment }) => {
   //   getUser()
   // }, [])
 
+  console.log(comment)
+
   return (
     <div className='flex'>
       <div className='mr-4 avatar'>
@@ -147,7 +152,9 @@ const UserComment = ({ comment }) => {
         <Link to={`/${comment.user.username}`}>
           <span>{comment.user.username}</span>
           <span className='pt-1 px-6 '>{comment.content}</span>
-          <span className='text-base-300 text-sm'>{comment.createdAt}</span>
+          <span className='text-base-300 text-sm'>
+            {formatDateToNowShort(comment.createdAt)}
+          </span>
         </Link>
       </div>
     </div>
