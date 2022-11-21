@@ -12,6 +12,7 @@
     "@rooks/use-outside-click": "^4.11.2",
     "@tanem/react-nprogress": "^5.0.16",
     "daisyui": "^2.33.0",
+    "date-fns": "^2.29.3",
     "escape-html": "^1.0.3",
     "firebase": "^9.14.0",
     "fuse.js": "^6.6.2",

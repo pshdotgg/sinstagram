@@ -307,3 +307,24 @@ export const addComment = async (postId, userId, content) => {
     console.log(error)
   }
 }
+
+export const getNotifications = async (userId) => {
+  const userSnapshot = await getDoc(doc(db, 'users', userId))
+  const notifications = userSnapshot.data().notifications
+
+  notifications.forEach(async (notification) => {
+    const postSnapshot = await getDoc(doc(db, 'posts', notification.postId))
+    notification.post = {
+      postId: notification.postId,
+      media: postSnapshot.data().media,
+    }
+
+    notification.user = {
+      uid: userSnapshot.data().uid,
+      username: userSnapshot.data().username,
+      profileImage: userSnapshot.data().profileImage,
+    }
+  })
+
+  return notifications
+}
