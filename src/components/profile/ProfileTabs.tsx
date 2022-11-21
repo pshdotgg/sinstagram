@@ -53,7 +53,7 @@ const ProfileTabs = ({ user, isOwner }) => {
           </a>
         )}
       </div>
-      {user?.posts?.length === 0 && <div className='md:hidden divider' />}
+      {user.posts?.length === 0 && <div className='md:hidden divider' />}
       {value === 0 && <ProfilePosts user={user} isOwner={isOwner} />}
       {value === 1 && <SavedPosts user={user} />}
     </>
@@ -61,7 +61,7 @@ const ProfileTabs = ({ user, isOwner }) => {
 }
 
 const ProfilePosts = ({ user, isOwner }) => {
-  if (user?.posts?.length === 0)
+  if (user.posts?.length === 0)
     return (
       <section className='pt-16'>
         <div className='flex flex-col gap-3 justify-center items-center'>
@@ -75,23 +75,35 @@ const ProfilePosts = ({ user, isOwner }) => {
   return (
     <section className='grid mt-5'>
       <div className='grid grid-cols-3 gap-1 md:gap-6'>
-        {user?.posts?.map((post) => (
+        {user.posts?.map((post) => (
           <GridPost key={post.id} post={post} />
         ))}
       </div>
     </section>
   )
 }
-const SavedPosts = () => {
-  return (
-    <section className='pt-16'>
-      <div className='flex flex-col gap-3 justify-center items-center'>
-        <CiSaveDown1 size={80} />
-        <h4 className='font-semibold text-3xl'>Save</h4>
-        <div className='text-center text-[0.9rem] md:text-base'>
-          <p>Save photos and videos that you want to see again.</p>
-          <p>No one is notified, and only you can see what you've saved.</p>
+const SavedPosts = ({ user }) => {
+  if (user?.savedPosts?.length === 0) {
+    return (
+      <section className='pt-16'>
+        <div className='flex flex-col gap-3 justify-center items-center'>
+          <CiSaveDown1 size={80} />
+          <h4 className='font-semibold text-3xl'>Save</h4>
+          <div className='text-center text-[0.9rem] md:text-base'>
+            <p>Save photos and videos that you want to see again.</p>
+            <p>No one is notified, and only you can see what you've saved.</p>
+          </div>
         </div>
+      </section>
+    )
+  }
+
+  return (
+    <section className='grid mt-5'>
+      <div className='grid grid-cols-3 gap-1 md:gap-6'>
+        {user.savedPosts?.map((post) => (
+          <GridPost key={post.id} post={post} />
+        ))}
       </div>
     </section>
   )

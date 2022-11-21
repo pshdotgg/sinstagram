@@ -39,7 +39,7 @@ const PostModal = () => {
         onRequestClose={() => navigate(-1)}
         style={customStyles}
       >
-        <Post id={postId} />
+        <Post postId={postId} />
       </Modal>
       <div
         className='fixed top-0 right-0 cursor-pointer z-30 p-5'

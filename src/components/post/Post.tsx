@@ -89,7 +89,7 @@ const Post = ({ postId }) => {
               <SaveButton postId={postId} />
             </div>
             <span className='font-semibold'>
-              {likes.length == 1 ? '1 like' : `${likes.length} likes`}
+              {likes?.length == 1 ? '1 like' : `${likes?.length} likes`}
             </span>
 
             <p className='text-xs text-gray-500'>{formatPostDate(createdAt)}</p>
@@ -139,21 +139,19 @@ const UserComment = ({ comment }) => {
   //   getUser()
   // }, [])
 
-  console.log(comment)
-
   return (
     <div className='flex'>
       <div className='mr-4 avatar'>
         <div className='w-10 h-10 rounded-full'>
-          <img src={comment.user.profileImage} />
+          <img src={comment?.user?.profileImage} />
         </div>
       </div>
       <div className='flex flex-col'>
-        <Link to={`/${comment.user.username}`}>
-          <span>{comment.user.username}</span>
-          <span className='pt-1 px-6 '>{comment.content}</span>
+        <Link to={`/${comment?.user?.username}`}>
+          <span>{comment?.user?.username}</span>
+          <span className='pt-1 px-6 '>{comment?.content}</span>
           <span className='text-base-300 text-sm'>
-            {formatDateToNowShort(comment.createdAt)}
+            {formatDateToNowShort(comment?.createdAt)}
           </span>
         </Link>
       </div>
@@ -162,7 +160,6 @@ const UserComment = ({ comment }) => {
 }
 
 const LikeButton = ({ likes, postId, profileId }) => {
-  console.log(likes)
   const { currentUserId, currentUser } = useUserContext()
   const isAlredyLiked = currentUser.likes.includes(postId)
   const [liked, setLiked] = useState(isAlredyLiked)
