@@ -16,6 +16,7 @@ import {
   unlikePost,
   savePost,
   unsavePost,
+  addComment,
 } from '../../firebase'
 import { useUserContext } from '../../contexts/userContext'
 
@@ -39,8 +40,8 @@ const Post = ({ postId }) => {
 
   if (loading) return <PostSkeleton />
 
-  const { media, likes, user, caption, comments, createdAt } = post
-  console.log(post)
+  const { media, likes, comments, user, caption, createdAt } = post
+  console.log(comments)
 
   return (
     <div className='bg-white w-full '>
@@ -76,23 +77,23 @@ const Post = ({ postId }) => {
                 <LikeButton
                   likes={likes}
                   postId='gqcecmDaUpxtlCu8zzjr'
-                  authorId={user.uid}
+                  profileId={user.uid}
                 />
-                {/* <Link to={`/p/${id}`}>
+                <Link to={`/p/${postId}`}>
                   <FaRegComment size={20} />
-                </Link> */}
+                </Link>
                 <FaShare size={20} />
               </div>
               <SaveButton postId={postId} />
             </div>
             <span className='font-semibold'>
-              {likes.length === 1 ? '1 like' : `${likes.length} likes`}
+              {likes.length == 1 ? '1 like' : `${likes.length} likes`}
             </span>
 
             <p className='text-xs text-gray-500'>4 DAYS AGO</p>
             <div className='py-0'>
               <div className='divider mt-2 mb-0' />
-              <Comment />
+              <Comment postId={postId} />
             </div>
           </div>
         </div>
@@ -142,7 +143,7 @@ const UserComment = ({ comment }) => {
   )
 }
 
-const LikeButton = ({ likes, authorId, postId }) => {
+const LikeButton = ({ likes, postId, profileId }) => {
   console.log(likes)
   const { currentUserId, currentUser } = useUserContext()
   const isAlredyLiked = currentUser.likes.includes(postId)
@@ -156,12 +157,12 @@ const LikeButton = ({ likes, authorId, postId }) => {
 
   const handleLike = async () => {
     setLiked(true)
-    await likePost(postId, currentUserId)
+    await likePost(postId, currentUserId, profileId)
   }
 
   const handleUnlike = async () => {
     setLiked(false)
-    await unlikePost(postId, currentUserId)
+    await unlikePost(postId, currentUserId, profileId)
   }
 
   return (
@@ -200,8 +201,9 @@ const SaveButton = ({ postId }) => {
   )
 }
 
-const Comment = () => {
+const Comment = ({ postId }) => {
   const [content, setContent] = useState('')
+  const { currentUserId } = useUserContext()
 
   return (
     <div className='flex gap-5 px-2'>
@@ -216,6 +218,10 @@ const Comment = () => {
         disabled={!content.trim()}
         type='button'
         className='text-primary disabled:opacity-60 self-start'
+        onClick={async () => {
+          await addComment(postId, currentUserId, content)
+          setContent('')
+        }}
       >
         Post
       </button>

@@ -24,6 +24,7 @@ import {
   addDoc,
 } from 'firebase/firestore'
 import { getStorage } from 'firebase/storage'
+import { v4 as uuid } from 'uuid'
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBvlLhOh5ZnK3_k7SsIxyU-WHsrpOurl9o',
@@ -67,6 +68,7 @@ export const createUserDocument = async (userAuth) => {
       bio: '',
       posts: [],
       likes: [],
+      notifications: [],
       savedPosts: [],
       phoneNumber: '',
       website: '',
@@ -103,6 +105,7 @@ export const signUpWithEmailAndPassword = async (formData) => {
         bio: '',
         posts: [],
         likes: [],
+        notifications: [],
         savedPosts: [],
         phoneNumber: '',
         website: '',
@@ -201,20 +204,13 @@ export const getPostData = async (postId) => {
   // post.likes = await getPostLikes(post.likes)
   post.comments = await getPostComments(post.comments)
 
-  console.log('likess', post.likes)
-
   return post
 }
 
-// export const getPostLikes = async (likesArr) => {
-//   const likes = []
-//   likesArr.forEach(async (like) => {
-//     const likeSnapshot = await getDoc(like)
-//     likes.push(likeSnapshot.data())
-//   })
-
-//   return likes
-// }
+export const getPostLikes = async (postId) => {
+  const postSnapshot = await getDoc(doc(db, 'posts', postId))
+  return postSnapshot.data().likes
+}
 
 export const getPostComments = async (commentsArr) => {
   const comments = []
@@ -227,7 +223,7 @@ export const getPostComments = async (commentsArr) => {
   return comments
 }
 
-export const likePost = async (postId, userId) => {
+export const likePost = async (postId, userId, profileId) => {
   try {
     await updateDoc(doc(db, 'users', userId), {
       likes: arrayUnion(postId),
@@ -235,18 +231,41 @@ export const likePost = async (postId, userId) => {
     await updateDoc(doc(db, 'posts', postId), {
       likes: arrayUnion(userId),
     })
+
+    const notification = {
+      id: uuid(),
+      createdAt: Date.now(),
+      postId: postId,
+      type: 'like',
+      userId: userId,
+    }
+
+    await updateDoc(doc(db, 'users', profileId), {
+      notifications: arrayUnion(notification),
+    })
   } catch (error) {
     console.log(error)
   }
 }
 
-export const unlikePost = async (postId, userId) => {
+export const unlikePost = async (postId, userId, profileId) => {
   try {
     await updateDoc(doc(db, 'users', userId), {
       likes: arrayRemove(postId),
     })
     await updateDoc(doc(db, 'posts', postId), {
       likes: arrayRemove(userId),
+    })
+
+    const notificationsSnapshot = await getDoc(doc(db, 'users', profileId))
+    const notifications = notificationsSnapshot
+      .data()
+      .notifications.filter((notification) => notification.postId !== postId)
+
+    console.log(notifications)
+
+    await updateDoc(doc(db, 'users', profileId), {
+      notifications: notifications,
     })
   } catch (error) {
     console.log(error)
@@ -267,6 +286,22 @@ export const unsavePost = async (postId, userId) => {
   try {
     await updateDoc(doc(db, 'users', userId), {
       savedPosts: arrayRemove(postId),
+    })
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const addComment = async (postId, userId, content) => {
+  const comment = {
+    content: content,
+    createdAt: Date.now(),
+    id: uuid(),
+    user: doc(db, 'users', userId),
+  }
+  try {
+    await updateDoc(doc(db, 'posts', postId), {
+      comments: arrayUnion(comment),
     })
   } catch (error) {
     console.log(error)
