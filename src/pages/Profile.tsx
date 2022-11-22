@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { BsGear } from 'react-icons/bs'
+import { BsGear, BsWindowSidebar } from 'react-icons/bs'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import Layout from '../components/shared/Layout'
 import ProfilePicture from '../components/shared/ProfilePicture'
@@ -131,7 +131,7 @@ const ProfileNameSection = ({ user, isOwner }) => {
 
   return (
     <>
-      <section className='hidden md:flex items-center justify-between w-80 gap-10'>
+      <section className='hidden md:flex items-center justify-between gap-10'>
         <h2 className='text-base-900 text-3xl'>{user.username}</h2>
 
         {isOwner ? (
@@ -266,6 +266,7 @@ const OptionsMenu = () => {
     setShowLogoutMessage(true)
     await signOutUser()
     navigate('/accounts/login')
+    window.location.reload()
   }
   return (
     <>

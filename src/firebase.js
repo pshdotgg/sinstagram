@@ -72,6 +72,7 @@ export const createUserDocument = async (userAuth) => {
       savedPosts: [],
       followers: [],
       following: [],
+      createdAt: Date.now(),
       phoneNumber: '',
       website: '',
       profileImage:
@@ -111,6 +112,7 @@ export const signUpWithEmailAndPassword = async (formData) => {
         savedPosts: [],
         followers: [],
         following: [],
+        createdAt: Date.now(),
         phoneNumber: '',
         website: '',
         profileImage:
@@ -403,4 +405,14 @@ export const unfollowUser = async (userId, currentUserId) => {
   } catch (error) {
     console.log(error)
   }
+}
+
+export const suggestUsers = async (limit, following, currentUserId) => {
+  const tempUsers = Object.values(await getUsers())
+  console.log(following)
+  const users = tempUsers.filter(
+    (user) => !following.includes(user.uid) && currentUserId !== user.uid
+  )
+
+  return users.slice(0, limit)
 }

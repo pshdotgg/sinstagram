@@ -1,25 +1,42 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Slider from 'react-slick'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 import LoadingSpinner from './LoadingSpinner'
-import { getDefaultUser } from '../../data'
 import FollowButton from './FollowButton'
 import { Link } from 'react-router-dom'
+import { useUserContext } from '../../contexts/userContext'
+import { suggestUsers } from '../../firebase'
 
 const FollowSuggestions = ({ hideHeader }) => {
+  const { currentUser, currentUserId } = useUserContext()
+  const [users, setUsers] = useState([])
+
+  useEffect(() => {
+    const getSuggestedUsers = async () => {
+      const tempUsers = await suggestUsers(
+        10,
+        currentUser.following,
+        currentUserId
+      )
+      setUsers(tempUsers)
+    }
+
+    getSuggestedUsers()
+  }, [])
+
   let loading = false
   return (
     <div>
       {!hideHeader && (
         <h3 className='text-gray-500 m-2 md:ml-0'>Suggestions For You</h3>
       )}
-      {loading ? <LoadingSpinner /> : <FollowSlider />}
+      {loading ? <LoadingSpinner /> : <FollowSlider users={users} />}
     </div>
   )
 }
 
-const FollowSlider = () => {
+const FollowSlider = ({ users }) => {
   const settings = {
     infinite: true,
     speed: 1000,
@@ -37,22 +54,22 @@ const FollowSlider = () => {
       className='grid pt-2.5 pb-5 px-0 mb-5 mr-0 bg-white rounded border border-[#e6e6e6] border-t-0 '
       {...settings}
     >
-      {Array.from({ length: 10 }, () => getDefaultUser()).map((user) => (
-        <FollowSuggestionsItem key={user.id} user={user} />
+      {users.map((user) => (
+        <FollowSuggestionsItem key={user.uid} user={user} />
       ))}
     </Slider>
   )
 }
 
 const FollowSuggestionsItem = ({ user }) => {
-  const { username, name, profile_image } = user
+  const { uid, username, name, profileImage } = user
 
   return (
     <div className='card card-bordered w-44 md:w-52 gap-0 pt-5 bg-white shadow ml-4 items-center rounded'>
       <Link to={`/${username}`}>
         <div className='avatar'>
           <div className='w-16 rounded-full'>
-            <img src={profile_image} alt='user profile' />
+            <img src={profileImage} alt='user profile' />
           </div>
         </div>
       </Link>
@@ -64,7 +81,7 @@ const FollowSuggestionsItem = ({ user }) => {
 
         <span className='text-gray-500 text-sm'>{name}</span>
         <div className='card-actions'>
-          <FollowButton />
+          <FollowButton id={uid} />
         </div>
       </div>
     </div>

@@ -76,7 +76,7 @@ const ProfilePosts = ({ user, isOwner }) => {
     <section className='grid mt-5'>
       <div className='grid grid-cols-3 gap-1 md:gap-6'>
         {user.posts?.map((post) => (
-          <GridPost key={post.id} post={post} />
+          <GridPost key={post?.id} post={post} />
         ))}
       </div>
     </section>
@@ -102,7 +102,7 @@ const SavedPosts = ({ user }) => {
     <section className='grid mt-5'>
       <div className='grid grid-cols-3 gap-1 md:gap-6'>
         {user.savedPosts?.map((post) => (
-          <GridPost key={post.id} post={post} />
+          <GridPost key={post?.id} post={post} />
         ))}
       </div>
     </section>
