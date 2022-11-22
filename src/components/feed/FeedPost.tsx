@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   FaRegComment,
   FaShare,
@@ -11,11 +11,21 @@ import UserCard from '../shared/UserCard'
 import FollowSuggestions from '../shared/FollowSuggestions'
 import OptionsDialog from '../shared/OptionsDialog'
 import FeedPostSkeleton from './FeedPostSkeleton'
+import { getUserDoc } from '../../firebase'
 
 const FeedPost = ({ post, index }) => {
-  const { id, media, likes, user, caption, comments } = post
+  const { id, media, likes, userId, caption, comments } = post
+  const [user, setUser] = useState({})
   const [showCaption, setShowCaption] = useState(false)
   const showFollowSuggestions = index === 1
+
+  useEffect(() => {
+    const getUser = async () => {
+      setUser(await getUserDoc(userId))
+    }
+
+    getUser()
+  }, [])
 
   return (
     <>

@@ -461,11 +461,11 @@ export const getFeed = async (currentUserId, following) => {
   const feedIds = [...following, currentUserId]
   const feedPosts = []
 
-  for (const user of feedIds) {
-    const userPosts = await getUserPosts(user)
-    feedPosts.push(...userPosts)
-  }
+  const collectionRef = collection(db, 'posts')
+  const q = query(collectionRef, where('userId', 'in', feedIds))
+  const querySnapshot = await getDocs(q)
 
+  querySnapshot.forEach((doc) => feedPosts.push(doc.data()))
   feedPosts.sort((a, b) => b.createdAt - a.createdAt)
 
   return feedPosts
