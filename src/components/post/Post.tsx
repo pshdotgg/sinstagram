@@ -17,14 +17,13 @@ import {
   savePost,
   unsavePost,
   addComment,
-  getUserDoc,
 } from '../../firebase'
 import { useUserContext } from '../../contexts/userContext'
 import { formatDateToNowShort, formatPostDate } from '../../utils/formatDate'
 
 const Post = ({ postId }) => {
-  const [post, setPost] = useState({})
-  const [loading, setLoading] = useState(true)
+  const [post, setPost] = useState()
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     const getPost = async () => {
@@ -40,9 +39,10 @@ const Post = ({ postId }) => {
     getPost()
   }, [])
 
-  if (loading) return <PostSkeleton />
+  if (loading || !post) return <PostSkeleton />
 
   const { media, likes, comments, user, caption, createdAt } = post
+  console.log(post)
 
   return (
     <div className='bg-white w-full '>
@@ -67,7 +67,7 @@ const Post = ({ postId }) => {
               caption={caption}
             />
 
-            {comments.map((comment) => (
+            {comments?.map((comment) => (
               <UserComment key={comment.id} comment={comment} />
             ))}
           </div>
@@ -77,8 +77,8 @@ const Post = ({ postId }) => {
               <div className='flex gap-5 items-center'>
                 <LikeButton
                   likes={likes}
-                  postId='gqcecmDaUpxtlCu8zzjr'
-                  profileId={user.uid}
+                  postId={postId}
+                  profileId={user?.uid}
                 />
                 <Link to={`/p/${postId}`}>
                   <FaRegComment size={20} />

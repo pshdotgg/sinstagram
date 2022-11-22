@@ -29,22 +29,28 @@ const Profile = () => {
   // }
 
   useEffect(() => {
+    if (Object.keys(user).length === 0) setLoading(true)
+
     const getUserProfile = async () => {
-      console.log('running')
-      setLoading(true)
-      const userId = await users[username].uid
-      const tempUserProfile = await getUserDoc(userId)
-      tempUserProfile.posts = await getUserPosts(userId)
-      tempUserProfile.savedPosts = await getSavedPosts(userId)
-      setUser(tempUserProfile)
+      try {
+        const userId = await users[username].uid
+        const tempUserProfile = await getUserDoc(userId)
+        tempUserProfile.posts = await getUserPosts(userId)
+        tempUserProfile.savedPosts = await getSavedPosts(userId)
+        setUser(tempUserProfile)
+      } catch (error) {
+        console.log(error)
+      }
+
       setLoading(false)
     }
 
     getUserProfile()
   }, [])
 
-  const isOwner = user?.uid === currentUserId
   if (loading) <LoadingScreen />
+
+  const isOwner = user?.uid === currentUserId
 
   return (
     <Layout title={`${user.name} (@${user.username})` || 'Sinstagram'}>

@@ -178,10 +178,10 @@ export const getUserPosts = async (userId) => {
 
   const userSnapshot = await getDoc(userDocRef)
 
-  userSnapshot.data().posts.forEach(async (post) => {
-    const postSnapshot = await getDoc(doc(db, 'posts', post))
+  for (const postId of userSnapshot.data().posts) {
+    const postSnapshot = await getDoc(doc(db, 'posts', postId))
     posts.unshift(postSnapshot.data())
-  })
+  }
 
   return posts
 }
@@ -192,10 +192,10 @@ export const getSavedPosts = async (userId) => {
 
   const userSnapshot = await getDoc(userDocRef)
 
-  userSnapshot.data().savedPosts.forEach(async (post) => {
-    const postSnapshot = await getDoc(doc(db, 'posts', post))
+  for (const postId of userSnapshot.data().savedPosts) {
+    const postSnapshot = await getDoc(doc(db, 'posts', postId))
     posts.unshift(postSnapshot.data())
-  })
+  }
 
   return posts
 }
@@ -225,15 +225,15 @@ export const getPostData = async (postId) => {
   const postSnapshot = await getDoc(doc(db, 'posts', postId))
   const post = postSnapshot.data()
 
-  const ownerSnapshot = await getDoc(post.userId)
+  const ownerSnapshot = await getDoc(doc(db, 'users', post.userId))
   post.user = ownerSnapshot.data()
   // post.likes = await getPostLikes(post.likes)
   // post.comments = await getPostComments(post.comments)
-  post.comments.forEach(async (comment) => {
-    const commentAuthorSnapshot = await getDoc(comment.user)
-    comment.user = commentAuthorSnapshot.data()
-  })
 
+  for (const comment of post.comments) {
+    const commentAuthorSnapshot = await getDoc(doc(db, 'users', comment.userId))
+    comment.user = commentAuthorSnapshot.data()
+  }
   return post
 }
 
@@ -242,16 +242,17 @@ export const getPostLikes = async (postId) => {
   return postSnapshot.data().likes
 }
 
-export const getPostComments = async (commentsArr) => {
-  const comments = []
-  commentsArr.forEach(async (comment) => {
-    const commentAuthorSnapshot = await getDoc(comment.user)
-    comment.user = commentAuthorSnapshot.data()
-    comments.push({ ...comment, user: comment.user })
-  })
+// export const getPostComments = async (commentsArr) => {
+//   const comments = []
 
-  return comments
-}
+//   commentsArr.forEach(async (comment) => {
+//     const commentAuthorSnapshot = await getDoc(doc, 'user', comment.userId)
+//     comment.user = commentAuthorSnapshot.data()
+//     comments.push({ ...comment, user: comment.user })
+//   })
+
+//   return comments
+// }
 
 export const likePost = async (postId, userId, profileId) => {
   try {
@@ -325,7 +326,8 @@ export const addComment = async (postId, userId, content) => {
     content: content,
     createdAt: Date.now(),
     id: uuid(),
-    user: doc(db, 'users', userId),
+    userId: userId,
+    user: {},
   }
   try {
     await updateDoc(doc(db, 'posts', postId), {
@@ -340,7 +342,7 @@ export const getNotifications = async (userId) => {
   const currentUserSnapshot = await getDoc(doc(db, 'users', userId))
   const notifications = currentUserSnapshot.data().notifications
 
-  notifications.forEach(async (notification) => {
+  for (const notification of notifications) {
     if (notification.type === 'like') {
       const postSnapshot = await getDoc(doc(db, 'posts', notification.postId))
       notification.post = {
@@ -355,7 +357,7 @@ export const getNotifications = async (userId) => {
       username: userSnapshot.data().username,
       profileImage: userSnapshot.data().profileImage,
     }
-  })
+  }
 
   return notifications.filter((notification) => notification.userId !== userId)
 }
@@ -434,7 +436,15 @@ export const getExplorePosts = async (currentUserId, following) => {
   querySnapshot.forEach((doc) => {
     if (doc.data().userId !== currentUserId) posts.push(doc.data())
   })
+
   posts.sort((a, b) => b.createdAt - a.createdAt)
+
+  return posts
+}
+
+export const getMorePostsFromUser = async (userId, postId) => {
+  const userPosts = await getUserPosts(userId)
+  const posts = userPosts.filter((post) => post.id !== postId)
 
   return posts
 }

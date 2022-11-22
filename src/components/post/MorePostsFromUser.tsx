@@ -1,11 +1,27 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { getDefaultPost, defaultUser } from '../../data'
+import { defaultUser } from '../../data'
 import GridPost from '../shared/GridPost'
 import LoadingSpinner from '../shared/LoadingSpinner'
+import { getMorePostsFromUser, getPostData } from '../../firebase'
+import { useUserContext } from '../../contexts/userContext'
 
-const MorePostsFromUser = () => {
-  let loading = false
+const MorePostsFromUser = ({ postId }) => {
+  const [posts, setPosts] = useState([])
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    const getPosts = async () => {
+      const userId = (await getPostData(postId)).userId
+      const tempPosts = await getMorePostsFromUser(userId, postId)
+      setPosts(tempPosts)
+    }
+
+    getPosts()
+  }, [])
+
+  if (posts.length === 0) return <LoadingSpinner />
+
   return (
     <div className='mt-8'>
       <h3 className='mb-2'>
@@ -19,7 +35,7 @@ const MorePostsFromUser = () => {
       ) : (
         <article className='grid'>
           <div className='grid md:grid-cols-3 gap-5 md:gap-6'>
-            {Array.from({ length: 6 }, () => getDefaultPost()).map((post) => {
+            {posts.map((post) => {
               return <GridPost key={post.id} post={post} />
             })}
           </div>
