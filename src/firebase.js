@@ -181,7 +181,9 @@ export const getUserPosts = async (userId) => {
 
   for (const postId of userSnapshot.data().posts) {
     const postSnapshot = await getDoc(doc(db, 'posts', postId))
-    posts.unshift(postSnapshot.data())
+    const tempPost = postSnapshot.data()
+    tempPost.user = await getUserDoc(userId)
+    posts.unshift(tempPost)
   }
 
   return posts
@@ -243,10 +245,10 @@ export const getPostData = async (postId) => {
   // post.likes = await getPostLikes(post.likes)
   // post.comments = await getPostComments(post.comments)
 
-  for (const comment of post.comments) {
-    const commentAuthorSnapshot = await getDoc(doc(db, 'users', comment.userId))
-    comment.user = commentAuthorSnapshot.data()
-  }
+  // for (const comment of post.comments) {
+  //   const commentAuthorSnapshot = await getDoc(doc(db, 'users', comment.userId))
+  //   comment.user = commentAuthorSnapshot.data()
+  // }
   return post
 }
 
@@ -335,12 +337,18 @@ export const unsavePost = async (postId, userId) => {
 }
 
 export const addComment = async (postId, userId, content) => {
+  const userInfo = await getUserDoc(userId)
+  const { username, profileImage, uid } = userInfo
   const comment = {
     content: content,
     createdAt: Date.now(),
     id: uuid(),
     userId: userId,
-    user: {},
+    user: {
+      username,
+      profileImage,
+      uid,
+    },
   }
   try {
     await updateDoc(doc(db, 'posts', postId), {
@@ -460,4 +468,18 @@ export const getMorePostsFromUser = async (userId, postId) => {
   const posts = userPosts.filter((post) => post.id !== postId)
 
   return posts
+}
+
+export const getFeed = async (currentUserId, following) => {
+  const feedIds = [...following, currentUserId]
+  const feedPosts = []
+
+  for (const user of feedIds) {
+    const userPosts = await getUserPosts(user)
+    feedPosts.push(...userPosts)
+  }
+
+  feedPosts.sort((a, b) => b.createdAt - a.createdAt)
+
+  return feedPosts
 }

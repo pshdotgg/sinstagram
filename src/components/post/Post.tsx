@@ -25,6 +25,7 @@ import LoadingSpinner from '../shared/LoadingSpinner'
 const Post = ({ postId }) => {
   const [post, setPost] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [totalLikes, setTotalLikes] = useState(0)
 
   useEffect(() => {
     const getPost = async () => {
@@ -32,6 +33,7 @@ const Post = ({ postId }) => {
       try {
         const tempPost = await getPostData(postId)
         setPost(tempPost)
+        setTotalLikes(tempPost.likes.length)
       } catch (error) {
         console.log(error)
       }
@@ -42,7 +44,7 @@ const Post = ({ postId }) => {
 
   if (loading || !post) return <PostSkeleton />
 
-  const { media, likes, comments, user, caption, createdAt } = post
+  const { media, comments, user, caption, createdAt } = post
 
   return (
     <div className='bg-white w-full '>
@@ -80,9 +82,9 @@ const Post = ({ postId }) => {
             <div className='flex pb-2 gap-5 justify-between items-center '>
               <div className='flex gap-5 items-center'>
                 <LikeButton
-                  likes={likes}
                   postId={postId}
                   profileId={user?.uid}
+                  setTotalLikes={setTotalLikes}
                 />
                 <Link to={`/p/${postId}`}>
                   <FaRegComment size={20} />
@@ -92,7 +94,7 @@ const Post = ({ postId }) => {
               <SaveButton postId={postId} />
             </div>
             <span className='font-semibold'>
-              {likes?.length == 1 ? '1 like' : `${likes?.length} likes`}
+              {totalLikes == 1 ? '1 like' : `${totalLikes} likes`}
             </span>
 
             <p className='text-xs text-gray-500'>{formatPostDate(createdAt)}</p>
@@ -162,7 +164,7 @@ const UserComment = ({ comment }) => {
   )
 }
 
-const LikeButton = ({ likes, postId, profileId }) => {
+const LikeButton = ({ postId, profileId, setTotalLikes }) => {
   const { currentUserId, currentUser } = useUserContext()
   const isAlredyLiked = currentUser.likes.includes(postId)
   const [liked, setLiked] = useState(isAlredyLiked)
@@ -175,11 +177,13 @@ const LikeButton = ({ likes, postId, profileId }) => {
 
   const handleLike = async () => {
     setLiked(true)
+    setTotalLikes((prev) => prev + 1)
     await likePost(postId, currentUserId, profileId)
   }
 
   const handleUnlike = async () => {
     setLiked(false)
+    setTotalLikes((prev) => prev - 1)
     await unlikePost(postId, currentUserId, profileId)
   }
 

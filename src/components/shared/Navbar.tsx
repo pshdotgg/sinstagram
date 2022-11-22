@@ -136,11 +136,13 @@ const SearchCard = ({ results }) => {
       <div className='card w-full bg-base-100 shadow-xl rounded -mt-5'>
         <div className='card-body p-0 m-0'>
           {results.map((result) => {
-            console.log(result.item)
             return (
               <div key={result.item.uid}>
                 <Link to={`/${result.item.username}`}>
-                  <div className='cursor-pointer hover:bg-base-300 p-4 pb-0 -mt-2'>
+                  <div
+                    className='cursor-pointer hover:bg-base-300 p-4 pb-0 -mt-2'
+                    onClick={() => window.location.reload()}
+                  >
                     <UserCard user={result.item} />
                   </div>
                 </Link>
