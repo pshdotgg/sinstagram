@@ -10,6 +10,7 @@ import isEmail from 'validator/lib/isEmail'
 import isMobilePhone from 'validator/lib/isMobilePhone'
 import { setUserDoc, updateUserEmail, getUsers } from '../firebase'
 import handleImageUpload from '../utils/handleImageUpload'
+import LoadingSpinner from '../components/shared/LoadingSpinner'
 
 const EditProfile = () => {
   const navigate = useNavigate()
@@ -19,17 +20,21 @@ const EditProfile = () => {
   const { users } = useUserContext()
   const [profileImage, setProfileImage] = useState(currentUser.profileImage)
   const { register, handleSubmit } = useForm({ mode: 'onBlur' })
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const onSubmit = async (data) => {
     setError('')
     if (currentUser.username === data.username || !(data.username in users)) {
       try {
+        setIsSubmitting(true)
         setProfileUpdated(false)
         await updateUserEmail(data.email)
         await setUserDoc(currentUserId, data)
         setProfileUpdated(true)
+        setIsSubmitting(false)
         setTimeout(() => {
           setProfileUpdated(false)
+
           navigate(0)
         }, 2000)
       } catch (error) {
@@ -46,9 +51,11 @@ const EditProfile = () => {
 
     try {
       setProfileUpdated(false)
+      setIsSubmitting(true)
       await setUserDoc(currentUserId, { profileImage: url })
       setProfileImage(url)
       setProfileUpdated(true)
+      setIsSubmitting(false)
       setTimeout(() => {
         setProfileUpdated(false)
       }, 2000)
@@ -177,10 +184,9 @@ const EditProfile = () => {
               type='submit'
               className='py-3 px-4 mt-1 md:ml-32 bg-primary text-white rounded w-32'
             >
-              Submit
+              {isSubmitting ? <LoadingSpinner /> : 'Submit'}
             </button>
           </form>
-          {console.log(profileUpdated)}
           {profileUpdated && (
             <div className='toast toast-center'>
               <div className='alert text-white bg-gray-700 w-max mb-5'>

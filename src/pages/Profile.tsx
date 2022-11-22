@@ -44,7 +44,6 @@ const Profile = () => {
   }, [])
 
   if (loading) <LoadingScreen />
-  console.log(user)
 
   const isOwner = user?.uid === currentUserId
 
