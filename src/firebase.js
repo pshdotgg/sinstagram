@@ -407,12 +407,9 @@ export const unfollowUser = async (userId, currentUserId) => {
   }
 }
 
-export const suggestUsers = async (limit, following, currentUserId) => {
+export const suggestUsers = async (limit, currentUserId) => {
   const tempUsers = Object.values(await getUsers())
-  console.log(following)
-  const users = tempUsers.filter(
-    (user) => !following.includes(user.uid) && currentUserId !== user.uid
-  )
+  const users = tempUsers.filter((user) => currentUserId !== user.uid)
 
   return users.slice(0, limit)
 }

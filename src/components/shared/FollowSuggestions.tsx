@@ -9,16 +9,12 @@ import { useUserContext } from '../../contexts/userContext'
 import { suggestUsers } from '../../firebase'
 
 const FollowSuggestions = ({ hideHeader }) => {
-  const { currentUser, currentUserId } = useUserContext()
+  const { currentUserId } = useUserContext()
   const [users, setUsers] = useState([])
 
   useEffect(() => {
     const getSuggestedUsers = async () => {
-      const tempUsers = await suggestUsers(
-        10,
-        currentUser.following,
-        currentUserId
-      )
+      const tempUsers = await suggestUsers(10, currentUserId)
       setUsers(tempUsers)
     }
 
