@@ -1,11 +1,27 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { getDefaultUser } from '../../data'
 import FollowButton from '../shared/FollowButton'
 import UserCard from '../shared/UserCard'
 import LoadingSpinner from '../shared/LoadingSpinner'
+import { suggestUsers } from '../../firebase'
+import { useUserContext } from '../../contexts/userContext'
 
 const FeedSideSuggestions = () => {
-  let loading = false
+  const { currentUser, currentUserId } = useUserContext()
+  const [users, setUsers] = useState([])
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    const getSuggestedUsers = async () => {
+      setLoading(true)
+      const tempUsers = await suggestUsers(5, currentUserId)
+      setUsers(tempUsers)
+      setLoading(false)
+    }
+
+    getSuggestedUsers()
+  }, [])
+
   return (
     <article className='card bg-white rounded'>
       <div className='card-body p-5'>
@@ -13,11 +29,11 @@ const FeedSideSuggestions = () => {
         {loading ? (
           <LoadingSpinner />
         ) : (
-          Array.from({ length: 5 }, () => getDefaultUser()).map((user) => {
+          users.map((user) => {
             return (
               <div key={user.id} className='flex justify-between items-center'>
                 <UserCard user={user} />
-                <FollowButton side />
+                <FollowButton id={user.uid} side />
               </div>
             )
           })

@@ -11,17 +11,19 @@ import { suggestUsers } from '../../firebase'
 const FollowSuggestions = ({ hideHeader }) => {
   const { currentUserId } = useUserContext()
   const [users, setUsers] = useState([])
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     const getSuggestedUsers = async () => {
+      setLoading(true)
       const tempUsers = await suggestUsers(10, currentUserId)
       setUsers(tempUsers)
+      setLoading(false)
     }
 
     getSuggestedUsers()
   }, [])
 
-  let loading = false
   return (
     <div>
       {!hideHeader && (
