@@ -22,7 +22,7 @@ import { useUserContext } from '../../contexts/userContext'
 import { formatDateToNowShort, formatPostDate } from '../../utils/formatDate'
 
 const Post = ({ postId }) => {
-  const [post, setPost] = useState()
+  const [post, setPost] = useState(null)
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
@@ -42,7 +42,6 @@ const Post = ({ postId }) => {
   if (loading || !post) return <PostSkeleton />
 
   const { media, likes, comments, user, caption, createdAt } = post
-  console.log(post)
 
   return (
     <div className='bg-white w-full '>
@@ -57,7 +56,11 @@ const Post = ({ postId }) => {
         <div className='flex flex-col'>
           <div className='flex justify-between items-center p-4 py-10 h-16 mr-0 border border-t-0 border-r-0 border-b-base-300 border-l-base-200'>
             <UserCard user={user} />
-            <OptionsDialog />
+            <OptionsDialog
+              postId={postId}
+              authorId={user.uid}
+              username={user.username}
+            />
           </div>
 
           <div className='flex flex-col flex-grow overflow-x-hidden overflow-y-scroll overflow-hidden pt-4 px-3 h-full border border-t-0 border-l-0 border-r-0 border-b-base-300 '>

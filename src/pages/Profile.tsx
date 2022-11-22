@@ -9,7 +9,6 @@ import { useUserContext } from '../contexts/userContext'
 import LoadingScreen from '../components/shared/LoadingScreen'
 import {
   getUserDoc,
-  getUsers,
   getUserPosts,
   getSavedPosts,
   followUser,
@@ -29,9 +28,8 @@ const Profile = () => {
   // }
 
   useEffect(() => {
-    if (Object.keys(user).length === 0) setLoading(true)
-
     const getUserProfile = async () => {
+      setLoading(true)
       try {
         const userId = await users[username].uid
         const tempUserProfile = await getUserDoc(userId)
@@ -70,7 +68,7 @@ const Profile = () => {
       <section className='md:hidden'>
         <div>
           <div className='flex gap-5'>
-            <ProfilePicture user={user} isOwner={isOwner} />
+            <ProfilePicture image={user.profileImage} isOwner={isOwner} />
             <ProfileNameSection
               user={user}
               isOwner={isOwner}
@@ -99,6 +97,12 @@ const ProfileNameSection = ({ user, isOwner }) => {
     setShowUnfollowDialog(true)
     await followUser(user.uid, currentUserId)
   }
+
+  useEffect(() => {
+    setIsFollowing(isAlreadyFollowing)
+  }, [isAlreadyFollowing])
+
+  console.log('isFollowing', isFollowing)
 
   if (isFollowing) {
     followButton = (

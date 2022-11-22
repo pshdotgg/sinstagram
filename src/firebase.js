@@ -23,6 +23,7 @@ import {
   arrayRemove,
   addDoc,
   where,
+  deleteDoc,
 } from 'firebase/firestore'
 import { getStorage } from 'firebase/storage'
 import { v4 as uuid } from 'uuid'
@@ -219,6 +220,18 @@ export const setUserPosts = async (userId, media, caption) => {
   await updateDoc(doc(db, 'posts', postRef.id), {
     id: postRef.id,
   })
+}
+
+export const deleteUserPost = async (userId, postId) => {
+  try {
+    await deleteDoc(doc(db, 'posts', postId))
+    await updateDoc(doc(db, 'users', userId), {
+      posts: arrayRemove(postId),
+      savedPosts: arrayRemove(postId),
+    })
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 export const getPostData = async (postId) => {
