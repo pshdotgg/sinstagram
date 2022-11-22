@@ -115,7 +115,7 @@ const AuthorCaption = ({ user, caption, createdAt }) => {
         <Link to={`/${user.username}`}>
           <span className='font-semibold'>{user.username}</span>
           <span
-            className='pt-1 px-6 '
+            className='pt-1 px-2 '
             dangerouslySetInnerHTML={{ __html: caption }}
           />
           <span className='text-gray-400 text-sm'>
