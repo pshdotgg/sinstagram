@@ -1,33 +1,37 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { defaultUser } from '../../data'
 import GridPost from '../shared/GridPost'
 import LoadingSpinner from '../shared/LoadingSpinner'
-import { getMorePostsFromUser, getPostData } from '../../firebase'
-import { useUserContext } from '../../contexts/userContext'
+import { getMorePostsFromUser, getPostData, getUserDoc } from '../../firebase'
 
 const MorePostsFromUser = ({ postId }) => {
   const [posts, setPosts] = useState([])
+  const [username, setUsername] = useState('')
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     const getPosts = async () => {
-      const userId = (await getPostData(postId)).userId
-      const tempPosts = await getMorePostsFromUser(userId, postId)
-      setPosts(tempPosts)
+      try {
+        setLoading(true)
+        const userId = (await getPostData(postId)).userId
+        setUsername((await getUserDoc(userId)).username)
+        const tempPosts = await getMorePostsFromUser(userId, postId)
+        setPosts(tempPosts)
+        setLoading(false)
+      } catch (error) {
+        console.log(error)
+      }
     }
 
     getPosts()
   }, [])
 
-  if (posts.length === 0) return <LoadingSpinner />
-
   return (
     <div className='mt-8'>
       <h3 className='mb-2'>
         More Posts from{' '}
-        <Link to={`/${defaultUser.username}`} className='font-bold'>
-          {defaultUser.username}
+        <Link to={`/${username}`} className='font-bold'>
+          {username}
         </Link>
       </h3>
       {loading ? (
