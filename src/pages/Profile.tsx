@@ -131,7 +131,7 @@ const ProfileNameSection = ({ user, isOwner }) => {
 
   return (
     <>
-      <section className='hidden md:flex items-center justify-between gap-10'>
+      <section className='hidden md:flex items-center justify-between max-w-[382px] gap-10'>
         <h2 className='text-base-900 text-3xl'>{user.username}</h2>
 
         {isOwner ? (

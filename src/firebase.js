@@ -179,7 +179,7 @@ export const getUserPosts = async (userId) => {
 
   userSnapshot.data().posts.forEach(async (post) => {
     const postSnapshot = await getDoc(post)
-    posts.push(postSnapshot.data())
+    posts.unshift(postSnapshot.data())
   })
 
   return posts
@@ -193,7 +193,7 @@ export const getSavedPosts = async (userId) => {
 
   userSnapshot.data().savedPosts.forEach(async (post) => {
     const postSnapshot = await getDoc(doc(db, 'posts', post))
-    posts.push(postSnapshot.data())
+    posts.unshift(postSnapshot.data())
   })
 
   return posts

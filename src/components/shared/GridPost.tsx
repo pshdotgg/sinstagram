@@ -28,7 +28,11 @@ const GridPost = ({ post }) => {
           <span className='text-white text-xl'>{post?.comments?.length}</span>
         </div>
       </div>
-      <img src={post?.media} alt='post cover' className='w-full' />
+      <img
+        src={post?.media}
+        alt='post cover'
+        className='w-[350px] h-[350px] object-cover'
+      />
     </div>
   )
 }
