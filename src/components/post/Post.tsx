@@ -20,6 +20,7 @@ import {
 } from '../../firebase'
 import { useUserContext } from '../../contexts/userContext'
 import { formatDateToNowShort, formatPostDate } from '../../utils/formatDate'
+import LoadingSpinner from '../shared/LoadingSpinner'
 
 const Post = ({ postId }) => {
   const [post, setPost] = useState(null)
@@ -221,6 +222,7 @@ const SaveButton = ({ postId }) => {
 const Comment = ({ postId }) => {
   const [content, setContent] = useState('')
   const { currentUserId } = useUserContext()
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   return (
     <div className='flex gap-5 px-2'>
@@ -236,11 +238,13 @@ const Comment = ({ postId }) => {
         type='button'
         className='text-primary disabled:opacity-60 self-start'
         onClick={async () => {
+          setIsSubmitting(true)
           await addComment(postId, currentUserId, content)
           setContent('')
+          setIsSubmitting(false)
         }}
       >
-        Post
+        {isSubmitting ? <LoadingSpinner /> : 'Post'}
       </button>
     </div>
   )
