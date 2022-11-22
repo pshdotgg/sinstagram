@@ -7,7 +7,14 @@ import ProfileTabs from '../components/profile/ProfileTabs'
 import { signOutUser } from '../firebase'
 import { useUserContext } from '../contexts/userContext'
 import LoadingScreen from '../components/shared/LoadingScreen'
-import { getUserDoc, getUsers, getUserPosts, getSavedPosts } from '../firebase'
+import {
+  getUserDoc,
+  getUsers,
+  getUserPosts,
+  getSavedPosts,
+  followUser,
+  unfollowUser,
+} from '../firebase'
 
 const Profile = () => {
   const { username } = useParams()
@@ -77,28 +84,34 @@ const Profile = () => {
 
 const ProfileNameSection = ({ user, isOwner }) => {
   const [showUnfollowDialog, setShowUnfollowDialog] = useState(true)
-
+  const { currentUser, currentUserId } = useUserContext()
+  const isAlreadyFollowing = currentUser.following?.includes(user.uid)
+  const [isFollowing, setIsFollowing] = useState(isAlreadyFollowing)
+  const isFollower = !isFollowing && currentUser?.followers?.includes(user.uid)
   let followButton
-  const isFollowing = false
-  const isFollower = false
+
+  const handleFollowUser = async () => {
+    setIsFollowing(true)
+    setShowUnfollowDialog(true)
+    await followUser(user.uid, currentUserId)
+  }
 
   if (isFollowing) {
     followButton = (
-      <>
-        <label
-          htmlFor='unfollow-dialog'
-          className='btn btn-outline btn-sm text-gray-900 font-semibold px-3
+      <label
+        htmlFor='unfollow-dialog'
+        className='btn btn-outline btn-sm text-gray-900 font-semibold px-3
           rounded normal-case bg-base-200 border-gray-300 hover:border-gray-300
           hover:bg-base-200 hover:text-gray-900'
-        >
-          Following
-        </label>
-      </>
+      >
+        Following
+      </label>
     )
   } else if (isFollower) {
     followButton = (
       <button
         type='button'
+        onClick={handleFollowUser}
         className='btn btn-outline btn-sm text-gray-900 font-semibold px-3 rounded normal-case bg-base-200 border-gray-300 hover:border-gray-300 hover:bg-base-200 hover:text-gray-900'
       >
         Follow Back
@@ -108,6 +121,7 @@ const ProfileNameSection = ({ user, isOwner }) => {
     followButton = (
       <button
         type='button'
+        onClick={handleFollowUser}
         className='btn btn-outline btn-sm text-gray-900 font-semibold px-6 rounded normal-case bg-base-200 border-gray-300 hover:border-gray-300 hover:bg-base-200 hover:text-gray-900'
       >
         Follow
@@ -117,7 +131,7 @@ const ProfileNameSection = ({ user, isOwner }) => {
 
   return (
     <>
-      <section className='hidden md:flex items-center justify-between w-80   gap-16'>
+      <section className='hidden md:flex items-center justify-between w-80 gap-10'>
         <h2 className='text-base-900 text-3xl'>{user.username}</h2>
 
         {isOwner ? (
@@ -126,7 +140,7 @@ const ProfileNameSection = ({ user, isOwner }) => {
             <Link to='/accounts/edit'>
               <button
                 type='button'
-                className='btn btn-outline btn-sm text-gray-900 font-semibold px-3 rounded normal-case bg-base-200 border-gray-300 hover:border-gray-300 hover:bg-base-200 hover:text-gray-900'
+                className='btn btn-outline btn-sm text-gray-900 flex-1 font-semibold px-3 rounded normal-case bg-base-200 border-gray-300 hover:border-gray-300 hover:bg-base-200 hover:text-gray-900'
               >
                 Edit Profile
               </button>
@@ -153,12 +167,26 @@ const ProfileNameSection = ({ user, isOwner }) => {
           </button>
         </Link>
       </section>
-      {showUnfollowDialog && <UnfollowDialog user={user} />}
+      {showUnfollowDialog && (
+        <UnfollowDialog
+          user={user}
+          setIsFollowing={setIsFollowing}
+          setShowUnfollowDialog={setShowUnfollowDialog}
+        />
+      )}
     </>
   )
 }
 
-const UnfollowDialog = ({ user }) => {
+const UnfollowDialog = ({ user, setIsFollowing, setShowUnfollowDialog }) => {
+  const { currentUser, currentUserId } = useUserContext()
+
+  const handleUnfollowUser = async () => {
+    setIsFollowing(false)
+    setShowUnfollowDialog(false)
+    await unfollowUser(user.uid, currentUserId)
+  }
+
   return (
     <>
       <input type='checkbox' id='unfollow-dialog' className='modal-toggle' />
@@ -169,7 +197,7 @@ const UnfollowDialog = ({ user }) => {
         >
           <div className='avatar'>
             <div className='w-32 rounded-full'>
-              <img src={user.profile_image} alt='user avatar' />
+              <img src={user.profileImage} alt='user avatar' />
             </div>
           </div>
 
@@ -177,7 +205,11 @@ const UnfollowDialog = ({ user }) => {
             Unfollow <span className='font-semibold'>@{user.username}</span>?
           </span>
           <div className='divider my-2' />
-          <button className='text-red-600 font-semibold' type='button'>
+          <button
+            onClick={handleUnfollowUser}
+            className='text-red-600 font-semibold'
+            type='button'
+          >
             Unfollow
           </button>
           <div className='divider  my-2' />

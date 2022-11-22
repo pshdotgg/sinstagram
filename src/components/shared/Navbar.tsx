@@ -130,7 +130,6 @@ const Search = () => {
 }
 
 const SearchCard = ({ results }) => {
-  console.log(results)
   return (
     <div className='absolute top-8 w-full flex flex-col gap-0 justify-center items-center m-0'>
       <RiArrowUpSFill size={50} className='fill-white p-0' />
@@ -240,10 +239,10 @@ const NavLinks = ({ path }) => {
       </Link>
       <div className='cursor-pointer relative' ref={notificationListRef}>
         <div
-          onClick={() => {
+          onClick={async () => {
             handleHideNotificationsTooltip()
             handleToggleNotifications()
-            checkNotifications(currentUserId)
+            await checkNotifications(currentUserId)
           }}
         >
           {showNotifications ? (

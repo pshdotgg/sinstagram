@@ -284,12 +284,10 @@ export const unlikePost = async (postId, userId, profileId) => {
       likes: arrayRemove(userId),
     })
 
-    const notificationsSnapshot = await getDoc(doc(db, 'users', profileId))
-    const notifications = notificationsSnapshot
+    const userSnapshot = await getDoc(doc(db, 'users', profileId))
+    const notifications = userSnapshot
       .data()
       .notifications.filter((notification) => notification.postId !== postId)
-
-    console.log(notifications)
 
     await updateDoc(doc(db, 'users', profileId), {
       notifications: notifications,
@@ -364,8 +362,45 @@ export const checkNotifications = async (userId) => {
   }
 }
 
-// export const getUserProfile = async (userId) => {
-//   const userSnapshot = await getDoc(doc(db, 'users', userId))
-//   const userProfile = userSnapshot.data()
+export const followUser = async (userId, currentUserId) => {
+  try {
+    await updateDoc(doc(db, 'users', currentUserId), {
+      following: arrayUnion(userId),
+    })
 
-// }
+    await updateDoc(doc(db, 'users', userId), {
+      followers: arrayUnion(currentUserId),
+      notifications: arrayUnion({
+        id: uuid(),
+        createdAt: Date.now(),
+        postId: null,
+        type: 'follow',
+        userId: currentUserId,
+      }),
+    })
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const unfollowUser = async (userId, currentUserId) => {
+  try {
+    await updateDoc(doc(db, 'users', currentUserId), {
+      following: arrayRemove(userId),
+    })
+
+    const userSnapshot = await getDoc(doc(db, 'users', userId))
+    const notifications = userSnapshot
+      .data()
+      .notifications.filter(
+        (notification) => notification.userId !== currentUserId
+      )
+
+    await updateDoc(doc(db, 'users', userId), {
+      followers: arrayRemove(currentUserId),
+      notifications: notifications,
+    })
+  } catch (error) {
+    console.log(error)
+  }
+}
