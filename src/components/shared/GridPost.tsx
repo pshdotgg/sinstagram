@@ -31,7 +31,7 @@ const GridPost = ({ post }) => {
       <img
         src={post?.media}
         alt='post cover'
-        className='w-[350px] h-[350px] object-cover'
+        className='object-cover aspect-square'
       />
     </div>
   )

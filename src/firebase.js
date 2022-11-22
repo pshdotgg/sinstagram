@@ -175,16 +175,16 @@ export const getUsers = async () => {
 
 export const getUserPosts = async (userId) => {
   const posts = []
-  const userDocRef = doc(db, 'users', userId)
 
-  const userSnapshot = await getDoc(userDocRef)
+  const collectionRef = collection(db, 'posts')
+  const q = query(collectionRef, where('userId', '==', userId))
+  const querySnapshot = await getDocs(q)
 
-  for (const postId of userSnapshot.data().posts) {
-    const postSnapshot = await getDoc(doc(db, 'posts', postId))
-    const tempPost = postSnapshot.data()
+  querySnapshot.forEach(async (doc) => {
+    const tempPost = doc.data()
     tempPost.user = await getUserDoc(userId)
     posts.unshift(tempPost)
-  }
+  })
 
   return posts
 }
@@ -242,13 +242,7 @@ export const getPostData = async (postId) => {
 
   const ownerSnapshot = await getDoc(doc(db, 'users', post.userId))
   post.user = ownerSnapshot.data()
-  // post.likes = await getPostLikes(post.likes)
-  // post.comments = await getPostComments(post.comments)
 
-  // for (const comment of post.comments) {
-  //   const commentAuthorSnapshot = await getDoc(doc(db, 'users', comment.userId))
-  //   comment.user = commentAuthorSnapshot.data()
-  // }
   return post
 }
 
@@ -422,8 +416,13 @@ export const unfollowUser = async (userId, currentUserId) => {
 }
 
 export const suggestUsers = async (limit, currentUserId) => {
-  const tempUsers = Object.values(await getUsers())
-  const users = tempUsers.filter((user) => currentUserId !== user.uid)
+  const users = []
+
+  const collectionRef = collection(db, 'users')
+  const q = query(collectionRef, where('uid', '!=', currentUserId))
+  const querySnapshot = await getDocs(q)
+
+  querySnapshot.forEach((doc) => users.push(doc.data()))
 
   return users.slice(0, limit)
 }

@@ -103,7 +103,7 @@ const SavedPosts = ({ user }) => {
 
   return (
     <section className='grid mt-5'>
-      <div className='grid grid-cols-3 gap-1 md:gap-6'>
+      <div className='grid grid-cols-3 gap-2'>
         {user.savedPosts?.map((post) => (
           <GridPost key={post?.id} post={post} />
         ))}

@@ -31,7 +31,7 @@ const Profile = () => {
     const getUserProfile = async () => {
       setLoading(true)
       try {
-        const userId = await users[username].uid
+        const userId = await users[username]?.uid
         const tempUserProfile = await getUserDoc(userId)
         tempUserProfile.posts = await getUserPosts(userId)
         tempUserProfile.savedPosts = await getSavedPosts(userId)
