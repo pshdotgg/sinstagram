@@ -22,6 +22,7 @@ import {
   arrayUnion,
   arrayRemove,
   addDoc,
+  where,
 } from 'firebase/firestore'
 import { getStorage } from 'firebase/storage'
 import { v4 as uuid } from 'uuid'
@@ -178,7 +179,7 @@ export const getUserPosts = async (userId) => {
   const userSnapshot = await getDoc(userDocRef)
 
   userSnapshot.data().posts.forEach(async (post) => {
-    const postSnapshot = await getDoc(post)
+    const postSnapshot = await getDoc(doc(db, 'posts', post))
     posts.unshift(postSnapshot.data())
   })
 
@@ -204,7 +205,7 @@ export const setUserPosts = async (userId, media, caption) => {
     createdAt: Date.now(),
     media: media,
     caption: caption,
-    userId: doc(db, 'users', userId),
+    userId: userId,
     likes: [],
     comments: [],
     id: '',
@@ -212,7 +213,7 @@ export const setUserPosts = async (userId, media, caption) => {
 
   const postRef = await addDoc(collection(db, 'posts'), post)
   await updateDoc(doc(db, 'users', userId), {
-    posts: arrayUnion(doc(db, 'posts', postRef.id)),
+    posts: arrayUnion(postRef.id),
   })
 
   await updateDoc(doc(db, 'posts', postRef.id), {
@@ -336,16 +337,19 @@ export const addComment = async (postId, userId, content) => {
 }
 
 export const getNotifications = async (userId) => {
-  const userSnapshot = await getDoc(doc(db, 'users', userId))
-  const notifications = userSnapshot.data().notifications
+  const currentUserSnapshot = await getDoc(doc(db, 'users', userId))
+  const notifications = currentUserSnapshot.data().notifications
 
   notifications.forEach(async (notification) => {
-    const postSnapshot = await getDoc(doc(db, 'posts', notification.postId))
-    notification.post = {
-      postId: notification.postId,
-      media: postSnapshot.data().media,
+    if (notification.type === 'like') {
+      const postSnapshot = await getDoc(doc(db, 'posts', notification.postId))
+      notification.post = {
+        postId: notification.postId,
+        media: postSnapshot.data().media,
+      }
     }
 
+    const userSnapshot = await getDoc(doc(db, 'users', notification.userId))
     notification.user = {
       uid: userSnapshot.data().uid,
       username: userSnapshot.data().username,
@@ -353,7 +357,7 @@ export const getNotifications = async (userId) => {
     }
   })
 
-  return notifications
+  return notifications.filter((notification) => notification.userId !== userId)
 }
 
 export const checkNotifications = async (userId) => {
@@ -412,4 +416,25 @@ export const suggestUsers = async (limit, currentUserId) => {
   const users = tempUsers.filter((user) => currentUserId !== user.uid)
 
   return users.slice(0, limit)
+}
+
+export const getExplorePosts = async (currentUserId, following) => {
+  const collectionRef = collection(db, 'posts')
+  const posts = []
+  let q
+
+  if (following.length > 0) {
+    q = query(collectionRef, where('userId', 'not-in', following))
+  } else {
+    q = query(collectionRef)
+  }
+
+  const querySnapshot = await getDocs(q)
+
+  querySnapshot.forEach((doc) => {
+    if (doc.data().userId !== currentUserId) posts.push(doc.data())
+  })
+  posts.sort((a, b) => b.createdAt - a.createdAt)
+
+  return posts
 }

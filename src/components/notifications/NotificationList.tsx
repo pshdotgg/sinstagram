@@ -5,6 +5,7 @@ import { formatDateToNowShort } from '../../utils/formatDate'
 import FollowButton from '../shared/FollowButton'
 
 const NotificationList = ({ notifications, className = '' }) => {
+  console.log(notifications)
   return (
     <div
       className={`absolute flex flex-col gap-0 justify-center items-end m-0 z-10 ${className}`}
@@ -73,7 +74,7 @@ const NotificationList = ({ notifications, className = '' }) => {
                     {isFollow && <FollowButton id={notification.user.uid} />}
                   </div>
                 </div>
-                <div className='divider -my-1 -mb-4'></div>
+                <div className='divider -my-1 -mb-2'></div>
               </div>
             )
           })}

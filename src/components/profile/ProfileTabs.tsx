@@ -3,9 +3,12 @@ import { FaRegBookmark } from 'react-icons/fa'
 import { MdGridOn } from 'react-icons/md'
 import { CiSaveDown1 } from 'react-icons/ci'
 import GridPost from '../shared/GridPost'
+import LoadingSpinner from '../shared/LoadingSpinner'
 
 const ProfileTabs = ({ user, isOwner }) => {
   const [value, setValue] = React.useState(0)
+
+  if (!user.posts) return <LoadingSpinner />
 
   return (
     <>
@@ -53,7 +56,7 @@ const ProfileTabs = ({ user, isOwner }) => {
           </a>
         )}
       </div>
-      {user.posts?.length === 0 && <div className='md:hidden divider' />}
+      {user.posts.length === 0 && <div className='md:hidden divider' />}
       {value === 0 && <ProfilePosts user={user} isOwner={isOwner} />}
       {value === 1 && <SavedPosts user={user} />}
     </>

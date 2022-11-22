@@ -43,7 +43,6 @@ const Post = ({ postId }) => {
   if (loading) return <PostSkeleton />
 
   const { media, likes, comments, user, caption, createdAt } = post
-  console.log(comments)
 
   return (
     <div className='bg-white w-full '>

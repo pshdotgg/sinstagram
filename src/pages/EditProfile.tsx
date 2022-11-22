@@ -8,7 +8,7 @@ import { useUserContext } from '../contexts/userContext'
 import isURL from 'validator/lib/isURL'
 import isEmail from 'validator/lib/isEmail'
 import isMobilePhone from 'validator/lib/isMobilePhone'
-import { setUserDoc, updateUserEmail, getUsers } from '../firebase'
+import { setUserDoc, updateUserEmail } from '../firebase'
 import handleImageUpload from '../utils/handleImageUpload'
 import LoadingSpinner from '../components/shared/LoadingSpinner'
 

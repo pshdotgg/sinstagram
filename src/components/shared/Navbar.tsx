@@ -169,8 +169,6 @@ const NavLinks = ({ path }) => {
   const notificationListRef = useRef(null)
   const inputRef = useRef()
 
-  console.log('hasNot', hasNotifications)
-
   useEffect(() => {
     const getNotificationsData = async () => {
       const tempNotifications = await getNotifications(currentUserId)

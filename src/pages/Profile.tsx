@@ -19,7 +19,7 @@ import {
 const Profile = () => {
   const { username } = useParams()
   const [user, setUser] = useState({})
-  const { currentUser, currentUserId } = useUserContext()
+  const { currentUser, currentUserId, users } = useUserContext()
   const [loading, setLoading] = useState(false)
 
   // const [showOptionsMenu, setOptionsMenu] = useState(false)
@@ -32,7 +32,7 @@ const Profile = () => {
     const getUserProfile = async () => {
       console.log('running')
       setLoading(true)
-      const userId = (await getUsers())[username].uid
+      const userId = await users[username].uid
       const tempUserProfile = await getUserDoc(userId)
       tempUserProfile.posts = await getUserPosts(userId)
       tempUserProfile.savedPosts = await getSavedPosts(userId)
@@ -43,9 +43,8 @@ const Profile = () => {
     getUserProfile()
   }, [])
 
-  if (loading) <LoadingScreen />
-
   const isOwner = user?.uid === currentUserId
+  if (loading) <LoadingScreen />
 
   return (
     <Layout title={`${user.name} (@${user.username})` || 'Sinstagram'}>
