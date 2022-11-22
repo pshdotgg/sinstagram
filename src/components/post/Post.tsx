@@ -137,7 +137,6 @@ const AuthorCaption = ({ user, caption, createdAt }) => {
 }
 
 const UserComment = ({ comment }) => {
-  console.log(comment)
   return (
     <div className='flex'>
       <div className='mr-4 avatar'>
@@ -220,7 +219,6 @@ const SaveButton = ({ postId }) => {
 const Comment = ({ postId, setComments }) => {
   const [content, setContent] = useState('')
   const { currentUserId, currentUser } = useUserContext()
-  // const [comment, setComment] = useState({})
 
   const handleSubmitComment = async () => {
     const comment = {
@@ -234,8 +232,7 @@ const Comment = ({ postId, setComments }) => {
         uid: currentUserId,
       },
     }
-    // setComment(tempCommen)
-    // console.log(tempComment)
+
     setComments((prev) => {
       return [...prev, comment]
     })

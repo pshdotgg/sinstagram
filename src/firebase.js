@@ -336,20 +336,7 @@ export const unsavePost = async (postId, userId) => {
   }
 }
 
-export const addComment = async (postId, userId, content) => {
-  const userInfo = await getUserDoc(userId)
-  const { username, profileImage, uid } = userInfo
-  const comment = {
-    content: content,
-    createdAt: Date.now(),
-    id: uuid(),
-    userId: userId,
-    user: {
-      username,
-      profileImage,
-      uid,
-    },
-  }
+export const addComment = async (postId, comment) => {
   try {
     await updateDoc(doc(db, 'posts', postId), {
       comments: arrayUnion(comment),

@@ -42,20 +42,23 @@ const FeedPost = ({ post, index }) => {
           </div>
 
           <span className='font-semibold'>
-            {likes === 1 ? '1 like' : `${likes} likes`}
+            {likes.length === 1 ? '1 like' : `${likes.length} likes`}
           </span>
           <div className='flex flex-col mb-0'>
-            <Link to={`/${user.username}`} className='font-bold '>
+            <Link to={`/${user.username}`} className='font-bold inline-block'>
               {`${user.username} `}
             </Link>
             {showCaption ? (
               <p dangerouslySetInnerHTML={{ __html: caption }}></p>
             ) : (
-              <div className='inline-block -mb-5'>
+              <div className='inline-block'>
                 {caption.length >= 45 ? (
                   `${caption.slice(0, 45)}...   `
                 ) : (
-                  <p dangerouslySetInnerHTML={{ __html: caption }}></p>
+                  <p
+                    dangerouslySetInnerHTML={{ __html: caption }}
+                    className='-mb-5'
+                  ></p>
                 )}
                 <button
                   type='button'
@@ -70,7 +73,7 @@ const FeedPost = ({ post, index }) => {
           <Link to={`/p/${id}`} className='text-gray-500 text-sm'>
             View all {comments.length} comments
           </Link>
-          {comments.map((comment) => {
+          {comments?.map((comment) => {
             return (
               <div key={comment.id}>
                 <Link to={`/${comment.user.username}`}>

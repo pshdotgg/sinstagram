@@ -31,7 +31,7 @@ const FeedSideSuggestions = () => {
         ) : (
           users.map((user) => {
             return (
-              <div key={user.id} className='flex justify-between items-center'>
+              <div key={user.uid} className='flex justify-between items-center'>
                 <UserCard user={user} />
                 <FollowButton id={user.uid} side />
               </div>
