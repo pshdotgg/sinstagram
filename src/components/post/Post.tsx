@@ -21,11 +21,13 @@ import {
 import { useUserContext } from '../../contexts/userContext'
 import { formatDateToNowShort, formatPostDate } from '../../utils/formatDate'
 import LoadingSpinner from '../shared/LoadingSpinner'
+import { v4 as uuid } from 'uuid'
 
 const Post = ({ postId }) => {
   const [post, setPost] = useState(null)
   const [loading, setLoading] = useState(false)
   const [totalLikes, setTotalLikes] = useState(0)
+  const [comments, setComments] = useState([])
 
   useEffect(() => {
     const getPost = async () => {
@@ -34,6 +36,7 @@ const Post = ({ postId }) => {
         const tempPost = await getPostData(postId)
         setPost(tempPost)
         setTotalLikes(tempPost.likes.length)
+        setComments(tempPost.comments)
       } catch (error) {
         console.log(error)
       }
@@ -44,7 +47,7 @@ const Post = ({ postId }) => {
 
   if (loading || !post) return <PostSkeleton />
 
-  const { media, comments, user, caption, createdAt } = post
+  const { media, user, caption, createdAt } = post
 
   return (
     <div className='bg-white w-full '>
@@ -100,7 +103,7 @@ const Post = ({ postId }) => {
             <p className='text-xs text-gray-500'>{formatPostDate(createdAt)}</p>
             <div className='py-0'>
               <div className='divider mt-2 mb-0' />
-              <Comment postId={postId} />
+              <Comment postId={postId} setComments={setComments} />
             </div>
           </div>
         </div>
@@ -134,16 +137,7 @@ const AuthorCaption = ({ user, caption, createdAt }) => {
 }
 
 const UserComment = ({ comment }) => {
-  // const [user, setUser] = useState({})
-
-  // useEffect(() => {
-  //   const getUser = async () => {
-  //     const tempUser = await getUserDoc(comment.user.id)
-  //     setUser(tempUser)
-  //   }
-  //   getUser()
-  // }, [])
-
+  console.log(comment)
   return (
     <div className='flex'>
       <div className='mr-4 avatar'>
@@ -223,10 +217,31 @@ const SaveButton = ({ postId }) => {
   )
 }
 
-const Comment = ({ postId }) => {
+const Comment = ({ postId, setComments }) => {
   const [content, setContent] = useState('')
-  const { currentUserId } = useUserContext()
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const { currentUserId, currentUser } = useUserContext()
+  // const [comment, setComment] = useState({})
+
+  const handleSubmitComment = async () => {
+    const comment = {
+      content: content,
+      createdAt: Date.now(),
+      id: uuid(),
+      userId: currentUserId,
+      user: {
+        username: currentUser.username,
+        profileImage: currentUser.profileImage,
+        uid: currentUserId,
+      },
+    }
+    // setComment(tempCommen)
+    // console.log(tempComment)
+    setComments((prev) => {
+      return [...prev, comment]
+    })
+    setContent('')
+    await addComment(postId, comment)
+  }
 
   return (
     <div className='flex gap-5 px-2'>
@@ -241,14 +256,9 @@ const Comment = ({ postId }) => {
         disabled={!content.trim()}
         type='button'
         className='text-primary disabled:opacity-60 self-start'
-        onClick={async () => {
-          setIsSubmitting(true)
-          await addComment(postId, currentUserId, content)
-          setContent('')
-          setIsSubmitting(false)
-        }}
+        onClick={handleSubmitComment}
       >
-        {isSubmitting ? <LoadingSpinner /> : 'Post'}
+        Post
       </button>
     </div>
   )
