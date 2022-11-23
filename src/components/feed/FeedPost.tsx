@@ -70,7 +70,7 @@ const FeedPost = ({ post, index }) => {
               </Link>
               <FaShare size={20} />
             </div>
-            <SaveButton />
+            <SaveButton postId={id} />
           </div>
 
           <span className='font-semibold'>
@@ -160,16 +160,20 @@ const LikeButton = ({ postId, profileId, setTotalLikes }) => {
   )
 }
 
-const SaveButton = () => {
-  const [saved, setSaved] = useState(false)
+const SaveButton = ({ postId }) => {
+  const { currentUserId, currentUser } = useUserContext()
+  const isAlreadySaved = currentUser.savedPosts.includes(postId)
+  const [saved, setSaved] = useState(isAlreadySaved)
   const Icon = saved ? <FaBookmark size={20} /> : <FaRegBookmark size={20} />
 
-  const handleSave = () => {
+  const handleSave = async () => {
     setSaved(true)
+    await savePost(postId, currentUserId)
   }
 
-  const handleRemove = () => {
+  const handleRemove = async () => {
     setSaved(false)
+    await unsavePost(postId, currentUserId)
   }
 
   return (
