@@ -7,36 +7,38 @@ import { useUserContext } from '../../contexts/userContext'
 const ExploreGrid = () => {
   const { currentUser, currentUserId } = useUserContext()
   const [posts, setPosts] = useState([])
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const getExplorePostsData = async () => {
-      setLoading(true)
-      const tempPosts = await getExplorePosts(
-        currentUserId,
-        currentUser.following
-      )
-      setPosts(tempPosts)
-      setLoading(false)
+      try {
+        setLoading(true)
+        const tempPosts = await getExplorePosts(
+          currentUserId,
+          currentUser?.following
+        )
+        setPosts(tempPosts)
+        setLoading(false)
+      } catch (error) {
+        console.log(error)
+      }
     }
 
     getExplorePostsData()
   }, [])
 
+  if (loading) return <LoadingSpinner size={28} />
+
   return (
     <div>
       <h3 className='text-gray-500  mb-2'>Explore</h3>
-      {loading ? (
-        <LoadingSpinner size={28} />
-      ) : (
-        <article className='grid'>
-          <div className='grid md:grid-cols-3 gap-5 md:gap-6'>
-            {posts.map((post) => {
-              return <GridPost key={post.id} post={post} />
-            })}
-          </div>
-        </article>
-      )}
+      <article className='grid'>
+        <div className='grid md:grid-cols-3 gap-5 md:gap-6'>
+          {posts.map((post) => {
+            return <GridPost key={post.id} post={post} />
+          })}
+        </div>
+      </article>
     </div>
   )
 }

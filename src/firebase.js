@@ -419,18 +419,23 @@ export const getExplorePosts = async (currentUserId, following) => {
   const collectionRef = collection(db, 'posts')
   const posts = []
   let q
+  let querySnapshot
 
-  if (following.length > 0) {
+  if (following?.length > 0) {
     q = query(collectionRef, where('userId', 'not-in', following))
-  } else {
-    q = query(collectionRef)
+    querySnapshot = await getDocs(q)
+    querySnapshot.forEach((doc) => {
+      if (doc.data().userId !== currentUserId) posts.push(doc.data())
+    })
   }
 
-  const querySnapshot = await getDocs(q)
-
-  querySnapshot.forEach((doc) => {
-    if (doc.data().userId !== currentUserId) posts.push(doc.data())
-  })
+  if (posts.length === 0) {
+    q = query(collectionRef)
+    querySnapshot = await getDocs(q)
+    querySnapshot.forEach((doc) => {
+      if (doc.data().userId !== currentUserId) posts.push(doc.data())
+    })
+  }
 
   posts.sort((a, b) => b.createdAt - a.createdAt)
 
@@ -447,12 +452,23 @@ export const getMorePostsFromUser = async (userId, postId) => {
 export const getFeed = async (currentUserId, following) => {
   const feedIds = [...following, currentUserId]
   const feedPosts = []
-
   const collectionRef = collection(db, 'posts')
-  const q = query(collectionRef, where('userId', 'in', feedIds))
-  const querySnapshot = await getDocs(q)
+  let q
+  let querySnapshot
 
-  querySnapshot.forEach((doc) => feedPosts.push(doc.data()))
+  if (following?.length > 0) {
+    q = query(collectionRef, where('userId', 'in', feedIds))
+    querySnapshot = await getDocs(q)
+
+    querySnapshot.forEach((doc) => feedPosts.push(doc.data()))
+  }
+
+  if (feedPosts.length === 0) {
+    q = query(collectionRef)
+    querySnapshot = await getDocs(q)
+
+    querySnapshot.forEach((doc) => feedPosts.push(doc.data()))
+  }
   feedPosts.sort((a, b) => b.createdAt - a.createdAt)
 
   return feedPosts
