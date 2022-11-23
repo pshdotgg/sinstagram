@@ -38,9 +38,9 @@ const Profile = () => {
     }
 
     getUserProfile()
-  }, [])
+  }, [username])
 
-  if (loading) <LoadingScreen />
+  if (loading) return <LoadingScreen />
 
   const isOwner = user?.uid === currentUserId
 

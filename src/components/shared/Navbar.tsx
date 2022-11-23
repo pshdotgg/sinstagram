@@ -145,7 +145,7 @@ const SearchCard = ({ results }) => {
                 <Link to={`/${result.item.username}`}>
                   <div
                     className='cursor-pointer hover:bg-base-300 p-4 pb-0 -mt-2'
-                    onClick={() => window.location.reload()}
+                    // onClick={() => window.location.reload()}
                   >
                     <UserCard user={result.item} />
                   </div>
