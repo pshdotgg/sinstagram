@@ -11,7 +11,6 @@ import UserCard from '../shared/UserCard'
 import FollowSuggestions from '../shared/FollowSuggestions'
 import OptionsDialog from '../shared/OptionsDialog'
 import {
-  getPostData,
   likePost,
   unlikePost,
   savePost,
@@ -21,9 +20,11 @@ import {
 } from '../../firebase'
 import { useUserContext } from '../../contexts/userContext'
 import { formatDateToNow } from '../../utils/formatDate'
+import { v4 as uuid } from 'uuid'
 
 const FeedPost = ({ post, index }) => {
-  const { id, media, likes, userId, caption, comments, createdAt } = post
+  const { id, media, likes, userId, caption, createdAt } = post
+  const [comments, setComments] = useState(post.comments)
   const [user, setUser] = useState({})
   const [totalLikes, setTotalLikes] = useState(likes.length)
   const [showCaption, setShowCaption] = useState(false)
@@ -103,13 +104,15 @@ const FeedPost = ({ post, index }) => {
             )}
           </div>
           <Link to={`/p/${id}`} className='text-gray-500 text-sm'>
-            View all {comments.length} comments
+            View all {comments.length > 1 ? comments.length : ''} comments
           </Link>
           {comments?.map((comment) => {
             return (
               <div key={comment.id}>
                 <Link to={`/${comment.user.username}`}>
-                  <span>{comment.user.username}</span>
+                  <span className='font-semibold mr-1.5'>
+                    {comment.user.username}
+                  </span>
                 </Link>
                 <span>{comment.content}</span>
               </div>
@@ -119,10 +122,10 @@ const FeedPost = ({ post, index }) => {
         </div>
         <div className='py-0'>
           <div className='divider mt-2 mb-0' />
-          <Comment />
+          <Comment postId={id} setComments={setComments} />
         </div>
       </article>
-      {showFollowSuggestions && <FollowSuggestions />}
+      {showFollowSuggestions && <FollowSuggestions hideHeader={false} />}
     </>
   )
 }
@@ -186,8 +189,29 @@ const SaveButton = ({ postId }) => {
   )
 }
 
-const Comment = () => {
+const Comment = ({ postId, setComments }) => {
   const [content, setContent] = useState('')
+  const { currentUserId, currentUser } = useUserContext()
+
+  const handleSubmitComment = async () => {
+    const comment = {
+      content: content,
+      createdAt: Date.now(),
+      id: uuid(),
+      userId: currentUserId,
+      user: {
+        username: currentUser.username,
+        profileImage: currentUser.profileImage,
+        uid: currentUserId,
+      },
+    }
+
+    setComments((prev) => {
+      return [...prev, comment]
+    })
+    setContent('')
+    await addComment(postId, comment)
+  }
 
   return (
     <div className='flex gap-5 px-4'>
@@ -202,6 +226,7 @@ const Comment = () => {
         disabled={!content.trim()}
         type='button'
         className='text-primary disabled:opacity-60 self-start'
+        onClick={handleSubmitComment}
       >
         Post
       </button>
