@@ -21,7 +21,6 @@ import {
 import { useUserContext } from '../../contexts/userContext'
 import { formatDateToNowShort, formatPostDate } from '../../utils/formatDate'
 import { v4 as uuid } from 'uuid'
-import LazyLoad from 'react-lazy-load'
 
 const Post = ({ postId }) => {
   const [post, setPost] = useState(null)
@@ -53,13 +52,11 @@ const Post = ({ postId }) => {
     <div className='bg-white w-full '>
       <article className='flex flex-col md:flex-row border-2 bg-white rounded'>
         <div className='p-4 w-full self-center h-full md:w-[calc(100%-335px)] md:h-[750px]'>
-          <LazyLoad height={750}>
-            <img
-              src={media}
-              alt='media'
-              className='object-contain w-full h-full aspect-square'
-            />
-          </LazyLoad>
+          <img
+            src={media}
+            alt='media'
+            className='object-contain w-full h-full aspect-square'
+          />
         </div>
         <div className='flex flex-col'>
           <div className='flex justify-between items-center p-4 py-10 h-16 mr-0 border border-t-0 border-r-0 border-b-base-300 border-l-base-200'>

@@ -10,11 +10,22 @@ import { Link } from 'react-router-dom'
 import UserCard from '../shared/UserCard'
 import FollowSuggestions from '../shared/FollowSuggestions'
 import OptionsDialog from '../shared/OptionsDialog'
-import { getUserDoc } from '../../firebase'
+import {
+  getPostData,
+  likePost,
+  unlikePost,
+  savePost,
+  unsavePost,
+  addComment,
+  getUserDoc,
+} from '../../firebase'
+import { useUserContext } from '../../contexts/userContext'
+import { formatDateToNow } from '../../utils/formatDate'
 
 const FeedPost = ({ post, index }) => {
-  const { id, media, likes, userId, caption, comments } = post
+  const { id, media, likes, userId, caption, comments, createdAt } = post
   const [user, setUser] = useState({})
+  const [totalLikes, setTotalLikes] = useState(likes.length)
   const [showCaption, setShowCaption] = useState(false)
   const showFollowSuggestions = index === 1
 
@@ -49,7 +60,11 @@ const FeedPost = ({ post, index }) => {
         <div className='p-4 pb-2'>
           <div className='flex pb-2 gap-5 justify-between items-center'>
             <div className='flex gap-5 items-center'>
-              <LikeButton />
+              <LikeButton
+                postId={id}
+                profileId={user?.uid}
+                setTotalLikes={setTotalLikes}
+              />
               <Link to={`/p/${id}`}>
                 <FaRegComment size={20} />
               </Link>
@@ -59,7 +74,7 @@ const FeedPost = ({ post, index }) => {
           </div>
 
           <span className='font-semibold'>
-            {likes.length === 1 ? '1 like' : `${likes.length} likes`}
+            {totalLikes === 1 ? '1 like' : `${totalLikes} likes`}
           </span>
           <div className='flex flex-col mb-0'>
             <Link to={`/${user.username}`} className='font-bold inline-block'>
@@ -100,7 +115,7 @@ const FeedPost = ({ post, index }) => {
               </div>
             )
           })}
-          <p className='text-xs text-gray-500'>4 DAYS AGO</p>
+          <p className='text-xs text-gray-500'>{formatDateToNow(createdAt)}</p>
         </div>
         <div className='py-0'>
           <div className='divider mt-2 mb-0' />
@@ -112,20 +127,27 @@ const FeedPost = ({ post, index }) => {
   )
 }
 
-const LikeButton = () => {
-  const [liked, setLiked] = useState(false)
+const LikeButton = ({ postId, profileId, setTotalLikes }) => {
+  const { currentUserId, currentUser } = useUserContext()
+  const isAlredyLiked = currentUser.likes.includes(postId)
+  const [liked, setLiked] = useState(isAlredyLiked)
+
   const Icon = liked ? (
     <BsHeartFill size={20} className='fill-red-500 animate-ping-once' />
   ) : (
     <BsHeart size={20} />
   )
 
-  const handleLike = () => {
+  const handleLike = async () => {
     setLiked(true)
+    setTotalLikes((prev) => prev + 1)
+    await likePost(postId, currentUserId, profileId)
   }
 
-  const handleUnlike = () => {
+  const handleUnlike = async () => {
     setLiked(false)
+    setTotalLikes((prev) => prev - 1)
+    await unlikePost(postId, currentUserId, profileId)
   }
 
   return (
