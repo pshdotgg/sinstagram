@@ -16,6 +16,7 @@ export const UserProvider = ({ children }) => {
     setCurrentUserId,
     loading,
     users,
+    setUsers,
   }
 
   useEffect(() => {

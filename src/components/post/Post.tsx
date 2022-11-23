@@ -143,16 +143,19 @@ const UserComment = ({ comment }) => {
           <img src={comment?.user?.profileImage} />
         </div>
       </div>
-      <div className='flex flex-col'>
-        <Link to={`/${comment?.user?.username}`}>
-          <span className='font-semibold text-sm'>
-            {comment?.user?.username}
-          </span>
+      <div className='flex justify-between w-full'>
+        <div>
+          <Link to={`/${comment?.user?.username}`}>
+            <span className='font-semibold text-sm'>
+              {comment?.user?.username}
+            </span>
+          </Link>
           <span className='pt-1 px-2'>{comment?.content}</span>
-          <span className='text-base-300 text-sm'>
-            {formatDateToNowShort(comment?.createdAt)}
-          </span>
-        </Link>
+        </div>
+
+        <span className='text-base-300 text-sm'>
+          {formatDateToNowShort(comment?.createdAt)}
+        </span>
       </div>
     </div>
   )

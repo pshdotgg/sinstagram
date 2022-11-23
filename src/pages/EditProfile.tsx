@@ -34,8 +34,7 @@ const EditProfile = () => {
         setIsSubmitting(false)
         setTimeout(() => {
           setProfileUpdated(false)
-
-          navigate(0)
+          window.location.reload()
         }, 2000)
       } catch (error) {
         console.error('Error updating profile', error)
