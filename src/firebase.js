@@ -452,6 +452,7 @@ export const getExplorePosts = async (currentUserId, following) => {
 export const getMorePostsFromUser = async (userId, postId) => {
   const userPosts = await getUserPosts(userId)
   const posts = userPosts.filter((post) => post.id !== postId)
+  console.log(posts)
 
   return posts
 }

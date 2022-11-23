@@ -14,6 +14,7 @@ const MorePostsFromUser = ({ postId }) => {
       try {
         setLoading(true)
         const userId = (await getPostData(postId)).userId
+        console.log(userId)
         setUsername((await getUserDoc(userId)).username)
         const tempPosts = await getMorePostsFromUser(userId, postId)
         setPosts(tempPosts)

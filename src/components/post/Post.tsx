@@ -68,7 +68,7 @@ const Post = ({ postId }) => {
             />
           </div>
 
-          <div className='flex flex-col flex-grow overflow-x-hidden overflow-y-scroll overflow-hidden pt-4 px-3 h-full border border-t-0 border-l-0 border-r-0 border-b-base-300 '>
+          <div className='flex flex-col flex-grow overflow-x-hidden overflow-hidden pt-4 px-3 h-full border border-t-0 border-l-0 border-r-0 border-b-base-300 '>
             <AuthorCaption
               user={user}
               createdAt={createdAt}
@@ -137,16 +137,18 @@ const AuthorCaption = ({ user, caption, createdAt }) => {
 
 const UserComment = ({ comment }) => {
   return (
-    <div className='flex'>
+    <div className='flex pb-2'>
       <div className='mr-4 avatar'>
-        <div className='w-10 h-10 rounded-full'>
+        <div className='w-8 h-8 rounded-full'>
           <img src={comment?.user?.profileImage} />
         </div>
       </div>
       <div className='flex flex-col'>
         <Link to={`/${comment?.user?.username}`}>
-          <span>{comment?.user?.username}</span>
-          <span className='pt-1 px-6 '>{comment?.content}</span>
+          <span className='font-semibold text-sm'>
+            {comment?.user?.username}
+          </span>
+          <span className='pt-1 px-2'>{comment?.content}</span>
           <span className='text-base-300 text-sm'>
             {formatDateToNowShort(comment?.createdAt)}
           </span>
