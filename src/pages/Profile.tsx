@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { BsGear, BsWindowSidebar } from 'react-icons/bs'
+import { BsGear } from 'react-icons/bs'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import Layout from '../components/shared/Layout'
 import ProfilePicture from '../components/shared/ProfilePicture'
@@ -20,12 +20,6 @@ const Profile = () => {
   const [user, setUser] = useState({})
   const { currentUser, currentUserId, users } = useUserContext()
   const [loading, setLoading] = useState(false)
-
-  // const [showOptionsMenu, setOptionsMenu] = useState(false)
-
-  // const handleOptionsMenuClick = () => {
-  //   setOptionsMenu(true)
-  // }
 
   useEffect(() => {
     const getUserProfile = async () => {
@@ -55,12 +49,8 @@ const Profile = () => {
       <section className='hidden md:flex gap-28'>
         <ProfilePicture image={user.profileImage} isOwner={isOwner} />
         <div className='flex flex-col gap-8'>
-          <ProfileNameSection
-            user={user}
-            isOwner={isOwner}
-            // handleOptionsMenuClick={handleOptionsMenuClick}
-          />
-          <PostCountSection user={user} />
+          <ProfileNameSection user={user} isOwner={isOwner} setUser={setUser} />
+          <PostCountSection user={user} setUser={setUser} />
           <NameBioSection user={user} />
         </div>
       </section>
@@ -72,6 +62,7 @@ const Profile = () => {
             <ProfileNameSection
               user={user}
               isOwner={isOwner}
+              setUser={setUser}
               // handleOptionsMenuClick={handleOptionsMenuClick}
             />
           </div>
@@ -84,7 +75,7 @@ const Profile = () => {
   )
 }
 
-const ProfileNameSection = ({ user, isOwner }) => {
+const ProfileNameSection = ({ user, isOwner, setUser }) => {
   const [showUnfollowDialog, setShowUnfollowDialog] = useState(true)
   const { currentUser, currentUserId } = useUserContext()
   const isAlreadyFollowing = currentUser.following?.includes(user.uid)
@@ -95,6 +86,9 @@ const ProfileNameSection = ({ user, isOwner }) => {
   const handleFollowUser = async () => {
     setIsFollowing(true)
     setShowUnfollowDialog(true)
+    setUser((prev) => {
+      return { ...prev, followers: [...prev.followers, currentUserId] }
+    })
     await followUser(user.uid, currentUserId)
   }
 
@@ -178,18 +172,30 @@ const ProfileNameSection = ({ user, isOwner }) => {
           user={user}
           setIsFollowing={setIsFollowing}
           setShowUnfollowDialog={setShowUnfollowDialog}
+          setUser={setUser}
         />
       )}
     </>
   )
 }
 
-const UnfollowDialog = ({ user, setIsFollowing, setShowUnfollowDialog }) => {
+const UnfollowDialog = ({
+  user,
+  setIsFollowing,
+  setShowUnfollowDialog,
+  setUser,
+}) => {
   const { currentUser, currentUserId } = useUserContext()
 
   const handleUnfollowUser = async () => {
     setIsFollowing(false)
     setShowUnfollowDialog(false)
+    setUser((prev) => {
+      return {
+        ...prev,
+        followers: prev.followers.filter((id) => id !== currentUserId),
+      }
+    })
     await unfollowUser(user.uid, currentUserId)
   }
 
