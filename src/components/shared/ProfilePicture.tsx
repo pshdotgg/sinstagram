@@ -1,6 +1,5 @@
 import React from 'react'
 import { BsPersonFill } from 'react-icons/bs'
-import { defaultCurrentUser } from '../../data'
 
 const ProfilePicture = ({ isOwner, className = '', image }) => {
   return (

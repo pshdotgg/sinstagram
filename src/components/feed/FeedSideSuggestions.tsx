@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { getDefaultUser } from '../../data'
 import FollowButton from '../shared/FollowButton'
 import UserCard from '../shared/UserCard'
 import LoadingSpinner from '../shared/LoadingSpinner'

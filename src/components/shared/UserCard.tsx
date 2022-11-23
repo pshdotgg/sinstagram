@@ -1,7 +1,5 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { useUserContext } from '../../contexts/userContext'
-import { defaultUser } from '../../data'
 
 const UserCard = ({ user }) => {
   const { profileImage, username, name } = user

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { getDefaultPost } from '../../data'
 import GridPost from '../shared/GridPost'
 import LoadingSpinner from '../shared/LoadingSpinner'
 import { getExplorePosts } from '../../firebase'

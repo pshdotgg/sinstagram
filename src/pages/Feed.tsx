@@ -6,7 +6,6 @@ import LoadingScreen from '../components/shared/LoadingScreen'
 import LoadingSpinner from '../components/shared/LoadingSpinner'
 import UserCard from '../components/shared/UserCard'
 import { useUserContext } from '../contexts/userContext'
-import { getDefaultPost } from '../data'
 import { getFeed } from '../firebase'
 const FeedPost = React.lazy(() => import('../components/feed/FeedPost'))
 

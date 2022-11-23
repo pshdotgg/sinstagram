@@ -10,7 +10,6 @@ import { Link } from 'react-router-dom'
 import UserCard from '../shared/UserCard'
 import FollowSuggestions from '../shared/FollowSuggestions'
 import OptionsDialog from '../shared/OptionsDialog'
-import FeedPostSkeleton from './FeedPostSkeleton'
 import { getUserDoc } from '../../firebase'
 
 const FeedPost = ({ post, index }) => {
@@ -32,11 +31,19 @@ const FeedPost = ({ post, index }) => {
       <article className='border-2 bg-white mb-5 rounded'>
         <div className='flex justify-between items-center px-4 py-2'>
           <UserCard user={user} />
-          <OptionsDialog />
+          <OptionsDialog
+            postId={id}
+            authorId={userId}
+            username={user.username}
+          />
         </div>
 
         <div>
-          <img src={media} alt='media' />
+          <img
+            src={media}
+            alt='media'
+            className='w-full object-cover aspect-square'
+          />
         </div>
 
         <div className='p-4 pb-2'>
