@@ -100,16 +100,20 @@ const Search = () => {
   return (
     <div className='hidden md:block relative'>
       {!(hasFocus || query) && (
-        <span className='text-gray-400 flex items-center absolute top-1.5 left-2'>
+        <label
+          htmlFor='search'
+          className='text-gray-400 flex items-center absolute top-1.5 left-2 cursor-text'
+        >
           <FaSearch className='fill-gray-400 focus:hidden' size={15} />
           <span className='pl-2'>Search</span>
-        </span>
+        </label>
       )}
       <input
         type='text'
         onFocus={() => setHasFocus(true)}
         onBlur={() => setHasFocus(false)}
         value={query}
+        id='search'
         onChange={(event) => setQuery(event.target.value)}
         className='input input-sm max-w-xs bg-base-200 text-base w-54 h-9 focus:outline-transparent focus:border-transparent '
       />
