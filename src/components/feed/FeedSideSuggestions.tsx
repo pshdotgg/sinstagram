@@ -6,7 +6,7 @@ import { suggestUsers } from '../../firebase'
 import { useUserContext } from '../../contexts/userContext'
 
 const FeedSideSuggestions = () => {
-  const { currentUser, currentUserId } = useUserContext()
+  const { currentUserId } = useUserContext()
   const [users, setUsers] = useState([])
   const [loading, setLoading] = useState(false)
 

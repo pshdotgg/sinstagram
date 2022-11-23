@@ -176,16 +176,16 @@ export const getUsers = async () => {
 export const getUserPosts = async (userId) => {
   const posts = []
 
-  const collectionRef = collection(db, 'posts')
-  const q = query(collectionRef, where('userId', '==', userId))
-  const querySnapshot = await getDocs(q)
+  const userDocRef = doc(db, 'users', userId)
 
-  querySnapshot.forEach(async (doc) => {
-    const tempPost = doc.data()
-    tempPost.user = await getUserDoc(userId)
+  const userSnapshot = await getDoc(userDocRef)
+
+  for (const postId of userSnapshot.data().posts) {
+    const postSnapshot = await getDoc(doc(db, 'posts', postId))
+    const tempPost = postSnapshot.data()
+    tempPost.user = userSnapshot.data()
     posts.unshift(tempPost)
-  })
-
+  }
   return posts
 }
 
@@ -250,18 +250,6 @@ export const getPostLikes = async (postId) => {
   const postSnapshot = await getDoc(doc(db, 'posts', postId))
   return postSnapshot.data().likes
 }
-
-// export const getPostComments = async (commentsArr) => {
-//   const comments = []
-
-//   commentsArr.forEach(async (comment) => {
-//     const commentAuthorSnapshot = await getDoc(doc, 'user', comment.userId)
-//     comment.user = commentAuthorSnapshot.data()
-//     comments.push({ ...comment, user: comment.user })
-//   })
-
-//   return comments
-// }
 
 export const likePost = async (postId, userId, profileId) => {
   try {
@@ -452,7 +440,6 @@ export const getExplorePosts = async (currentUserId, following) => {
 export const getMorePostsFromUser = async (userId, postId) => {
   const userPosts = await getUserPosts(userId)
   const posts = userPosts.filter((post) => post.id !== postId)
-  console.log(posts)
 
   return posts
 }

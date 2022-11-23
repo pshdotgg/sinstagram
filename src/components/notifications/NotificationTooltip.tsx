@@ -10,7 +10,6 @@ const NotificationTooltip = ({ notifications, className = '' }) => {
   const followCount = countNotifications('follow')
   const likeCount = countNotifications('like')
 
-  console.log(likeCount)
   return (
     <div className={`${className} flex flex-col items-center `}>
       <RiArrowUpSFill size={25} className='fill-red-500' />

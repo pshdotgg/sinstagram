@@ -102,8 +102,6 @@ const ProfileNameSection = ({ user, isOwner }) => {
     setIsFollowing(isAlreadyFollowing)
   }, [isAlreadyFollowing])
 
-  console.log('isFollowing', isFollowing)
-
   if (isFollowing) {
     followButton = (
       <label

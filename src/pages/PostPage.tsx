@@ -8,7 +8,7 @@ const PostPage = () => {
   const { postId } = useParams()
 
   return (
-    <Layout>
+    <Layout title='Instagram'>
       <Post postId={postId} />
       <MorePostsFromUser postId={postId} />
     </Layout>
