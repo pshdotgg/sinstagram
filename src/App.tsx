@@ -46,8 +46,8 @@ const App = () => {
         <Route path='/:username' element={<Profile />} />
         <Route path='/p/:postId' element={<PostPage />} />
         <Route path='/accounts/edit' element={<EditProfile />} />
-        <Route path='/accounts/login' element={<Login />} />
-        <Route path='/accounts/emailsignup' element={<Signup />} />
+        <Route path='/accounts/login' element={<Navigate to='/' />} />
+        <Route path='/accounts/emailsignup' element={<Navigate to='/' />} />
         <Route path='*' element={<NotFound />} />
       </Routes>
       <Routes>

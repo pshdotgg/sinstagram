@@ -14,12 +14,15 @@ import {
   followUser,
   unfollowUser,
 } from '../firebase'
+import NotFound from './NotFound'
 
 const Profile = () => {
   const { username } = useParams()
   const [user, setUser] = useState({})
   const { currentUser, currentUserId, users } = useUserContext()
   const [loading, setLoading] = useState(false)
+
+  if (!(username in users)) return <NotFound />
 
   useEffect(() => {
     const getUserProfile = async () => {
@@ -271,14 +274,12 @@ const NameBioSection = ({ user }) => {
 }
 
 const OptionsMenu = () => {
-  const [showLogoutMessage, setShowLogoutMessage] = useState(false)
   const navigate = useNavigate()
 
   const handleLogoutClick = async () => {
-    setShowLogoutMessage(true)
     await signOutUser()
-    window.location.reload()
     navigate('/accounts/login')
+    window.location.reload()
   }
   return (
     <>

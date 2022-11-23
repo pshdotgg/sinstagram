@@ -50,8 +50,17 @@ const Login = () => {
       <Seo title='Log in' />
       <div className='flex flex-col gap-5 items-center h-screen bg-base-200'>
         <div className='border flex flex-col pt-16 pb-6 px-10 mt-20 shadow-sm bg-white gap-5 rounded'>
-          <div className='w-full flex justify-center h-8 mb-10'>
+          <div className='w-full flex justify-center h-8'>
             <img src={logo} alt='logo' />
+          </div>
+
+          <div className='self-center'>
+            <p>
+              <span className='font-semibold'>Email:</span> stark@gmail.com
+            </p>
+            <p>
+              <span className='font-semibold'>Password:</span> tony@stark
+            </p>
           </div>
 
           <form
