@@ -178,7 +178,7 @@ const NavLinks = ({ path }) => {
       setNotifications(tempNotifications)
     }
     getNotificationsData()
-  }, [])
+  }, [currentUser])
 
   const handleToggleNotifications = () => {
     setShowNotifications((prevShowNotifications) => !prevShowNotifications)

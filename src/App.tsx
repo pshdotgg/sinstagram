@@ -13,7 +13,6 @@ import {
   Profile,
   Signup,
 } from './pages'
-import { getPostData } from './firebase'
 
 const App = () => {
   const location = useLocation()

@@ -6,8 +6,8 @@ const UserContext = createContext()
 export const UserProvider = ({ children }) => {
   const [currentUserId, setCurrentUserId] = useState(null)
   const [users, setUsers] = useState({})
-  const [currentUser, setCurrentUser] = useState({})
-  const [loading, setLoading] = useState(false)
+  const [currentUser, setCurrentUser] = useState(null)
+  const [loading, setLoading] = useState(true)
 
   const value = {
     currentUser,
@@ -29,7 +29,6 @@ export const UserProvider = ({ children }) => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChangedListener(async (user) => {
-      setLoading(true)
       if (user) {
         setCurrentUserId(user ? user.uid : null)
         setCurrentUser(await getUserDoc(user.uid))

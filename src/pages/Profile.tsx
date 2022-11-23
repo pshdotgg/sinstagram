@@ -277,8 +277,8 @@ const OptionsMenu = () => {
   const handleLogoutClick = async () => {
     setShowLogoutMessage(true)
     await signOutUser()
-    navigate('/accounts/login')
     window.location.reload()
+    navigate('/accounts/login')
   }
   return (
     <>
