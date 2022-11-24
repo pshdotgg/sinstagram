@@ -10,7 +10,7 @@ const NotificationList = ({ notifications, className = '' }) => {
       className={`absolute flex flex-col gap-0 justify-center items-end m-0 z-10 ${className}`}
     >
       <RiArrowUpSFill size={50} className='fill-white p-0' />
-      <div className='card w-full bg-base-100 shadow-xl rounded -mt-5'>
+      <div className='card w-full bg-base-100 shadow-xl rounded -mt-5 pr-2'>
         <div className='card-body p-0 m-0'>
           {notifications.map((notification) => {
             const { username, profileImage } = notification.user
@@ -24,10 +24,10 @@ const NotificationList = ({ notifications, className = '' }) => {
               >
                 <div className='flex items-center'>
                   <Link to={`/${username}`}>
-                    <div className='cursor-pointer w-80  p-4 pb-0 -mt-2 '>
-                      <div className='flex gap-3'>
+                    <div className='cursor-pointer w-56 md:w-80 p-4 pb-0 -mt-2 '>
+                      <div className='flex gap-3 items-center'>
                         <div className='avatar'>
-                          <div className='w-12 rounded-full'>
+                          <div className='w-6 h-6 md:w-12 md:h-12 rounded-full'>
                             <img src={profileImage} />
                           </div>
                         </div>
@@ -36,7 +36,7 @@ const NotificationList = ({ notifications, className = '' }) => {
                           <span className='text-sm font-semibold'>
                             {username}
                           </span>
-                          <span className='text-gray-500 text-sm'>
+                          <span className='text-gray-500 text-xs md:text-sm'>
                             {isLike && (
                               <span className='w-full flex justify-between items-center'>
                                 <span>liked your photo.</span>
@@ -59,11 +59,11 @@ const NotificationList = ({ notifications, className = '' }) => {
                       </div>
                     </div>
                   </Link>
-                  <div className='w-24'>
+                  <div className='md:w-24'>
                     {isLike && (
                       <Link to={`/p/${notification.postId}`}>
                         <div className='avatar py-2'>
-                          <div className='rounded w-16'>
+                          <div className='rounded w-10 md:w-16'>
                             <img src={notification.post.media} alt='post' />
                           </div>
                         </div>
