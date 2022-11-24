@@ -17,8 +17,6 @@ const Feed = () => {
   const lastPostTimestamp = feedPosts[feedPosts.length - 1]?.createdAt
 
   const handleLoadMore = async () => {
-    console.log('running')
-
     const nextFeed = await getNextFeed(
       currentUserId,
       currentUser?.following,

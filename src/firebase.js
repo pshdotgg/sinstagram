@@ -508,17 +508,17 @@ export const getNextFeed = async (
     querySnapshot.forEach((doc) => feedPosts.push(doc.data()))
   }
 
-  // if (feedPosts.length === 0) {
-  //   q = query(
-  //     collectionRef,
-  //     orderBy('createdAt', 'desc'),
-  //     startAfter(lastPostTimestamp),
-  //     limit(5)
-  //   )
-  //   querySnapshot = await getDocs(q)
+  if (feedPosts.length === 0) {
+    q = query(
+      collectionRef,
+      orderBy('createdAt', 'desc'),
+      startAfter(lastPostTimestamp),
+      limit(6)
+    )
+    querySnapshot = await getDocs(q)
 
-  //   querySnapshot.forEach((doc) => feedPosts.push(doc.data()))
-  // }
+    querySnapshot.forEach((doc) => feedPosts.push(doc.data()))
+  }
 
   return feedPosts
 }

@@ -17,7 +17,6 @@ import { MdCancel } from 'react-icons/md'
 import UserCard from './UserCard'
 import NotificationTooltip from '../notifications/NotificationTooltip'
 import NotificationList from '../notifications/NotificationList'
-import useOutsideClick from '@rooks/use-outside-click'
 import { useNProgress } from '@tanem/react-nprogress'
 import { useUserContext } from '../../contexts/userContext'
 import Fuse from 'fuse.js'
@@ -204,8 +203,6 @@ const NavLinks = ({ path }) => {
   const handleClose = () => {
     setShowAddPostDialog(false)
   }
-
-  // useOutsideClick(notificationListRef, handleHideNotificationsList)
 
   useEffect(() => {
     const timeout = setTimeout(handleHideNotificationsTooltip, 2500)
