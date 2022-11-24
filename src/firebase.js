@@ -49,7 +49,8 @@ provider.setCustomParameters({
 
 export const auth = getAuth()
 
-export const signInWithGooglePopup = () => signInWithPopup(auth, provider)
+export const signInWithGooglePopup = async () =>
+  await signInWithPopup(auth, provider)
 
 export const db = getFirestore()
 
@@ -136,8 +137,8 @@ export const logInWithEmailAndPassword = async (email, password) => {
   return await signInWithEmailAndPassword(auth, email, password)
 }
 
-export const signOutUser = () => {
-  signOut(auth)
+export const signOutUser = async () => {
+  await signOut(auth)
 }
 
 export const updateUserEmail = async (email) => {

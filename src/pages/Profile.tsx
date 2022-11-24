@@ -66,7 +66,6 @@ const Profile = () => {
               user={user}
               isOwner={isOwner}
               setUser={setUser}
-              // handleOptionsMenuClick={handleOptionsMenuClick}
             />
           </div>
           <NameBioSection user={user} />

@@ -45,6 +45,7 @@ const Signup = () => {
   const logGoogleUser = async () => {
     const { user } = await signInWithGooglePopup()
     await createUserDocument(user)
+    window.location.reload()
   }
 
   const onSubmit = async (data) => {
