@@ -350,7 +350,9 @@ export const getNotifications = async (userId) => {
     }
   }
 
-  return notifications.filter((notification) => notification.userId !== userId)
+  return notifications
+    .filter((notification) => notification.userId !== userId)
+    .sort((a, b) => b.createdAt - a.createdAt)
 }
 
 export const checkNotifications = async (userId) => {
