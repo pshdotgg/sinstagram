@@ -157,8 +157,7 @@ const SearchCard = ({ results }) => {
 }
 
 const NavLinks = ({ path }) => {
-  const { currentUser, currentUserId } = useUserContext()
-  const [notifications, setNotifications] = useState([])
+  const { currentUser, currentUserId, notifications } = useUserContext()
   const newNotifications = notifications.filter(({ createdAt }) =>
     isAfter(new Date(createdAt), new Date(currentUser.lastChecked))
   )
@@ -171,24 +170,12 @@ const NavLinks = ({ path }) => {
   const notificationListRef = useRef(null)
   const inputRef = useRef()
 
-  useEffect(() => {
-    const getNotificationsData = async () => {
-      const tempNotifications = await getNotifications(currentUserId)
-      setNotifications(tempNotifications)
-    }
-    getNotificationsData()
-  }, [currentUser])
-
   const handleToggleNotifications = () => {
     setShowNotifications((prevShowNotifications) => !prevShowNotifications)
   }
 
   const handleHideNotificationsTooltip = () => {
     setShowNotificationsTooltip(false)
-  }
-
-  const handleHideNotificationsList = () => {
-    setShowNotifications(false)
   }
 
   const openFileInput = () => {

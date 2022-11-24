@@ -1,5 +1,10 @@
 import { createContext, useContext, useEffect, useState } from 'react'
-import { onAuthStateChangedListener, getUserDoc, getUsers } from '../firebase'
+import {
+  onAuthStateChangedListener,
+  getUserDoc,
+  getUsers,
+  getNotifications,
+} from '../firebase'
 
 const UserContext = createContext()
 
@@ -8,6 +13,7 @@ export const UserProvider = ({ children }) => {
   const [users, setUsers] = useState({})
   const [currentUser, setCurrentUser] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [notifications, setNotifications] = useState([])
 
   const value = {
     currentUser,
@@ -17,12 +23,21 @@ export const UserProvider = ({ children }) => {
     loading,
     users,
     setUsers,
+    notifications,
   }
 
   useEffect(() => {
     const getUsersData = async () => {
       const users = await getUsers()
       setUsers(users)
+    }
+
+    if (currentUser) {
+      const getNotificationsData = async () => {
+        const tempNotifications = await getNotifications(currentUserId)
+        setNotifications(tempNotifications.slice(0, 7))
+      }
+      getNotificationsData()
     }
 
     getUsersData()
