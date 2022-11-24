@@ -11,7 +11,7 @@ import {
 } from 'react-icons/ai'
 import { RiArrowUpSFill } from 'react-icons/ri'
 import { FiPlusSquare } from 'react-icons/fi'
-import logo from '../../images/logo.png'
+import logo from '../../images/logo.svg'
 import LoadingSpinner from './LoadingSpinner'
 import { MdCancel } from 'react-icons/md'
 import UserCard from './UserCard'
@@ -40,7 +40,7 @@ const Navbar = () => {
       <div className='border-b-2 px-5 '>
         <nav className='bg-white flex items-center max-w-5xl justify-between mx-auto gap-5 py-3 '>
           <Link to='/'>
-            <img src={logo} alt='logo' />
+            <img src={logo} alt='logo' className='w-' />
           </Link>
           <Search />
 

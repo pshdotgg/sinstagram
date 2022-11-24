@@ -1,4 +1,5 @@
 import React from 'react'
+import PostLoader from '../../images/FeedPostSkeletonLoader.gif'
 
 const FeedPostSkeleton = () => {
   return (
@@ -11,11 +12,7 @@ const FeedPostSkeleton = () => {
         </div>
       </div>
       <div className='w-full min-w-[640px] bg-cover'>
-        <img
-          className='w-full min-w-[640px]'
-          src='https://firebasestorage.googleapis.com/v0/b/sinstagram-pr.appspot.com/o/FeedPostSkeletonLoader.gif?alt=media&token=379e2dbb-7a1c-4308-aa05-a1b767b90041'
-          alt=''
-        />
+        <img className='w-full min-w-[640px]' src={PostLoader} alt='' />
       </div>
     </div>
   )

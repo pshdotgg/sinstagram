@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import logo from '../images/logo.png'
+import logo from '../images/logo.svg'
 import { Link, useNavigate } from 'react-router-dom'
 import { AiFillGoogleSquare } from 'react-icons/ai'
 import Seo from '../components/shared/Seo'

@@ -2,7 +2,7 @@ import React from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 
 const Seo = ({ title }) => {
-  const tileText = title ? `${title} · Instagram` : 'Instagram'
+  const tileText = title ? `${title} · Sinstagram` : 'Sinstagram'
 
   return (
     <HelmetProvider>

@@ -1,14 +1,11 @@
 import React from 'react'
+import PostLoader from '../../images/FeedPostSkeletonLoader.gif'
 
 const PostSkeleton = () => {
   return (
     <div className='flex flex-col md:flex-row bg-white w-full'>
       <div className='w-full bg-cover'>
-        <img
-          className='w-full'
-          src='https://firebasestorage.googleapis.com/v0/b/sinstagram-pr.appspot.com/o/FeedPostSkeletonLoader.gif?alt=media&token=379e2dbb-7a1c-4308-aa05-a1b767b90041'
-          alt=''
-        />
+        <img className='w-full' src={PostLoader} alt='' />
       </div>
       <div className='flex gap-5 w-96 items-center h-16 px-4 py-2 mt-5'>
         <div className='flex rounded-full h-8 w-8 bg-base-300' />

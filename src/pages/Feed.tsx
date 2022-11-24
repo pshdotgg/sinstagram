@@ -65,6 +65,11 @@ const Feed = () => {
             </div>
 
             <FeedSideSuggestions />
+            <h3 className='text-center font-semibold -mt-6'>
+              <a href='mailto:kenizaya@outlook.com?subject=%F0%9F%A4%98%20Hi%20Prashant,%20I%27d%20like%20to%20hire%20you'>
+                HIRE ME
+              </a>
+            </h3>
           </div>
         </div>
       </section>
