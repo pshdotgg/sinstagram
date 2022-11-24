@@ -24,6 +24,9 @@ import {
   addDoc,
   where,
   deleteDoc,
+  orderBy,
+  limit,
+  startAfter,
 } from 'firebase/firestore'
 import { getStorage } from 'firebase/storage'
 import { v4 as uuid } from 'uuid'
@@ -460,19 +463,62 @@ export const getFeed = async (currentUserId, following) => {
   let querySnapshot
 
   if (following?.length > 0) {
-    q = query(collectionRef, where('userId', 'in', feedIds))
+    q = query(
+      collectionRef,
+      where('userId', 'in', feedIds),
+      orderBy('createdAt', 'desc'),
+      limit(6)
+    )
     querySnapshot = await getDocs(q)
 
     querySnapshot.forEach((doc) => feedPosts.push(doc.data()))
   }
 
   if (feedPosts.length === 0) {
-    q = query(collectionRef)
+    q = query(collectionRef, orderBy('createdAt', 'desc'), limit(5))
     querySnapshot = await getDocs(q)
 
     querySnapshot.forEach((doc) => feedPosts.push(doc.data()))
   }
-  feedPosts.sort((a, b) => b.createdAt - a.createdAt)
+
+  return feedPosts
+}
+
+export const getNextFeed = async (
+  currentUserId,
+  following,
+  lastPostTimestamp
+) => {
+  const feedIds = [...following, currentUserId]
+  const feedPosts = []
+  const collectionRef = collection(db, 'posts')
+  let q
+  let querySnapshot
+
+  if (following?.length > 0) {
+    q = query(
+      collectionRef,
+      where('userId', 'in', feedIds),
+      orderBy('createdAt', 'desc'),
+      startAfter(lastPostTimestamp),
+      limit(6)
+    )
+    querySnapshot = await getDocs(q)
+
+    querySnapshot.forEach((doc) => feedPosts.push(doc.data()))
+  }
+
+  // if (feedPosts.length === 0) {
+  //   q = query(
+  //     collectionRef,
+  //     orderBy('createdAt', 'desc'),
+  //     startAfter(lastPostTimestamp),
+  //     limit(5)
+  //   )
+  //   querySnapshot = await getDocs(q)
+
+  //   querySnapshot.forEach((doc) => feedPosts.push(doc.data()))
+  // }
 
   return feedPosts
 }

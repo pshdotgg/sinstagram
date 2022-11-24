@@ -49,7 +49,7 @@ const FollowSlider = ({ users }) => {
 
   return (
     <Slider
-      className='grid pt-2.5 pb-5 px-0 mb-5 mr-0 bg-white rounded border border-[#e6e6e6] border-t-0 '
+      className='grid pt-2.5 pb-5 md:mx-8 md:w-[91%] mb-5 mr-0 bg-white rounded border border-[#e6e6e6] border-t-0'
       {...settings}
     >
       {users.map((user) => (
@@ -63,7 +63,7 @@ const FollowSuggestionsItem = ({ user }) => {
   const { uid, username, name, profileImage } = user
 
   return (
-    <div className='card card-bordered w-44 md:w-52 gap-0 pt-5 bg-white shadow ml-4 items-center rounded'>
+    <div className='card card-bordered w-44 gap-0 pt-5 bg-white shadow ml-4 items-center rounded'>
       <Link to={`/${username}`}>
         <div className='avatar'>
           <div className='w-16 rounded-full'>

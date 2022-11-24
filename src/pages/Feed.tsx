@@ -6,26 +6,39 @@ import LoadingScreen from '../components/shared/LoadingScreen'
 import LoadingSpinner from '../components/shared/LoadingSpinner'
 import UserCard from '../components/shared/UserCard'
 import { useUserContext } from '../contexts/userContext'
-import { getFeed } from '../firebase'
+import { getFeed, getNextFeed } from '../firebase'
+import InfiniteScroll from 'react-infinite-scroll-component'
 const FeedPost = React.lazy(() => import('../components/feed/FeedPost'))
 
 const Feed = () => {
   const [isEndOfFeed, setIsEndOfFeed] = React.useState(false)
   const { currentUser, currentUserId, loading } = useUserContext()
   const [feedPosts, setFeedPosts] = useState([])
-  // const [loading, setLoading] = useState(false)
+  const lastPostTimestamp = feedPosts[feedPosts.length - 1]?.createdAt
+
+  const handleLoadMore = async () => {
+    console.log('running')
+
+    const nextFeed = await getNextFeed(
+      currentUserId,
+      currentUser?.following,
+      lastPostTimestamp
+    )
+
+    if (nextFeed.length === 0) setIsEndOfFeed(true)
+
+    setFeedPosts((prev) => {
+      return [...prev, ...nextFeed]
+    })
+  }
 
   if (loading) return <LoadingScreen />
 
   useEffect(() => {
     const getFeedPosts = async () => {
-      // setLoading(true)
       const tempPosts = await getFeed(currentUserId, currentUser?.following)
-      console.log(tempPosts)
       setFeedPosts(tempPosts)
-      // setLoading(false)
     }
-
     getFeedPosts()
   }, [])
 
@@ -33,12 +46,19 @@ const Feed = () => {
     <Layout title='Feed'>
       <section className='grid grid-cols-6 max-w-5xl mx-auto gap-5'>
         <div className='col-span-6 md:col-span-4'>
-          {feedPosts.map((post, index) => (
-            <Suspense key={post.id} fallback={<FeedPostSkeleton />}>
-              <FeedPost key={post.id} index={index} post={post} />
-            </Suspense>
-          ))}
-          {isEndOfFeed && <LoadingSpinner size={28} />}
+          <InfiniteScroll
+            dataLength={feedPosts.length}
+            next={handleLoadMore}
+            hasMore={!isEndOfFeed}
+            scrollThreshold={1}
+            loader={<LoadingSpinner />}
+          >
+            {feedPosts.map((post, index) => (
+              <Suspense key={post.id} fallback={<FeedPostSkeleton />}>
+                <FeedPost key={post.id} index={index} post={post} />
+              </Suspense>
+            ))}
+          </InfiniteScroll>
         </div>
         <div className='hidden md:col-span-2 md:block'>
           <div className='w-full flex flex-col gap-5 sticky top-20'>
