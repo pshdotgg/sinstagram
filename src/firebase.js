@@ -341,15 +341,15 @@ export const getNotifications = async (userId) => {
       const postSnapshot = await getDoc(doc(db, 'posts', notification.postId))
       notification.post = {
         postId: notification.postId,
-        media: postSnapshot.data().media,
+        media: postSnapshot.data()?.media,
       }
     }
 
     const userSnapshot = await getDoc(doc(db, 'users', notification.userId))
     notification.user = {
-      uid: userSnapshot.data().uid,
-      username: userSnapshot.data().username,
-      profileImage: userSnapshot.data().profileImage,
+      uid: userSnapshot.data()?.uid,
+      username: userSnapshot.data()?.username,
+      profileImage: userSnapshot.data()?.profileImage,
     }
   }
 
