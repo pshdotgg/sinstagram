@@ -60,11 +60,6 @@ See you tomorrow. :)
 - Tailwind CSS
 - JavaScript
 
-
-
-## To-Do
-- Learn TypeScript and migrate
-
 ## Project Planning
 
 ## Routes
