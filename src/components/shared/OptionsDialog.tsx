@@ -64,11 +64,6 @@ const OptionsDialog = ({
             <button type='button'>Go to post</button>
           </Link>
           <div className='divider' />
-          <button type='button'>Share</button>
-          <div className='divider' />
-          <button type='button'>Copy Link</button>
-          <div className='divider' />
-
           <label htmlFor='options-dialog'>
             <span className='cursor-pointer'>Cancel</span>
           </label>

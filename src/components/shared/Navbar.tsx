@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { FaSearch } from 'react-icons/fa'
 import {
   AiOutlineHome,
@@ -180,6 +180,7 @@ const NavLinks = ({ path }: { path: string }) => {
   const [showAddPostDialog, setShowAddPostDialog] = useState(false)
   const notificationListRef = useRef(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const navigate = useNavigate()
 
   const handleToggleNotifications = () => {
     setShowNotifications((prevShowNotifications) => !prevShowNotifications)
@@ -225,7 +226,17 @@ const NavLinks = ({ path }: { path: string }) => {
       </div>
 
       <Link to='/'>
-        {path === '/' ? <AiFillHome size={28} /> : <AiOutlineHome size={28} />}
+        {path === '/' ? (
+          <AiFillHome size={28} />
+        ) : (
+          <AiOutlineHome
+            size={28}
+            onClick={() => {
+              navigate('/')
+              window.location.reload()
+            }}
+          />
+        )}
       </Link>
       <Link to='/explore'>
         {path === '/explore' ? (

@@ -320,16 +320,6 @@ const OptionsMenu = () => {
           htmlFor=''
         >
           <>
-            <button type='button'>Change Password</button>
-            <div className='divider' />
-            <button type='button'>Nametag</button>
-            <div className='divider' />
-            <button type='button'>Apps and Websites</button>
-            <div className='divider' />
-            <button type='button'>Notifications</button>
-            <div className='divider' />
-            <button type='button'>Privacy and Security</button>
-            <div className='divider' />
             <button type='button' onClick={handleLogoutClick}>
               Log out
             </button>

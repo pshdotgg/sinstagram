@@ -11,6 +11,7 @@ import { setUserDoc, updateUserEmail, EditProfileProps } from '../firebase'
 import handleImageUpload from '../utils/handleImageUpload'
 import LoadingSpinner from '../components/shared/LoadingSpinner'
 import LoadingScreen from '../components/shared/LoadingScreen'
+import { useNavigate } from 'react-router-dom'
 
 const EditProfile = () => {
   const { currentUser, currentUserId } = useUserContext()
@@ -25,6 +26,7 @@ const EditProfile = () => {
 
   const onSubmit: SubmitHandler<EditProfileProps> = async (data) => {
     setError('')
+    console.log('running')
     if (currentUser?.username === data.username || !(data.username in users)) {
       try {
         setIsSubmitting(true)
@@ -62,6 +64,7 @@ const EditProfile = () => {
       setIsSubmitting(false)
       setTimeout(() => {
         setProfileUpdated(false)
+        window.location.reload()
       }, 2000)
     } catch (error: any) {
       console.error('Error changing profile photo', error)
@@ -227,7 +230,7 @@ const SectionItem = ({
         {text}
       </span>
       <input
-        {...{ formOptions }}
+        {...formOptions}
         type={type}
         placeholder={placeholder}
         defaultValue={value}
