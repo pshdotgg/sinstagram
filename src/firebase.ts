@@ -355,17 +355,28 @@ export const likePost = async (
       likes: arrayUnion(userId),
     })
 
-    const notification = {
-      id: uuid(),
-      createdAt: Date.now(),
-      postId: postId,
-      type: 'like',
-      userId: userId,
-    }
+    if (userId !== profileId) {
+      const notification = {
+        id: uuid(),
+        createdAt: Date.now(),
+        postId: postId,
+        post: {
+          postId: postId,
+          media: await getPostData(postId).then((post) => post.media),
+        },
+        type: 'like',
+        userId: userId,
+        user: await getUserDoc(userId).then((user) => ({
+          uid: user.uid,
+          username: user.username,
+          profileImage: user.profileImage,
+        })),
+      }
 
-    await updateDoc(doc(db, 'users', profileId), {
-      notifications: arrayUnion(notification),
-    })
+      await updateDoc(doc(db, 'users', profileId), {
+        notifications: arrayUnion(notification),
+      })
+    }
   } catch (error: any) {
     console.log(error)
   }
@@ -431,29 +442,9 @@ export const addComment = async (postId: string, comment: CommentProps) => {
 export const getNotifications = async (userId: string) => {
   const currentUserSnapshot = await getDoc(doc(db, 'users', userId))
   const currentUserData = currentUserSnapshot.data() as UserProps
-  const notifications = currentUserData.notifications
+  const notifications = currentUserData.notifications.slice(0, 6)
 
-  for (const notification of notifications) {
-    const { type, postId } = notification
-    if (type === 'like' && postId) {
-      const postSnapshot = await getDoc(doc(db, 'posts', postId))
-      notification.post = {
-        postId: postId,
-        media: postSnapshot.data()?.media,
-      }
-    }
-
-    const userSnapshot = await getDoc(doc(db, 'users', notification.userId))
-    notification.user = {
-      uid: userSnapshot.data()?.uid,
-      username: userSnapshot.data()?.username,
-      profileImage: userSnapshot.data()?.profileImage,
-    }
-  }
-
-  return notifications
-    .filter((notification) => notification.userId !== userId)
-    .sort((a, b) => b.createdAt - a.createdAt)
+  return notifications.sort((a, b) => b.createdAt - a.createdAt)
 }
 
 export const checkNotifications = async (userId: string) => {
@@ -478,6 +469,11 @@ export const followUser = async (userId: string, currentUserId: string) => {
         postId: null,
         type: 'follow',
         userId: currentUserId,
+        user: await getUserDoc(currentUserId).then((user) => ({
+          uid: user.uid,
+          username: user.username,
+          profileImage: user.profileImage,
+        })),
       }),
     })
   } catch (error: any) {

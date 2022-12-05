@@ -12,6 +12,7 @@ const NotificationList = ({
   notifications: NotificationProps[]
   className?: string
 }) => {
+  if (notifications.length === 0) return
   return (
     <div
       className={`absolute flex flex-col gap-0 justify-center items-end m-0 z-10 ${className}`}
@@ -20,9 +21,6 @@ const NotificationList = ({
       <div className='card w-full bg-base-100 shadow-xl rounded -mt-5 pr-2'>
         <div className='card-body p-0 m-0'>
           {notifications.map((notification) => {
-            {
-              console.log(notification)
-            }
             const { username, profileImage } = notification.user as PartialUser
             const isLike = notification.type === 'like'
             const isFollow = notification.type === 'follow'

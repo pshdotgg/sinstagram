@@ -26,7 +26,6 @@ const EditProfile = () => {
 
   const onSubmit: SubmitHandler<EditProfileProps> = async (data) => {
     setError('')
-    console.log('running')
     if (currentUser?.username === data.username || !(data.username in users)) {
       try {
         setIsSubmitting(true)

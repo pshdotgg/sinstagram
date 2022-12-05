@@ -67,7 +67,7 @@ export const UserProvider = ({ children }: { children?: ReactNode }) => {
       const getNotificationsData = async () => {
         if (currentUserId) {
           const tempNotifications = await getNotifications(currentUserId)
-          setNotifications(tempNotifications?.slice(0, 7))
+          setNotifications(tempNotifications)
         }
       }
       getNotificationsData()
