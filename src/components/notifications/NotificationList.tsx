@@ -12,7 +12,6 @@ const NotificationList = ({
   notifications: NotificationProps[]
   className?: string
 }) => {
-  if (notifications.length === 0) return
   return (
     <div
       className={`absolute flex flex-col gap-0 justify-center items-end m-0 z-10 ${className}`}
