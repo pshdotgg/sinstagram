@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react'
 import FollowButton from '../shared/FollowButton'
 import UserCard from '../shared/UserCard'
 import LoadingSpinner from '../shared/LoadingSpinner'
-import { suggestUsers } from '../../firebase'
+import { suggestUsers, UserProps } from '../../firebase'
 import { useUserContext } from '../../contexts/userContext'
 
 const FeedSideSuggestions = () => {
   const { currentUserId } = useUserContext()
-  const [users, setUsers] = useState([])
+  const [users, setUsers] = useState<UserProps[]>([])
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {

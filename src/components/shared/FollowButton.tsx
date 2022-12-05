@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import { useUserContext } from '../../contexts/userContext'
 import { followUser, unfollowUser } from '../../firebase'
 
-const FollowButton = ({ side = false, id }) => {
+const FollowButton = ({ side = false, id }: { id: string; side: boolean }) => {
   const { currentUser, currentUserId } = useUserContext()
-  const isAlreadyFollowing = currentUser.following?.includes(id)
+  const isAlreadyFollowing = currentUser?.following.includes(id)
   const [isFollowing, setIsFollowing] = useState(isAlreadyFollowing)
 
   const handleFollowUser = async () => {

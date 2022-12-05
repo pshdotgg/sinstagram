@@ -1,14 +1,15 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { PartialUser } from '../../firebase'
 
-const UserCard = ({ user }) => {
+const UserCard = ({ user }: { user: PartialUser & { name?: string } }) => {
   const { profileImage, username, name } = user
   return (
     <div className='flex gap-3'>
       <Link to={`/${username}`}>
         <div className='avatar'>
           <div className='w-12 rounded-full'>
-            <img src={profileImage ? profileImage : user.profile_image} />
+            <img src={profileImage} alt='' />
           </div>
         </div>
       </Link>

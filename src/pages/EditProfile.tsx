@@ -1,30 +1,31 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import Layout from '../components/shared/Layout'
 import ProfilePicture from '../components/shared/ProfilePicture'
 import AuthError from '../components/shared/AuthError'
-import { useForm } from 'react-hook-form'
+import { RegisterOptions, SubmitHandler, useForm } from 'react-hook-form'
 import { useUserContext } from '../contexts/userContext'
 import isURL from 'validator/lib/isURL'
 import isEmail from 'validator/lib/isEmail'
 import isMobilePhone from 'validator/lib/isMobilePhone'
-import { setUserDoc, updateUserEmail } from '../firebase'
+import { setUserDoc, updateUserEmail, EditProfileProps } from '../firebase'
 import handleImageUpload from '../utils/handleImageUpload'
 import LoadingSpinner from '../components/shared/LoadingSpinner'
+import LoadingScreen from '../components/shared/LoadingScreen'
 
 const EditProfile = () => {
-  const navigate = useNavigate()
   const { currentUser, currentUserId } = useUserContext()
   const [profileUpdated, setProfileUpdated] = useState(false)
   const [error, setError] = useState('')
   const { users } = useUserContext()
-  const [profileImage, setProfileImage] = useState(currentUser.profileImage)
-  const { register, handleSubmit } = useForm({ mode: 'onBlur' })
+  const [profileImage, setProfileImage] = useState(currentUser?.profileImage)
+  const { register, handleSubmit } = useForm<EditProfileProps>({
+    mode: 'onBlur',
+  })
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const onSubmit = async (data) => {
+  const onSubmit: SubmitHandler<EditProfileProps> = async (data) => {
     setError('')
-    if (currentUser.username === data.username || !(data.username in users)) {
+    if (currentUser?.username === data.username || !(data.username in users)) {
       try {
         setIsSubmitting(true)
         setProfileUpdated(false)
@@ -36,7 +37,7 @@ const EditProfile = () => {
           setProfileUpdated(false)
           window.location.reload()
         }, 2000)
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error updating profile', error)
         setError(error.message)
       }
@@ -45,7 +46,11 @@ const EditProfile = () => {
     }
   }
 
-  const handleUpdateProfilePic = async (event) => {
+  const handleUpdateProfilePic = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (!event.target.files) return
+
     const url = await handleImageUpload(event.target.files[0])
 
     try {
@@ -58,10 +63,12 @@ const EditProfile = () => {
       setTimeout(() => {
         setProfileUpdated(false)
       }, 2000)
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error changing profile photo', error)
     }
   }
+
+  if (!currentUser) return <LoadingScreen />
 
   return (
     <Layout title='Edit Profile'>
@@ -69,7 +76,7 @@ const EditProfile = () => {
       <section className='card bg-white w-full rounded border-2 border-base-300 mx-auto'>
         <div className='card-body p-5 mx-auto md:w-[552px]'>
           <div className='mt-0 flex items-center md:gap-10 mb-5 md:mb-0'>
-            <ProfilePicture image={profileImage} />
+            {profileImage && <ProfilePicture image={profileImage} />}
             <div>
               <span className='font-semibold text-2xl md:text-3xl'>
                 {currentUser.username}
@@ -207,6 +214,12 @@ const SectionItem = ({
   placeholder,
   value,
   formOptions,
+}: {
+  type?: string
+  text: string
+  placeholder: string
+  value: string
+  formOptions: RegisterOptions | any
 }) => {
   return (
     <div className='flex flex-col md:flex-row w-full md:gap-8 md:items-center justify-between'>
@@ -214,7 +227,7 @@ const SectionItem = ({
         {text}
       </span>
       <input
-        {...formOptions}
+        {...{ formOptions }}
         type={type}
         placeholder={placeholder}
         defaultValue={value}

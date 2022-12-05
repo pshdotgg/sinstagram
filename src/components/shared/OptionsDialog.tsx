@@ -4,10 +4,18 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useUserContext } from '../../contexts/userContext'
 import { unfollowUser, deleteUserPost } from '../../firebase'
 
-const OptionsDialog = ({ postId, authorId, username }) => {
+const OptionsDialog = ({
+  postId,
+  authorId,
+  username,
+}: {
+  postId: string
+  authorId: string
+  username: string
+}) => {
   const { currentUserId, currentUser } = useUserContext()
   const isOwner = authorId === currentUserId
-  const isFollowing = currentUser.following?.includes(authorId)
+  const isFollowing = currentUser?.following?.includes(authorId)
   const isUnrelatedUser = !isOwner && !isFollowing
   const navigate = useNavigate()
 
@@ -22,7 +30,7 @@ const OptionsDialog = ({ postId, authorId, username }) => {
       await unfollowUser(authorId, currentUserId)
       navigate(`/${username}`)
       window.location.reload()
-    } catch (error) {
+    } catch (error: any) {
       console.log(error)
     }
   }

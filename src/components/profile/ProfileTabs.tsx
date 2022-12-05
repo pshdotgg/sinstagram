@@ -4,8 +4,15 @@ import { MdGridOn } from 'react-icons/md'
 import { CiSaveDown1 } from 'react-icons/ci'
 import GridPost from '../shared/GridPost'
 import LoadingSpinner from '../shared/LoadingSpinner'
+import { type UserProfileProps } from '../../pages/Profile'
 
-const ProfileTabs = ({ user, isOwner }) => {
+const ProfileTabs = ({
+  user,
+  isOwner,
+}: {
+  user: UserProfileProps
+  isOwner: boolean
+}) => {
   const [value, setValue] = React.useState(0)
 
   if (!user.posts) return <LoadingSpinner />
@@ -63,7 +70,13 @@ const ProfileTabs = ({ user, isOwner }) => {
   )
 }
 
-const ProfilePosts = ({ user, isOwner }) => {
+const ProfilePosts = ({
+  user,
+  isOwner,
+}: {
+  user: UserProfileProps
+  isOwner: boolean
+}) => {
   if (user.posts?.length === 0)
     return (
       <section className='pt-16'>
@@ -85,7 +98,7 @@ const ProfilePosts = ({ user, isOwner }) => {
     </section>
   )
 }
-const SavedPosts = ({ user }) => {
+const SavedPosts = ({ user }: { user: UserProfileProps }) => {
   if (user?.savedPosts?.length === 0) {
     return (
       <section className='pt-16'>

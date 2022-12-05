@@ -6,11 +6,11 @@ import LoadingSpinner from './LoadingSpinner'
 import FollowButton from './FollowButton'
 import { Link } from 'react-router-dom'
 import { useUserContext } from '../../contexts/userContext'
-import { suggestUsers } from '../../firebase'
+import { suggestUsers, UserProps } from '../../firebase'
 
-const FollowSuggestions = ({ hideHeader }) => {
+const FollowSuggestions = ({ hideHeader }: { hideHeader: boolean }) => {
   const { currentUserId } = useUserContext()
-  const [users, setUsers] = useState([])
+  const [users, setUsers] = useState<UserProps[]>([])
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
@@ -34,7 +34,7 @@ const FollowSuggestions = ({ hideHeader }) => {
   )
 }
 
-const FollowSlider = ({ users }) => {
+const FollowSlider = ({ users }: { users: UserProps[] }) => {
   const settings = {
     infinite: true,
     speed: 1000,
@@ -59,7 +59,7 @@ const FollowSlider = ({ users }) => {
   )
 }
 
-const FollowSuggestionsItem = ({ user }) => {
+const FollowSuggestionsItem = ({ user }: { user: UserProps }) => {
   const { uid, username, name, profileImage } = user
 
   return (
@@ -79,7 +79,7 @@ const FollowSuggestionsItem = ({ user }) => {
 
         <span className='text-gray-500 text-sm'>{name}</span>
         <div className='card-actions'>
-          <FollowButton id={uid} />
+          <FollowButton side={false} id={uid} />
         </div>
       </div>
     </div>

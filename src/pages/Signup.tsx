@@ -7,8 +7,9 @@ import {
   signInWithGooglePopup,
   signUpWithEmailAndPassword,
   createUserDocument,
+  SignUpProps,
 } from '../firebase'
-import { useForm } from 'react-hook-form'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import isEmail from 'validator/lib/isEmail'
 import { ImCancelCircle } from 'react-icons/im'
 import AuthError from '../components/shared/AuthError'
@@ -20,7 +21,7 @@ const Signup = () => {
     register,
     handleSubmit,
     formState: { errors, isValid, isSubmitting, touchedFields },
-  } = useForm({
+  } = useForm<SignUpProps>({
     mode: 'onBlur',
   })
   const [error, setError] = useState('')
@@ -48,17 +49,19 @@ const Signup = () => {
     window.location.reload()
   }
 
-  const onSubmit = async (data) => {
+  const onSubmit: SubmitHandler<SignUpProps> = async (data) => {
     setError('')
     if (!(data.username in users)) {
       try {
         setLoading(true)
         const userData = await signUpWithEmailAndPassword(data)
-        setCurrentUser(userData)
-        setUsernameNotAvailable(false)
-        navigate('/')
+        if (userData) {
+          setCurrentUser(userData)
+          setUsernameNotAvailable(false)
+          navigate('/')
+        }
         setLoading(false)
-      } catch (error) {
+      } catch (error: any) {
         setError(error.message)
         console.error('Error signing up', error.message)
       }

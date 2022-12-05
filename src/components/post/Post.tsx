@@ -17,16 +17,19 @@ import {
   savePost,
   unsavePost,
   addComment,
+  PostProps,
+  CommentProps,
 } from '../../firebase'
 import { useUserContext } from '../../contexts/userContext'
 import { formatDateToNowShort, formatPostDate } from '../../utils/formatDate'
 import { v4 as uuid } from 'uuid'
+import LoadingSpinner from '../shared/LoadingSpinner'
 
-const Post = ({ postId }) => {
-  const [post, setPost] = useState(null)
+const Post = ({ postId }: { postId: string }) => {
+  const [post, setPost] = useState<PostProps | null>(null)
   const [loading, setLoading] = useState(false)
   const [totalLikes, setTotalLikes] = useState(0)
-  const [comments, setComments] = useState([])
+  const [comments, setComments] = useState<CommentProps[]>([])
 
   useEffect(() => {
     const getPost = async () => {
@@ -36,7 +39,7 @@ const Post = ({ postId }) => {
         setPost(tempPost)
         setTotalLikes(tempPost.likes.length)
         setComments(tempPost.comments)
-      } catch (error) {
+      } catch (error: any) {
         console.log(error)
       }
       setLoading(false)
@@ -47,6 +50,8 @@ const Post = ({ postId }) => {
   if (loading || !post) return <PostSkeleton />
 
   const { media, user, caption, createdAt } = post
+
+  if (!user) return <PostSkeleton />
 
   return (
     <div className='bg-white w-full '>
@@ -85,7 +90,7 @@ const Post = ({ postId }) => {
               <div className='flex gap-5 items-center'>
                 <LikeButton
                   postId={postId}
-                  profileId={user?.uid}
+                  profileId={user?.uid!}
                   setTotalLikes={setTotalLikes}
                 />
                 <Link to={`/p/${postId}`}>
@@ -111,17 +116,21 @@ const Post = ({ postId }) => {
   )
 }
 
-const AuthorCaption = ({ user, caption, createdAt }) => {
+const AuthorCaption = ({
+  user,
+  caption,
+  createdAt,
+}: Pick<PostProps, 'user' | 'caption' | 'createdAt'>) => {
   return (
     <div className='flex'>
       <div className='mr-4 avatar'>
         <div className='w-10 h-10 rounded-full'>
-          <img src={user.profileImage} />
+          <img src={user?.profileImage} />
         </div>
       </div>
       <div className='flex flex-col'>
-        <Link to={`/${user.username}`}>
-          <span className='font-semibold'>{user.username}</span>
+        <Link to={`/${user?.username}`}>
+          <span className='font-semibold'>{user?.username}</span>
           <span
             className='pt-1 px-2 '
             dangerouslySetInnerHTML={{ __html: caption }}
@@ -135,7 +144,7 @@ const AuthorCaption = ({ user, caption, createdAt }) => {
   )
 }
 
-const UserComment = ({ comment }) => {
+const UserComment = ({ comment }: { comment: CommentProps }) => {
   return (
     <div className='flex pb-2'>
       <div className='mr-4 avatar'>
@@ -161,9 +170,17 @@ const UserComment = ({ comment }) => {
   )
 }
 
-const LikeButton = ({ postId, profileId, setTotalLikes }) => {
+const LikeButton = ({
+  postId,
+  profileId,
+  setTotalLikes,
+}: {
+  postId: string
+  profileId: string
+  setTotalLikes: React.Dispatch<React.SetStateAction<number>>
+}) => {
   const { currentUserId, currentUser } = useUserContext()
-  const isAlredyLiked = currentUser.likes.includes(postId)
+  const isAlredyLiked = currentUser?.likes.includes(postId)
   const [liked, setLiked] = useState(isAlredyLiked)
 
   const Icon = liked ? (
@@ -194,9 +211,9 @@ const LikeButton = ({ postId, profileId, setTotalLikes }) => {
   )
 }
 
-const SaveButton = ({ postId }) => {
+const SaveButton = ({ postId }: { postId: string }) => {
   const { currentUserId, currentUser } = useUserContext()
-  const isAlreadySaved = currentUser.savedPosts.includes(postId)
+  const isAlreadySaved = currentUser?.savedPosts.includes(postId)
   const [saved, setSaved] = useState(isAlreadySaved)
   const Icon = saved ? <FaBookmark size={20} /> : <FaRegBookmark size={20} />
 
@@ -220,9 +237,17 @@ const SaveButton = ({ postId }) => {
   )
 }
 
-const Comment = ({ postId, setComments }) => {
+const Comment = ({
+  postId,
+  setComments,
+}: {
+  postId: string
+  setComments: React.Dispatch<React.SetStateAction<CommentProps[]>>
+}) => {
   const [content, setContent] = useState('')
   const { currentUserId, currentUser } = useUserContext()
+
+  if (!currentUser) return <LoadingSpinner />
 
   const handleSubmitComment = async () => {
     const comment = {

@@ -1,26 +1,28 @@
 import React, { useEffect, useState } from 'react'
 import GridPost from '../shared/GridPost'
 import LoadingSpinner from '../shared/LoadingSpinner'
-import { getExplorePosts } from '../../firebase'
+import { getExplorePosts, PostProps } from '../../firebase'
 import { useUserContext } from '../../contexts/userContext'
 
 const ExploreGrid = () => {
   const { currentUser, currentUserId } = useUserContext()
-  const [posts, setPosts] = useState([])
+  const [posts, setPosts] = useState<PostProps[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const getExplorePostsData = async () => {
-      try {
-        setLoading(true)
-        const tempPosts = await getExplorePosts(
-          currentUserId,
-          currentUser?.following
-        )
-        setPosts(tempPosts)
-        setLoading(false)
-      } catch (error) {
-        console.log(error)
+      if (currentUser) {
+        try {
+          setLoading(true)
+          const tempPosts = await getExplorePosts(
+            currentUserId,
+            currentUser.following
+          )
+          setPosts(tempPosts)
+          setLoading(false)
+        } catch (error: any) {
+          console.log(error)
+        }
       }
     }
 

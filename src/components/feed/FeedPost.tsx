@@ -17,15 +17,20 @@ import {
   unsavePost,
   addComment,
   getUserDoc,
+  PostProps,
+  UserProps,
+  CommentProps,
 } from '../../firebase'
 import { useUserContext } from '../../contexts/userContext'
 import { formatDateToNow } from '../../utils/formatDate'
 import { v4 as uuid } from 'uuid'
+import LoadingSpinner from '../shared/LoadingSpinner'
+import FeedPostSkeleton from './FeedPostSkeleton'
 
-const FeedPost = ({ post, index }) => {
+const FeedPost = ({ post, index }: { post: PostProps; index: number }) => {
   const { id, media, likes, userId, caption, createdAt } = post
   const [comments, setComments] = useState(post.comments)
-  const [user, setUser] = useState({})
+  const [user, setUser] = useState<UserProps | null>(null)
   const [totalLikes, setTotalLikes] = useState(likes.length)
   const [showCaption, setShowCaption] = useState(false)
   const showFollowSuggestions = index === 1
@@ -37,6 +42,8 @@ const FeedPost = ({ post, index }) => {
 
     getUser()
   }, [])
+
+  if (!user) return <FeedPostSkeleton />
 
   return (
     <>
@@ -130,9 +137,17 @@ const FeedPost = ({ post, index }) => {
   )
 }
 
-const LikeButton = ({ postId, profileId, setTotalLikes }) => {
+const LikeButton = ({
+  postId,
+  profileId,
+  setTotalLikes,
+}: {
+  postId: string
+  profileId: string
+  setTotalLikes: React.Dispatch<React.SetStateAction<number>>
+}) => {
   const { currentUserId, currentUser } = useUserContext()
-  const isAlredyLiked = currentUser.likes.includes(postId)
+  const isAlredyLiked = currentUser?.likes.includes(postId)
   const [liked, setLiked] = useState(isAlredyLiked)
 
   const Icon = liked ? (
@@ -163,9 +178,9 @@ const LikeButton = ({ postId, profileId, setTotalLikes }) => {
   )
 }
 
-const SaveButton = ({ postId }) => {
+const SaveButton = ({ postId }: { postId: string }) => {
   const { currentUserId, currentUser } = useUserContext()
-  const isAlreadySaved = currentUser.savedPosts.includes(postId)
+  const isAlreadySaved = currentUser?.savedPosts.includes(postId)
   const [saved, setSaved] = useState(isAlreadySaved)
   const Icon = saved ? <FaBookmark size={20} /> : <FaRegBookmark size={20} />
 
@@ -189,9 +204,17 @@ const SaveButton = ({ postId }) => {
   )
 }
 
-const Comment = ({ postId, setComments }) => {
+const Comment = ({
+  postId,
+  setComments,
+}: {
+  postId: string
+  setComments: React.Dispatch<React.SetStateAction<CommentProps[]>>
+}) => {
   const [content, setContent] = useState('')
   const { currentUserId, currentUser } = useUserContext()
+
+  if (!currentUser) return <LoadingSpinner />
 
   const handleSubmitComment = async () => {
     const comment = {

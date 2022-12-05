@@ -1,7 +1,14 @@
 import { Text } from 'slate'
 import escapeHtml from 'escape-html'
 
-const serialize = (node) => {
+interface NodeProps {
+  children: any
+  text?: any
+  bold?: any
+  type?: any
+}
+
+const serialize = (node: NodeProps) => {
   if (Text.isText(node)) {
     let string = escapeHtml(node.text)
     if (node.bold) {
@@ -10,7 +17,7 @@ const serialize = (node) => {
     return string
   }
 
-  const children = node.children.map((n) => serialize(n)).join('')
+  const children = node.children.map((n: NodeProps) => serialize(n)).join('')
 
   switch (node.type) {
     case 'paragraph':

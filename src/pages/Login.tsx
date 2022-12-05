@@ -8,8 +8,13 @@ import {
   createUserDocument,
   logInWithEmailAndPassword,
 } from '../firebase'
-import { useForm } from 'react-hook-form'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import AuthError from '../components/shared/AuthError'
+
+interface LoginProps {
+  email: string
+  password: string
+}
 
 const Login = () => {
   const {
@@ -17,7 +22,7 @@ const Login = () => {
     handleSubmit,
     watch,
     formState: { isValid, isSubmitting },
-  } = useForm()
+  } = useForm<LoginProps>()
   const [showPassword, setShowPassword] = useState(false)
   const navigate = useNavigate()
   const [error, setError] = useState('')
@@ -33,14 +38,13 @@ const Login = () => {
     window.location.reload()
   }
 
-  const onSubmit = async (data) => {
+  const onSubmit: SubmitHandler<LoginProps> = async (data) => {
     const { email, password } = data
     try {
       setError('')
-      const { user } = await logInWithEmailAndPassword(email, password)
+      await logInWithEmailAndPassword(email, password)
       navigate('/')
-      return user
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error logging in', error)
       setError(error.message)
     }

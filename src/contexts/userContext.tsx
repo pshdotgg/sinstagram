@@ -1,21 +1,52 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from 'react'
 import {
   onAuthStateChangedListener,
   getUserDoc,
   getUsers,
   getNotifications,
+  NotificationProps,
+  UserProps,
+  UsersCollectionProps,
 } from '../firebase'
 
-const UserContext = createContext()
+interface UserContextType {
+  currentUser: UserProps | null
+  setCurrentUser: React.Dispatch<React.SetStateAction<UserProps | null>>
+  currentUserId: string
+  setCurrentUserId: React.Dispatch<React.SetStateAction<string>>
+  loading: boolean
+  users: UsersCollectionProps
+  setUsers: React.Dispatch<React.SetStateAction<UsersCollectionProps>>
+  notifications: NotificationProps[]
+}
 
-export const UserProvider = ({ children }) => {
-  const [currentUserId, setCurrentUserId] = useState(null)
-  const [users, setUsers] = useState({})
-  const [currentUser, setCurrentUser] = useState(null)
+const createCtx = <T extends {}>() => {
+  const ctx = createContext<T | undefined>(undefined)
+  const useCtx = () => {
+    const c = useContext(ctx)
+    if (!c) throw new Error('useCtx must be inside a Provider with a value')
+    return c
+  }
+  return [useCtx, ctx.Provider] as const
+}
+
+export const [useUserContext, UserContextProvider] =
+  createCtx<UserContextType>()
+
+export const UserProvider = ({ children }: { children?: ReactNode }) => {
+  const [currentUserId, setCurrentUserId] = useState<string>('')
+  const [users, setUsers] = useState<UsersCollectionProps>({})
+  const [currentUser, setCurrentUser] = useState<UserProps | null>(null)
   const [loading, setLoading] = useState(true)
-  const [notifications, setNotifications] = useState([])
+  const [notifications, setNotifications] = useState<NotificationProps[]>([])
 
-  const value = {
+  const value: UserContextType = {
     currentUser,
     setCurrentUser,
     currentUserId,
@@ -34,19 +65,21 @@ export const UserProvider = ({ children }) => {
 
     if (currentUser) {
       const getNotificationsData = async () => {
-        const tempNotifications = await getNotifications(currentUserId)
-        setNotifications(tempNotifications.slice(0, 7))
+        if (currentUserId) {
+          const tempNotifications = await getNotifications(currentUserId)
+          setNotifications(tempNotifications?.slice(0, 7))
+        }
       }
       getNotificationsData()
     }
 
     getUsersData()
-  }, [currentUser])
+  }, [currentUser, currentUserId])
 
   useEffect(() => {
     const unsubscribe = onAuthStateChangedListener(async (user) => {
       if (user) {
-        setCurrentUserId(user ? user.uid : null)
+        setCurrentUserId(user ? user?.uid : null)
         setCurrentUser(await getUserDoc(user.uid))
       }
       setLoading(false)
@@ -54,7 +87,5 @@ export const UserProvider = ({ children }) => {
     return unsubscribe
   }, [])
 
-  return <UserContext.Provider value={value}>{children}</UserContext.Provider>
+  return <UserContextProvider value={value}>{children}</UserContextProvider>
 }
-
-export const useUserContext = () => useContext(UserContext)

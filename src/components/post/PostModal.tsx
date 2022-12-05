@@ -8,7 +8,7 @@ const PostModal = () => {
   const navigate = useNavigate()
   const { postId } = useParams()
 
-  const customStyles = {
+  const customStyles: Modal.Styles = {
     overlay: {
       position: 'fixed',
       zIndex: '20',
@@ -39,7 +39,7 @@ const PostModal = () => {
         onRequestClose={() => navigate(-1)}
         style={customStyles}
       >
-        <Post postId={postId} />
+        {postId && <Post postId={postId} />}
       </Modal>
       <div
         className='fixed top-0 right-0 cursor-pointer z-30 p-5'

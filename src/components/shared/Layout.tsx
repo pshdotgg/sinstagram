@@ -1,8 +1,16 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 import SEO from './Seo'
 import Navbar from './Navbar'
 
-const Layout = ({ children, title, className = '' }) => {
+const Layout = ({
+  children,
+  title,
+  className = '',
+}: {
+  children: ReactNode
+  title: string
+  className?: string
+}) => {
   return (
     <section>
       <SEO title={title} />

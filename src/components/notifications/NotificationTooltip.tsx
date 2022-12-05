@@ -1,9 +1,16 @@
 import React from 'react'
 import { RiArrowUpSFill } from 'react-icons/ri'
 import { BsPersonFill, BsHeartFill } from 'react-icons/bs'
+import { NotificationProps } from '../../firebase'
 
-const NotificationTooltip = ({ notifications, className = '' }) => {
-  const countNotifications = (notificationType) => {
+const NotificationTooltip = ({
+  notifications,
+  className = '',
+}: {
+  notifications: NotificationProps[]
+  className?: string
+}) => {
+  const countNotifications = (notificationType: string) => {
     return notifications.filter(({ type }) => type === notificationType).length
   }
 

@@ -6,35 +6,37 @@ import LoadingScreen from '../components/shared/LoadingScreen'
 import LoadingSpinner from '../components/shared/LoadingSpinner'
 import UserCard from '../components/shared/UserCard'
 import { useUserContext } from '../contexts/userContext'
-import { getFeed, getNextFeed } from '../firebase'
+import { getFeed, getNextFeed, PostProps } from '../firebase'
 import InfiniteScroll from 'react-infinite-scroll-component'
 const FeedPost = React.lazy(() => import('../components/feed/FeedPost'))
 
 const Feed = () => {
-  const [isEndOfFeed, setIsEndOfFeed] = React.useState(false)
+  const [isEndOfFeed, setIsEndOfFeed] = useState(false)
   const { currentUser, currentUserId, loading } = useUserContext()
-  const [feedPosts, setFeedPosts] = useState([])
+  const [feedPosts, setFeedPosts] = useState<PostProps[]>([])
   const lastPostTimestamp = feedPosts[feedPosts.length - 1]?.createdAt
 
   const handleLoadMore = async () => {
-    const nextFeed = await getNextFeed(
-      currentUserId,
-      currentUser?.following,
-      lastPostTimestamp
-    )
+    if (currentUser) {
+      const nextFeed = await getNextFeed(
+        currentUserId,
+        currentUser.following,
+        lastPostTimestamp
+      )
 
-    if (nextFeed.length === 0) setIsEndOfFeed(true)
+      if (nextFeed.length === 0) setIsEndOfFeed(true)
 
-    setFeedPosts((prev) => {
-      return [...prev, ...nextFeed]
-    })
+      setFeedPosts((prev) => {
+        return [...prev, ...nextFeed]
+      })
+    }
   }
 
-  if (loading) return <LoadingScreen />
+  if (loading || !currentUser) return <LoadingScreen />
 
   useEffect(() => {
     const getFeedPosts = async () => {
-      const tempPosts = await getFeed(currentUserId, currentUser?.following)
+      const tempPosts = await getFeed(currentUserId, currentUser.following)
       setFeedPosts(tempPosts)
     }
     getFeedPosts()

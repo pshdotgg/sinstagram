@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Modal from 'react-modal'
 import { MdClose } from 'react-icons/md'
-import { createEditor } from 'slate'
+import { createEditor, Descendant } from 'slate'
 import { Slate, Editable, withReact } from 'slate-react'
 import serialize from '../../utils/serialize'
 import { useUserContext } from '../../contexts/userContext'
@@ -16,13 +16,21 @@ const initialValue = [
   },
 ]
 
-const AddPostDialog = ({ media, handleClose }) => {
+const AddPostDialog = ({
+  media,
+  handleClose,
+}: {
+  media: File
+  handleClose: () => void
+}) => {
   const [editor] = useState(() => withReact(createEditor()))
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [value, setValue] = useState(initialValue)
+  const [value, setValue] = useState<Descendant[] | typeof initialValue>(
+    initialValue
+  )
   const { currentUser, currentUserId } = useUserContext()
 
-  const customStyles = {
+  const customStyles: Modal.Styles = {
     overlay: {
       position: 'fixed',
       zIndex: '20',
@@ -81,7 +89,7 @@ const AddPostDialog = ({ media, handleClose }) => {
           <div className='flex items-center p-7 gap-5'>
             <div className='avatar'>
               <div className='w-16 rounded-full'>
-                <img src={currentUser.profileImage} />
+                <img src={currentUser?.profileImage} />
               </div>
             </div>
 

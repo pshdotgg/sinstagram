@@ -2,10 +2,15 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import GridPost from '../shared/GridPost'
 import LoadingSpinner from '../shared/LoadingSpinner'
-import { getMorePostsFromUser, getPostData, getUserDoc } from '../../firebase'
+import {
+  getMorePostsFromUser,
+  getPostData,
+  getUserDoc,
+  PostProps,
+} from '../../firebase'
 
-const MorePostsFromUser = ({ postId }) => {
-  const [posts, setPosts] = useState([])
+const MorePostsFromUser = ({ postId }: { postId: string }) => {
+  const [posts, setPosts] = useState<PostProps[]>([])
   const [username, setUsername] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -19,7 +24,7 @@ const MorePostsFromUser = ({ postId }) => {
         const tempPosts = await getMorePostsFromUser(userId, postId)
         setPosts(tempPosts)
         setLoading(false)
-      } catch (error) {
+      } catch (error: any) {
         console.log(error)
       }
     }

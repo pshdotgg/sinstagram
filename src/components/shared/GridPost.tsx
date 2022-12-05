@@ -2,8 +2,9 @@ import React from 'react'
 import { BsHeartFill } from 'react-icons/bs'
 import { FaRegComment } from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
+import { PostProps } from '../../firebase'
 
-const GridPost = ({ post }) => {
+const GridPost = ({ post }: { post: PostProps }) => {
   const navigate = useNavigate()
 
   const handleOpenPostModal = () => {

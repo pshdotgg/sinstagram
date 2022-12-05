@@ -21,7 +21,7 @@ import { useNProgress } from '@tanem/react-nprogress'
 import { useUserContext } from '../../contexts/userContext'
 import Fuse from 'fuse.js'
 import AddPostDialog from '../post/AddPostDialog'
-import { getNotifications, checkNotifications } from '../../firebase'
+import { checkNotifications, PartialUser } from '../../firebase'
 import { isAfter } from 'date-fns'
 
 const Navbar = () => {
@@ -77,7 +77,9 @@ const Search = () => {
   const [query, setQuery] = useState('')
   const [loading, setLoading] = useState(false)
   const [hasFocus, setHasFocus] = useState(false)
-  const [results, setResults] = useState([])
+  const [results, setResults] = useState<
+    Fuse.FuseResult<PartialUser & { name: string }>[]
+  >([])
   const { users } = useUserContext()
   const usersList = Object.values(users)
   const fuse = new Fuse(usersList, { keys: ['username', 'name'] })
@@ -132,7 +134,15 @@ const Search = () => {
   )
 }
 
-const SearchCard = ({ results }) => {
+const SearchCard = ({
+  results,
+}: {
+  results: Fuse.FuseResult<
+    PartialUser & {
+      name: string
+    }
+  >[]
+}) => {
   return (
     <div className='absolute top-8 w-full flex flex-col gap-0 justify-center items-center m-0'>
       <RiArrowUpSFill size={50} className='fill-white p-0' />
@@ -156,8 +166,9 @@ const SearchCard = ({ results }) => {
   )
 }
 
-const NavLinks = ({ path }) => {
+const NavLinks = ({ path }: { path: string }) => {
   const { currentUser, currentUserId, notifications } = useUserContext()
+  if (!currentUser) return null
   const newNotifications = notifications.filter(({ createdAt }) =>
     isAfter(new Date(createdAt), new Date(currentUser.lastChecked))
   )
@@ -165,10 +176,10 @@ const NavLinks = ({ path }) => {
   const [showNotificationsTooltip, setShowNotificationsTooltip] =
     useState(hasNotifications)
   const [showNotifications, setShowNotifications] = useState(false)
-  const [media, setMedia] = useState(null)
+  const [media, setMedia] = useState<File>()
   const [showAddPostDialog, setShowAddPostDialog] = useState(false)
   const notificationListRef = useRef(null)
-  const inputRef = useRef()
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const handleToggleNotifications = () => {
     setShowNotifications((prevShowNotifications) => !prevShowNotifications)
@@ -179,10 +190,11 @@ const NavLinks = ({ path }) => {
   }
 
   const openFileInput = () => {
-    inputRef.current.click()
+    inputRef.current?.click()
   }
 
-  const handleAddPost = (event) => {
+  const handleAddPost = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!event.target.files) return
     setMedia(event.target.files[0])
     setShowAddPostDialog(true)
   }
@@ -199,7 +211,7 @@ const NavLinks = ({ path }) => {
 
   return (
     <div className='flex gap-5 items-center'>
-      {showAddPostDialog && (
+      {showAddPostDialog && media && (
         <AddPostDialog media={media} handleClose={handleClose} />
       )}
       <div className='cursor-pointer'>
@@ -266,7 +278,7 @@ const NavLinks = ({ path }) => {
   )
 }
 
-const PrograssBar = ({ isAnimating }) => {
+const PrograssBar = ({ isAnimating }: { isAnimating: boolean }) => {
   const { animationDuration, progress, isFinished } = useNProgress({
     isAnimating,
   })

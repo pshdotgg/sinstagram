@@ -1,7 +1,7 @@
 import React from 'react'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 
-const Seo = ({ title }) => {
+const Seo = ({ title }: { title: string }) => {
   const tileText = title ? `${title} · Sinstagram` : 'Sinstagram'
 
   return (

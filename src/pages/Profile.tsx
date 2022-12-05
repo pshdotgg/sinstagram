@@ -4,7 +4,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import Layout from '../components/shared/Layout'
 import ProfilePicture from '../components/shared/ProfilePicture'
 import ProfileTabs from '../components/profile/ProfileTabs'
-import { signOutUser } from '../firebase'
+import { PostProps, signOutUser, UserProps } from '../firebase'
 import { useUserContext } from '../contexts/userContext'
 import LoadingScreen from '../components/shared/LoadingScreen'
 import {
@@ -16,10 +16,15 @@ import {
 } from '../firebase'
 import NotFound from './NotFound'
 
+export type UserProfileProps = Omit<UserProps, 'posts' | 'savedPosts'> & {
+  posts: PostProps[]
+  savedPosts: PostProps[]
+}
+
 const Profile = () => {
-  const { username } = useParams()
-  const [user, setUser] = useState({})
-  const { currentUser, currentUserId, users } = useUserContext()
+  const { username } = useParams() as { username: string }
+  const [user, setUser] = useState<UserProfileProps>()
+  const { currentUserId, users } = useUserContext()
   const [loading, setLoading] = useState(false)
 
   if (!(username in users)) return <NotFound />
@@ -28,12 +33,15 @@ const Profile = () => {
     const getUserProfile = async () => {
       setLoading(true)
       try {
-        const userId = await users[username]?.uid
+        const userId = users[username]?.uid
         const tempUserProfile = await getUserDoc(userId)
-        tempUserProfile.posts = await getUserPosts(userId)
-        tempUserProfile.savedPosts = await getSavedPosts(userId)
-        setUser(tempUserProfile)
-      } catch (error) {
+        const tempUser = {
+          ...tempUserProfile,
+          posts: await getUserPosts(userId),
+          savedPosts: await getSavedPosts(userId),
+        }
+        setUser(tempUser)
+      } catch (error: any) {
         console.log(error)
       }
 
@@ -43,17 +51,17 @@ const Profile = () => {
     getUserProfile()
   }, [username])
 
-  if (loading) return <LoadingScreen />
+  if (loading || !user) return <LoadingScreen />
 
-  const isOwner = user?.uid === currentUserId
+  const isOwner = user.uid === currentUserId
 
   return (
     <Layout title={`${user.name} (@${user.username})` || 'Sinstagram'}>
       <section className='hidden md:flex gap-28'>
-        <ProfilePicture image={user.profileImage} isOwner={isOwner} />
+        <ProfilePicture image={user.profileImage} />
         <div className='flex flex-col gap-8'>
           <ProfileNameSection user={user} isOwner={isOwner} setUser={setUser} />
-          <PostCountSection user={user} setUser={setUser} />
+          <PostCountSection user={user} />
           <NameBioSection user={user} />
         </div>
       </section>
@@ -61,7 +69,7 @@ const Profile = () => {
       <section className='md:hidden'>
         <div>
           <div className='flex gap-5'>
-            <ProfilePicture image={user.profileImage} isOwner={isOwner} />
+            <ProfilePicture image={user.profileImage} />
             <ProfileNameSection
               user={user}
               isOwner={isOwner}
@@ -77,10 +85,18 @@ const Profile = () => {
   )
 }
 
-const ProfileNameSection = ({ user, isOwner, setUser }) => {
+const ProfileNameSection = ({
+  user,
+  isOwner,
+  setUser,
+}: {
+  user: UserProfileProps
+  isOwner: boolean
+  setUser: React.Dispatch<React.SetStateAction<UserProfileProps | undefined>>
+}) => {
   const [showUnfollowDialog, setShowUnfollowDialog] = useState(true)
   const { currentUser, currentUserId } = useUserContext()
-  const isAlreadyFollowing = currentUser.following?.includes(user.uid)
+  const isAlreadyFollowing = currentUser?.following.includes(user.uid)
   const [isFollowing, setIsFollowing] = useState(isAlreadyFollowing)
   const isFollower = !isFollowing && currentUser?.followers?.includes(user.uid)
   let followButton
@@ -89,7 +105,8 @@ const ProfileNameSection = ({ user, isOwner, setUser }) => {
     setIsFollowing(true)
     setShowUnfollowDialog(true)
     setUser((prev) => {
-      return { ...prev, followers: [...prev.followers, currentUserId] }
+      if (prev)
+        return { ...prev, followers: [...prev.followers, currentUserId] }
     })
     await followUser(user.uid, currentUserId)
   }
@@ -186,17 +203,23 @@ const UnfollowDialog = ({
   setIsFollowing,
   setShowUnfollowDialog,
   setUser,
+}: {
+  user: UserProfileProps
+  setIsFollowing: React.Dispatch<React.SetStateAction<boolean | undefined>>
+  setShowUnfollowDialog: React.Dispatch<React.SetStateAction<boolean>>
+  setUser: React.Dispatch<React.SetStateAction<UserProfileProps | undefined>>
 }) => {
-  const { currentUser, currentUserId } = useUserContext()
+  const { currentUserId } = useUserContext()
 
   const handleUnfollowUser = async () => {
     setIsFollowing(false)
     setShowUnfollowDialog(false)
     setUser((prev) => {
-      return {
-        ...prev,
-        followers: prev.followers.filter((id) => id !== currentUserId),
-      }
+      if (prev)
+        return {
+          ...prev,
+          followers: prev.followers.filter((id) => id !== currentUserId),
+        }
     })
     await unfollowUser(user.uid, currentUserId)
   }
@@ -235,27 +258,32 @@ const UnfollowDialog = ({
     </>
   )
 }
-const PostCountSection = ({ user }) => {
-  const options = ['posts', 'followers', 'following']
+const PostCountSection = ({ user }: { user: UserProfileProps }) => {
+  const options: (keyof Pick<
+    UserProfileProps,
+    'posts' | 'followers' | 'following'
+  >)[] = ['posts', 'followers', 'following']
   return (
     <>
       <div className='md:hidden divider my-1' />
       <section className='flex gap-5 justify-between sm:w-96'>
         {options.map((option) => {
-          return (
-            <div key={option} className='flex flex-col items-center'>
-              <span className='font-semibold'>{user[option]?.length} </span>
-              <span className='hidden md:inline-block'>{option}</span>
-              <span className='md:hidden text-gray-500'>{option}</span>
-            </div>
-          )
+          if (Array.isArray(user[option])) {
+            return (
+              <div key={option} className='flex flex-col items-center'>
+                <span className='font-semibold'>{user[option].length} </span>
+                <span className='hidden md:inline-block'>{option}</span>
+                <span className='md:hidden text-gray-500'>{option}</span>
+              </div>
+            )
+          }
         })}
       </section>
       <div className='md:hidden divider my-1' />
     </>
   )
 }
-const NameBioSection = ({ user }) => {
+const NameBioSection = ({ user }: { user: UserProfileProps }) => {
   return (
     <section className='flex flex-col gap-1'>
       <h3 className='font-semibold'>{user.name}</h3>

@@ -1,10 +1,17 @@
 import React, { useEffect, useRef } from 'react'
 import { RiArrowUpSFill } from 'react-icons/ri'
 import { Link } from 'react-router-dom'
+import { NotificationProps, PartialUser } from '../../firebase'
 import { formatDateToNowShort } from '../../utils/formatDate'
 import FollowButton from '../shared/FollowButton'
 
-const NotificationList = ({ notifications, className = '' }) => {
+const NotificationList = ({
+  notifications,
+  className = '',
+}: {
+  notifications: NotificationProps[]
+  className?: string
+}) => {
   return (
     <div
       className={`absolute flex flex-col gap-0 justify-center items-end m-0 z-10 ${className}`}
@@ -13,7 +20,10 @@ const NotificationList = ({ notifications, className = '' }) => {
       <div className='card w-full bg-base-100 shadow-xl rounded -mt-5 pr-2'>
         <div className='card-body p-0 m-0'>
           {notifications.map((notification) => {
-            const { username, profileImage } = notification.user
+            {
+              console.log(notification)
+            }
+            const { username, profileImage } = notification.user as PartialUser
             const isLike = notification.type === 'like'
             const isFollow = notification.type === 'follow'
 
@@ -64,13 +74,15 @@ const NotificationList = ({ notifications, className = '' }) => {
                       <Link to={`/p/${notification.postId}`}>
                         <div className='avatar py-2'>
                           <div className='rounded w-10 md:w-16'>
-                            <img src={notification.post.media} alt='post' />
+                            <img src={notification.post?.media} alt='post' />
                           </div>
                         </div>
                       </Link>
                     )}
 
-                    {isFollow && <FollowButton id={notification.user.uid} />}
+                    {isFollow && notification.user && (
+                      <FollowButton side={false} id={notification.user?.uid} />
+                    )}
                   </div>
                 </div>
                 <div className='divider -my-1 -mb-2'></div>
